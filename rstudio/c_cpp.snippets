@@ -1,0 +1,36 @@
+# RStudio snippets https://support.rstudio.com/hc/en-us/articles/204463668-Code-Snippets
+
+snippet once
+	#ifndef ${1:`HeaderGuardFileName`}
+	#define ${1:`HeaderGuardFileName`}
+	
+	${0}
+	
+	#endif /* ${1:`HeaderGuardFileName`} */
+
+snippet ans
+	namespace {
+	${0}
+	} // anonymous namespace
+
+snippet ns
+	namespace ${1:ns} {
+	${0}
+	} // namespace ${1:ns}
+
+snippet cls
+	class ${1:ClassName} {
+	public:
+		${2}
+	private:
+	    ${3}
+	};
+
+snippet str
+	struct ${1} {
+		${0}
+	};
+
+snippet ept
+	// [[Rcpp::export]]
+

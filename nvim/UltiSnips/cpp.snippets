@@ -1,0 +1,47 @@
+
+snippet #include "#include <iostream>"
+#include <iostream>
+endsnippet
+
+snippet cout "std::cout text std::endl;"
+std::cout << "${1:text}" << std::endl;$0
+endsnippet
+
+snippet for "for (init; condition; increment)"
+for (int i = 0; i < 10; i++) {
+	${0}
+}
+endsnippet
+
+snippet do "do...while"
+int i = 1;
+do {
+	${1:std::cout << i << std::endl;}
+	i++;
+} while (i <= 10);
+endsnippet
+
+snippet switch "switch"
+int x = 1;
+switch (x) {
+	case 0:
+		std::cout << "not correct";
+		break;
+	case 1:
+		std::cout << "correct";
+	default:
+		std:cout << "a default case"
+}
+endsnippet
+
+snippet array "array in a loop"
+int arr[5];
+for (int x = 0; x < 5; x++) {
+	arr[x] = 1;
+	// outputs an array 0 to 4 with value of 1.
+}
+endsnippet
+
+snippet cerr "cpp stderr debug output"
+std::cerr << $0 << std::endl;
+endsnippet

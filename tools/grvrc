@@ -1,0 +1,4 @@
+# Reference: https://github.com/rgburke/grv/blob/master/doc/documentation.md#configuration-variables
+
+set commit-graph true
+set mouse true
