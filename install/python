@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+PIP="$(command -v pip3)"
+
+# https://jupyter.org/install
+install_jupyter() {
+  "$PIP" install jupyter
+}
+
+install_pygit2() {
+  "$PIP" install pygit2 # https://github.com/libgit2/pygit2
+}
+
+# python neovim modules
+# See in nvim `:h provider-python`
+install_pynvim() {
+  "$PIP" install pynvim
+}
+
+# https://github.com/randy3k/radian
+install_radian() {
+  "$PIP" install -U radian --user
+}
+
+
+# pyenv: python versions
+# https://github.com/pyenv/pyenv
+#
+# See the installed versions with
+# `pyenv versions`
+# or
+# `echo "$(pyenv root)"/versions | xargs ls`
+install_pyenv() {
+  if [ -x "$(command -v pyenv)" ]; then
+
+    # install the latest stable version (https://stackoverflow.com/a/33423958/)
+    pyenv install $(pyenv install --list | grep -v - | grep -v b | tail -1)
+
+    pyenv install 3.8.0
+    pyenv install 3.7.4
+    pyenv install 2.7.16 # some old version
+
+  fi
+}
+
+
+install_jupyter
+install_pygit2
+install_pynvim
+install_radian
+install_pyenv
+
+
+# vim: ft=sh sw=2 ts=2 et

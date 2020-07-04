@@ -1,0 +1,113 @@
+# List of packages can be installed with Homebrew https://brew.sh/
+#
+# To install everything, call `brew bundle` when in this file's directory.
+#
+# To install individual apps;
+#  `brew install <name>`
+#  `brew cask install <name>`
+#
+######################
+######## BREW ########
+######################
+brew "automake"
+brew "bash"
+brew "bat" # https://github.com/sharkdp/bat
+brew "binutils"
+brew "cargo"
+brew "clang-format" # https://clang.llvm.org/docs/ClangFormat.html
+brew "cmake"
+brew "cppcheck" # http://cppcheck.sourceforge.net/
+brew "ctop" # https://github.com/bcicen/ctop
+brew "curl"
+brew "docker"
+brew "docui" # https://github.com/skanehira/docui
+brew "fd" # https://github.com/sharkdp/fd
+brew "ffmpeg" # https://ffmpeg.org/
+brew "gdb"
+brew "gedit"
+brew "git"
+brew "git-cola" # https://github.com/git-cola/git-cola
+brew "gnuplot" # http://www.gnuplot.info/
+brew "go"
+brew "graphviz"
+brew "grv" # https://github.com/rgburke/grv
+brew "haskell-stack"
+brew "htop"
+brew "hub" # https://hub.github.com/
+brew "hugo"
+brew "hunspell"
+brew "imagemagick"
+brew "jekyll"
+brew "jq" # https://stedolan.github.io/jq/
+brew "lazydocker" # https://github.com/jesseduffield/lazydocker
+brew "lazygit" # https://github.com/jesseduffield/lazygit
+brew "libgit2"
+brew "libuv"
+brew "libyaml"
+brew "llvm"
+brew "lynx"
+brew "macvim"
+brew "mysql"
+brew "nasa-sw-vnv/core/ikos" # https://github.com/NASA-SW-VnV/ikos
+brew "node" # npm will be installed with node
+brew "openssl"
+brew "pandoc"
+brew "pandoc-citeproc"
+brew "postgresql"
+brew "pre-commit" # https://github.com/pre-commit/pre-commit/
+brew "pspg" # https://github.com/okbob/pspg
+brew "pyenv" # python version manager https://github.com/pyenv/pyenv
+brew "python3"
+brew "qt" # https://www.qt.io/
+brew "r"
+brew "ranger" # https://github.com/ranger/ranger
+brew "ripgrep" # https://github.com/BurntSushi/ripgrep
+brew "ruby"
+brew "rust"
+brew "saulpw/vd/visidata" # https://www.visidata.org/
+brew "scala"
+brew "shellcheck" # https://github.com/koalaman/shellcheck
+brew "sqlite"
+brew "the_silver_searcher" # https://github.com/ggreer/the_silver_searcher
+brew "tig" # https://github.com/jonas/tig
+brew "tree"
+brew "universal-ctags/universal-ctags/universal-ctags"
+brew "valgrind"
+brew "wget"
+brew "youtube-dl" # https://github.com/rg3/youtube-dl/
+brew "zlib"
+######################
+##### BREW CASKS #####
+######################
+cask "alacritty"
+cask "amethyst" # https://ianyh.com/amethyst/
+cask "chromedriver"
+cask "db-browser-for-sqlite" # https://sqlitebrowser.org/
+cask "dbeaver-community" # https://dbeaver.io/
+cask "docker"
+cask "emacs"
+cask "firefox"
+cask "gimp" # https://www.gimp.org/downloads/
+cask "google-backup-and-sync" # ..file-stream for business
+cask "google-chrome"
+cask "intellij-idea-ce"
+cask "iterm2"
+cask "java"
+cask "kdiff3" # http://kdiff3.sourceforge.net/
+cask "libreoffice"
+cask "licecap" # https://github.com/justinfrankel/licecap
+cask "mactex"
+cask "mendeley" # https://www.mendeley.com/
+cask "postman" # https://www.postman.com/
+cask "pycharm-ce" # community edition: https://www.jetbrains.com/pycharm/
+cask "qbittorrent" # https://www.qbittorrent.org/
+cask "r-app"
+cask "signal"
+cask "spotify"
+cask "sublime-text"
+cask "vagrant"
+cask "virtualbox"
+cask "visual-studio-code"
+cask "vlc"
+cask "zotero"
+# vim: ft=ruby

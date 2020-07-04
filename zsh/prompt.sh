@@ -1,4 +1,6 @@
 
+# TODO overhaul this file
+
 # Source: https://github.com/Parth/dotfiles/blob/master/zsh/prompt.sh
 
 # Reference for colors: http://stackoverflow.com/questions/689765/how-can-i-change-the-color-of-my-prompt-in-zsh-different-from-normal-text
@@ -47,6 +49,13 @@ set_prompt() {
 		PS1+=', '
 		PS1+="%{$fg_bold[red]%}SUDO%{$reset_color%}"
 	fi
+
+  # virtualenv:
+  # https://stackoverflow.com/questions/10406926/how-do-i-change-the-default-virtualenv-prompt
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    PS1+=', '
+    PS1+="%{$fg[cyan]%}%{${VIRTUAL_ENV##*/}%}%{$reset_color%}"
+  fi
 
 	PS1+="%{$fg[white]%}]: %{$reset_color%}% "
 }

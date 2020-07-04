@@ -1,43 +1,30 @@
-
 # dotfiles
 
 Tested on macOS (`10.14 mojave`) and Debian (`9 stretch`).
 
 ## Installation
 
-Clone this repo in your home directory (`~/` or `$HOME/`). Then, change
-directory into the folder and execute the setup script:
-```
+Having [git](https://git-scm.com/downloads) installed is the prerequisite.
+
+Clone this repo in your home directory (`~/` or `$HOME/`). Change
+directory into this `dotfiles` folder and execute the setup script:
+```bash
 git clone git@github.com:strboul/dotfiles.git
 cd dotfiles && ./setup.sh
 ```
 
-Having [git](https://git-scm.com/downloads) installed is the prerequisite.
-
 ## Brewfile
 
-For macOS, brew offers a nice package manager to install command-line and binary
-applications. In the `~/dotfiles` directory, run to install everything:
+For macOS, [brew](https://brew.sh/) is a nice package manager to install
+command-line and binary applications in easy way. In the `~/dotfiles/install` directory,
+run this to install everything inside the `Brewfile`:
 ```
 brew bundle
 ```
 
-See
-[homebrew-bundle](https://github.com/Homebrew/homebrew-bundle/blob/master/README.md)
-and
-[homebrew-cask](https://github.com/Homebrew/homebrew-cask/blob/master/USAGE.md)
-repositories.
-
-## Dockerfile
-
-Please have a minimum Docker version `18.06`.
-
 ## Screenshots
 
-<p style="text-align:left;"><a
-href="https://storage.googleapis.com/blog-media-881/scr-dotfiles.png"><img
-src="https://storage.googleapis.com/blog-media-881/scr-dotfiles.png" width="60%"
-height="60%"></a></p>
+![screenshot](https://user-images.githubusercontent.com/25015317/85949176-8f8d9200-b955-11ea-98c9-ff3d635df2f2.png)
 
 ## Acknowledgments
 
@@ -46,4 +33,5 @@ height="60%"></a></p>
 + https://github.com/jimhester/dotfiles/
 
 + https://github.com/fatih/dotfiles
+
 

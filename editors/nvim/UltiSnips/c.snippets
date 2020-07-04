@@ -1,0 +1,94 @@
+
+snippet include_stdio "#include <stdio.h>"
+#include <stdio.h>
+endsnippet
+
+snippet include_stdlib "#include <stdlib.h>"
+#include <stdlib.h>
+endsnippet
+
+snippet define "#define CNAME value"
+#define ${0:name} ${1:value}
+endsnippet
+
+# add 'void' inside main in accordance with C99.
+snippet main_void "int main(void)"
+int main(void) {
+	${0}
+
+	return 0;
+}
+endsnippet
+
+snippet main_full "include<> main(int argc, char *argv[])"
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+	${1}
+
+	return 0;
+}
+endsnippet
+
+snippet printf "printf"
+printf("%s\n", ${1});
+endsnippet
+
+snippet for "for (init; condition; expression)"
+for(size_t i = 0; i < count; i++) {
+	/* code */
+}${0}
+endsnippet
+
+snippet while "while(expression)"
+int x = 0;
+while (x < 5) {
+	${0}
+	x++;
+}
+endsnippet
+
+snippet do "do {} while(expression)"
+int x = 0;
+do {
+	${0}
+	x++;
+} while(x < 5);
+endsnippet
+
+snippet switch "switch"
+switch(${0:expr}) {
+	case ${1:value}:
+		${2:statement};
+		break;
+
+	/* below optional */
+	default:
+		printf("Unknown case\n");
+		break;
+}
+endsnippet
+
+# Always free the block of memory allocated with malloc, calloc etc.
+snippet malloc "void *malloc(size_t nBytes)"
+int *${0:array};
+${0:array} = (int*) malloc(n * sizeof(int));
+
+free(${0:array});
+endsnippet
+
+snippet calloc "void *calloc(size_t nElems, size_t nBytes)"
+int *${0:array};
+${0:array} = (int*) calloc(n, n * sizeof(int));
+
+free(${0:array});
+endsnippet
+
+snippet ? "[ternary] int s = (x>0) ? -1 : x*x;"
+condition ? expression1 : expression2;
+endsnippet
+
+snippet sizeof_len "Length of an array (stack)"
+size_t len = sizeof(${0:array}) / sizeof(${0:array}[0]);
+endsnippet
+

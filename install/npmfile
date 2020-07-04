@@ -1,0 +1,10 @@
+# linters
+eslint
+prettier
+
+# tools
+json-server # https://github.com/typicode/json-server
+
+# Convert UltiSnips snippets as JSON:
+# https://github.com/VincentCordobes/convert-snippets
+convert-snippets

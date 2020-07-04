@@ -1,0 +1,42 @@
+{
+	"Main_Void_Stdio": {
+		"prefix": "main_stdio",
+		"body": [
+			"#include <stdio.h>",
+			"",
+			"int main(void) {",
+			"",
+			"\t$0",
+			"",
+			"\treturn 0;",
+			"}"
+		],
+		"description": "main(void) including stdio.h"
+	},
+	"ternary": {
+		"prefix": "ternary",
+		"body": [
+			"condition ? expression1 : expression2;"
+		],
+		"description": "Ex: int s = (x>0) ? -1 : x*x;"
+	},
+	"for": {
+		"prefix": "for",
+		"body": [
+			"for (size_t ${1:i} = 0; ${1:i} < ${2:count}; ${1:i}++) {",
+			"\t/* code */",
+			"}"
+		],
+		"description": "for loop"
+	},
+	"typedef": {
+		"prefix": "typedef",
+		"body": [
+			"typedef struct {",
+			"\t/* code */",
+			"} ${1:name};"
+		],
+		"description": "typedef struct"
+	}
+}
+

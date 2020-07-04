@@ -1,0 +1,240 @@
+# RStudio snippets
+# https://support.rstudio.com/hc/en-us/articles/204463668-Code-Snippets
+
+# BASE
+snippet lib
+	library(${0})
+
+snippet req
+	require("${1:package}")
+
+snippet src
+	source("${1:file.R}")
+
+snippet ifelse
+	ifelse(${1:condition}, ${2:yes}, ${3:no})
+
+snippet fun
+	${1:name} <- function(${2:vars}) {
+		${0}
+	}
+
+snippet for
+	for (${1:var} in ${2:range}) {
+		${0}
+	}
+
+snippet while
+	while (${1:condition}) {
+		${0}
+	}
+
+snippet switch
+	switch (${1:obj},
+		"${2:case}" = ${3:action}
+	)
+
+snippet apply
+	apply(${1:array}, ${2:margin}, ${3:...})
+
+snippet lapply
+	lapply(${1:list}, ${2:function})
+
+snippet sapply
+	sapply(${1:list}, ${2:function})
+
+snippet mapply
+	mapply(${1:function}, ${2:...})
+
+snippet tapply
+	tapply(${1:vector}, ${2:index}, ${3:function})
+
+snippet vapply
+	vapply(${1:list}, ${2:function}, FUN.VALUE = ${3:type}, ${4:...})
+
+snippet rapply
+	rapply(${1:list}, ${2:function})
+
+snippet do.call
+	do.call(${1:function}, list(${2:list}))
+
+snippet tryCatch
+	tryCatch(${0}, error = function(e) paste("Failure: ", conditionMessage(e)))
+
+snippet data.frame
+	data.frame(${0})
+
+# S3 OBJECT SYSTEM
+snippet generic
+	${1:name} <- function(${2:arg}) {
+		UseMethod("${1:name}")
+	}
+
+# S4 OBJECT SYSTEM
+snippet setGeneric
+	setGeneric("${1:generic}", function(${2:x, ...}) {
+		standardGeneric("${1:generic}")
+	})
+
+snippet setMethod
+	setMethod("${1:generic}", ${2:class}, function(${2:x, ...}) {
+		${0}
+	})
+
+snippet setClass
+	setClass("${1:Class}", slots = c(${2:name = "type"}))
+
+# R6 OBJECT SYSTEM
+snippet R6Class "R6 OOP skeleton"
+R6::R6Class("${1:name}",
+	public = list(
+			param = NULL,
+
+			initialize = function(param) {
+				self\$param <- param
+			}
+
+		),
+	private = NULL
+) -> ${1:name}
+
+# STATS
+snippet matrix
+	matrix(${1:data}, nrow = ${2:rows}, ncol = ${3:cols})
+
+# MISCELLANEOUS
+snippet apr
+	apropos("${1:name}")
+
+snippet help
+	help(package="${1:pkgname}")
+
+snippet ts
+	`r paste("#", date(), "------------------------------\n")`
+
+snippet header
+	`r paste("#", paste(rep("-", 75), collapse = ""), "#")`
+	`r paste("#")` ${1:TITLE} ----
+	`r paste("#", paste(rep("-", 75), collapse = ""), "#")`
+	${0}
+
+snippet headerdoc
+	`r paste("##", paste0("/", paste(rep("_", 45), collapse = ""), "/"))`
+	`r paste("##")` ${1:TITLE}
+	`r paste("##")` - ${2:Arguments}
+	`r paste("##", paste0("/", paste(rep("_", 45), collapse = ""), "/"))`
+
+# SHINY
+snippet shinyapp
+	library(shiny)
+
+	ui <- fluidPage(
+		${0}
+	)
+
+	server <- function(input, output, session) {
+
+	}
+
+	shinyApp(ui, server)
+
+snippet shinymodule
+	${1:name}UI <- function(id) {
+		ns <- NS(id)
+		tagList(
+			${2}
+		)
+	}
+
+	${1:name}Server <- function(input, output, session) {
+
+	}
+
+snippet shinyprintf
+	observe(mmy::shinyprintf(${1:var}, text = NULL))
+
+snippet validate
+	shiny::validate(
+		shiny::need(${1:input}, ${2:error_message})
+	)
+
+snippet callModule
+	callModule(${1:module_server}, "${2:ui_id}")
+
+snippet observeEvent
+	observeEvent(${1:input}, {
+		${0}
+	})
+
+# DEBUGGING
+snippet dbo
+	debugonce(${0})
+
+snippet tb
+	traceback()
+
+snippet trce
+	trace(${0}, edit = TRUE)
+
+snippet trcr
+	trace(${0}, recover)
+
+snippet trcb
+	trace(${0}, browser)
+
+snippet trcba
+	trace(${1:function}, browser, ${2:at})
+
+snippet trcun
+	untrace(${0})
+
+snippet brow
+	browser()
+
+snippet browe
+	browser(expr = {${0}})
+
+# find options
+snippet optionsf
+	names(options())[grep("${1:regex}", names(options()))]
+
+snippet optionsr
+	options(error=recover)
+
+snippet optionsn
+	options(error=NULL)
+
+snippet optionsw
+	options(warn=2)
+
+# DEVTOOLS
+snippet test
+	devtools::test(filter = NULL)
+
+snippet check
+	devtools::check()
+
+snippet load_all
+	devtools::load_all()
+
+snippet install
+	devtools::install()
+
+snippet build
+	devtools::build()
+
+snippet document
+	devtools::document()
+
+# TESTING
+snippet test_that
+	test_that("message", { ${0} })
+
+# COMPILED CODE
+
+snippet cfunction
+	fun <- inline::cfunction(c(x = "numeric"), '
+		${0}
+		return R_NilValue;
+	')
+

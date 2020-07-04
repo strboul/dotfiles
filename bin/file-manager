@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+source "$HOME"/dotfiles/zsh/utils.zsh
+
+
+main() {
+
+  if [ "$#" -gt 1 ]; then
+    err_exit "only provide zero or one argument."
+  fi
+
+  if [ -z "$1" ]; then
+    path="$PWD"
+  else
+    path="$1"
+  fi
+
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    open "$path"
+  elif [[ "$OSTYPE" == "linux"* ]]; then
+    xdg-open "$path"
+  else
+    err_exit "Platform not supported."
+  fi
+
+  printf "opened file manager at: %s\n" $path
+}
+
+
+main "$@"
+
+# vim: sw=2 ts=2 et ft=sh

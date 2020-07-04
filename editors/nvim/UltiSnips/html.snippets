@@ -1,0 +1,123 @@
+
+## Resources:
+## - https://github.com/honza/vim-snippets/blob/master/UltiSnips/html.snippets
+
+snippet html_skeleton "Insert HTML skeleton"
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+	</head>
+	<style>
+	</style>
+	<body>
+
+	<p>Hello, world!</p>
+
+	</body>
+</html>
+endsnippet
+
+## HTML TAGS ##
+
+snippet <a> "<a>" w
+<a href="${1:https://www.${2:url.tld}}"${3:target="_blank"}>${4:Text}</a>
+endsnippet
+
+snippet <b> "<b>" w
+<b>$1</b>
+endsnippet
+
+snippet <body> "<body>"
+<body>
+	${0:${VISUAL}}
+</body>
+endsnippet
+
+snippet <br> "<br /> line break"
+<br />
+endsnippet
+
+snippet <strong> "strong importance" w
+<strong>${1:text}</strong>
+endsnippet
+
+snippet <em> "emphasis" w
+<em>${1:text}</em>
+endsnippet
+
+snippet <blockquote> "blockquoting" w
+<blockquote>${1:text}</blockquote>
+endsnippet
+
+snippet <s> "strikethrough" w
+<s>${1:text}</s>
+endsnippet
+
+
+## TABLE RELATED TAGS (START) ##
+
+snippet <table> "Full table example"
+<table>
+	<tr>
+		<th>colname1</th>
+		<th>colname2</th>
+	</tr>
+	<tr>
+		<td>x</td>
+		<td>10</td>
+	</tr>
+	<tr>
+		<td>y</td>
+		<td>11</td>
+	</tr>
+</table>
+endsnippet
+
+snippet <table> "<table>" w
+<table>
+	${0:${VISUAL}}
+</table>
+endsnippet
+
+snippet <td> "table data (cell)" w
+<td>${0:${VISUAL}}</td>
+endsnippet
+
+snippet <th> "table header" w
+<th>${0:${VISUAL}}</th>
+endsnippet
+
+snippet <tr> "table row" w
+<tr>${0:${VISUAL}}</tr>
+endsnippet
+
+## TABLE RELATED TAGS (END) ##
+
+snippet <link> "External Resource Link element"
+<link href="${1:path/to/file.css}" rel="stylesheet">
+endsnippet
+
+snippet <style> "CSS rules style"
+<style type="text/css">
+${0}
+</style>
+endsnippet
+
+## using <form> for the inputs is *semantically* correct html..
+snippet <form> "form" w
+<form>${0:${VISUAL}}</form>
+endsnippet
+
+snippet <input> "form input"
+<input type="${1:text}" id="${2:name}">
+endsnippet
+
+snippet <select> "Select (option) elements"
+<select>
+	<option value="${1:value}">${2:name}</option>
+</select>
+endsnippet
+
+# vim: ts=2 sw=2

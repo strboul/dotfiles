@@ -1,0 +1,13 @@
+{
+  // bash LSP: https://github.com/bash-lsp/bash-language-server
+  "languageserver": {
+    "bash": {
+      "command": "bash-language-server",
+      "args": ["start"],
+      "filetypes": ["sh"],
+      "ignoredRootPaths": ["~"]
+    }
+  },
+  "coc.preferences.extensionUpdateCheck": "daily"
+}
+// vim: ts=2 sw=2 expandtab

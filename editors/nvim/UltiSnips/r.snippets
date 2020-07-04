@@ -1,0 +1,78 @@
+snippet merge "Merge multiple"
+Reduce(
+	function(...) merge(..., by = "${0:what}"),
+	list(
+		${1:data.frames}
+	)
+)
+endsnippet
+
+snippet colnames "rename data.frame colnames"
+colnames(${1:df})[colnames(${1:df}) == "${2:old_name}"] <- "${3:new_name}"
+endsnippet
+
+snippet shinyapp "shinyapp skeleton"
+library(shiny)
+
+ui <- fluidPage(
+	${0}
+)
+
+server <- function(input, output, session) {
+	${1}
+}
+
+shinyApp(ui, server)
+endsnippet
+
+snippet cfunction "inline::cfunction"
+fun <- inline::cfunction(c(x = "numeric"), '
+	${0}
+	return R_NilValue;
+')
+endsnippet
+
+snippet R6Class "R6 OOP skeleton"
+${1:name} <- R6::R6Class(
+	"${1:name}",
+	public = list(
+			param = NULL,
+
+			initialize = function(param) {
+				self\$param <- param
+			}
+
+		),
+	private = NULL
+)
+endsnippet
+
+# https://github.com/plotly/dashR
+snippet dashapp "dashapp skeleton"
+library(dash)
+library(dashHtmlComponents)
+library(dashCoreComponents)
+
+app <- Dash$new()
+
+app$layout(
+	htmlDiv(
+		list(
+			dccInput(id = "inputID", value = "initial value", type = "text"),
+			htmlDiv(id = "outputID")
+		)
+	)
+)
+
+app$callback(
+	output = list(id = "outputID", property = "children"),
+	params = list(
+		input(id = "inputID", property = "value"),
+		state(id = "inputID", property = "type")
+	), function(x, y) {
+		sprintf("You've entered: '%s' into a '%s' input control", x, y)
+	}
+)
+
+app$run_server(debug = TRUE)
+endsnippet
