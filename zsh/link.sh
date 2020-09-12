@@ -3,37 +3,41 @@
 # Symbolic link the files (config, tools etc.) so that they are always git
 # controlled.
 
-source "$HOME"/dotfiles/zsh/utils.zsh
+source "$HOME"/dotfiles/zsh/utils.sh
 
 
 do_link() {
-  check_file_or_dir_exists \
+
+  utils__check_file_or_dir_exists \
     "$2" \
-    "$(printf "file or folder not exist on dotfile: \"%s\"" "$2")"
+    "$(printf "file or folder not exist in dotfiles: \"%s\"" "$2")"
+
   mkdir -p "${1%/*}"
+
   if [[ -h "$1" ]]; then
     printf "symlink already exists in: \"%s\" -> \"%s\"\n" "$2" "$1"
   else
-    color_msg "green" "$(printf "Linking: \"%s\" -> \"%s\"\n" "$2" "$1")"
+    utils__color_msg "green" "$(printf "Linking: \"%s\" -> \"%s\"\n" "$2" "$1")"
     ln -sfn "$2" "$1"
   fi
+
 }
 
 
 # Essentials
-do_link "$HOME"/.zshrc "$HOME"/dotfiles/zsh/zshrc.sh
+do_link "$HOME"/.zshrc "$HOME"/dotfiles/zsh/zshrc.zsh
 do_link "$HOME"/.tmux.conf "$HOME"/dotfiles/tmux/tmux.conf
 do_link "$HOME"/.config/alacritty/alacritty.yml "$HOME"/dotfiles/alacritty/alacritty.yml
 
 
 # Editors
-do_link "$HOME"/.R/snippets/r.snippets "$HOME"/dotfiles/editors/rstudio/r.snippets
+do_link "$HOME"/.R/snippets/r.snippets "$HOME"/dotfiles/editors/rstudio/r_rstudio.snippets
 
 
 # nvim
-do_link "$HOME"/.config/nvim/init.vim "$HOME"/dotfiles/editors/nvim/init.vim
-do_link "$HOME"/.config/nvim/UltiSnips "$HOME"/dotfiles/editors/nvim/UltiSnips/
-do_link "$HOME"/.config/nvim/coc-settings.json "$HOME"/dotfiles/editors/nvim/coc-settings.json
+do_link "$HOME"/.config/nvim/init.vim "$HOME"/dotfiles/nvim/init.vim
+do_link "$HOME"/.config/nvim/coc-settings.json "$HOME"/dotfiles/nvim/coc-settings.json
+do_link "$HOME"/.config/nvim/UltiSnips "$HOME"/dotfiles/nvim/snippets/
 
 
 # Languages

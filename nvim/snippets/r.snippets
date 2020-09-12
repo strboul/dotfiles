@@ -7,6 +7,17 @@ Reduce(
 )
 endsnippet
 
+snippet doc "roxygen documentation"
+#' ${1:<<Title>>}
+#'
+#' @description
+#' ${2:<<Description>>}
+#'
+#' @param ${3:<<param>>} ${4:<<description>>}
+#'
+#' @export
+endsnippet
+
 snippet colnames "rename data.frame colnames"
 colnames(${1:df})[colnames(${1:df}) == "${2:old_name}"] <- "${3:new_name}"
 endsnippet
@@ -75,4 +86,32 @@ app$callback(
 )
 
 app$run_server(debug = TRUE)
+endsnippet
+
+snippet Map "Map list/vector"
+Map(function(a, b) {
+		a + b
+	},
+	${1:obj1},
+	${2:obj2}
+)
+endsnippet
+
+snippet optionsr "error recover mode"
+options(error = recover)
+endsnippet
+
+snippet optionsn "error mode reset"
+options(error = NULL)
+endsnippet
+
+snippet optionsw "turn warnings to errors"
+options(warn = 2)
+endsnippet
+
+snippet tracem "trace value, print traceback when matches expected value"
+trace(${1:function}, quote({
+	if (${2:match_value} %in% ${3:function_arg})
+		print(rlang::trace_back())
+}))
 endsnippet

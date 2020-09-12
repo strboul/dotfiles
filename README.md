@@ -1,30 +1,22 @@
 # dotfiles
 
-Tested on macOS (`10.14 mojave`) and Debian (`9 stretch`).
+zsh, tmux and neovim.
+
+Tested on *mac OS 10.15 Catalina* and *Debian 10 buster*.
 
 ## Installation
 
-Having [git](https://git-scm.com/downloads) installed is the prerequisite.
+Clone this repository in your home directory (`$HOME/`). Change
+directory into the `dotfiles` folder and execute the setup script.
 
-Clone this repo in your home directory (`~/` or `$HOME/`). Change
-directory into this `dotfiles` folder and execute the setup script:
 ```bash
-git clone git@github.com:strboul/dotfiles.git
-cd dotfiles && ./setup.sh
-```
-
-## Brewfile
-
-For macOS, [brew](https://brew.sh/) is a nice package manager to install
-command-line and binary applications in easy way. In the `~/dotfiles/install` directory,
-run this to install everything inside the `Brewfile`:
-```
-brew bundle
+git clone git@github.com:strboul/dotfiles.git "$HOME"/dotfiles
+cd "$HOME"/dotfiles && ./setup.sh
 ```
 
 ## Screenshots
 
-![screenshot](https://user-images.githubusercontent.com/25015317/85949176-8f8d9200-b955-11ea-98c9-ff3d635df2f2.png)
+![old](https://user-images.githubusercontent.com/25015317/85949176-8f8d9200-b955-11ea-98c9-ff3d635df2f2.png)
 
 ## Acknowledgments
 
@@ -33,5 +25,3 @@ brew bundle
 + https://github.com/jimhester/dotfiles/
 
 + https://github.com/fatih/dotfiles
-
-

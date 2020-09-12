@@ -2,10 +2,21 @@ env:
   # this variable is used to check whether the "terminal emulator" is alacritty
   TERM_EMU: 'alacritty'
 
+
 window:
   dimensions:
     columns: 70
     lines: 25
+
+  padding:
+    x: 5
+    y: 5
+
+  decorations: none
+
+
+background_opacity: 1.00
+
 
 font:
   size: 11.0
@@ -22,9 +33,9 @@ font:
     family: JetBrains Mono
     style: Bold Italic
 
+
 draw_bold_text_with_bright_colors: true
 
-background_opacity: 1.0
 
 # Colors (Ubuntu)
 # https://github.com/alacritty/alacritty/wiki/Color-schemes#ubuntu

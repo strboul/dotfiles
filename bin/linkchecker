@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+# Crawl and parse links on a website
+#
+# Usage: linkchecker [WEBSITE_LINK]
+#
+# Sources:
+# - https://github.com/linkchecker/linkchecker
+# - https://wummel.github.io/linkchecker/
+
+if [ ! -x "$(command -v docker)" ]; then
+  utils__err_exit "docker not found."
+fi
+
+
+LINK=$1
+
+if [ ! -n "$LINK" ]; then
+  utils__err_exit "website link is missing"
+fi
+
+FOLDER_NAME="$(printf "linkchecker_%s\n" $(utils__timestamp))"
+
+mkdir -p "$FOLDER_NAME"
+
+docker run --rm -it           \
+  -u $(id -u):$(id -g)        \
+  -v $PWD/"$FOLDER_NAME":/mnt \
+  linkchecker/linkchecker     \
+  -Fhtml/linkchecker.html     \
+  -Fcsv/linkchecker.csv       \
+  --verbose                   \
+  $LINK
+
+
+# vim: ft=sh

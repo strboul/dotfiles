@@ -2,10 +2,12 @@
 #
 # To install everything, call `brew bundle` when in this file's directory.
 #
-# To install individual apps;
+# To install individual apps:
 #  `brew install <name>`
 #  `brew cask install <name>`
 #
+# To install everything listed here:
+#   `brew bundle`
 ######################
 ######## BREW ########
 ######################
@@ -85,6 +87,7 @@ cask "chromedriver"
 cask "db-browser-for-sqlite" # https://sqlitebrowser.org/
 cask "dbeaver-community" # https://dbeaver.io/
 cask "docker"
+cask "github" # https://desktop.github.com/
 cask "emacs"
 cask "firefox"
 cask "gimp" # https://www.gimp.org/downloads/

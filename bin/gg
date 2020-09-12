@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
-# fzf git-log (interactive):
-# https://gist.github.com/junegunn/f4fca918e937e6bf5bad
+# git-log (interactive with fzf):
+#
+# Usage: gg
+#
+# Sources:
+# - https://gist.github.com/junegunn/f4fca918e937e6bf5bad
 
-source "$HOME"/dotfiles/zsh/utils.zsh
+source "$HOME"/dotfiles/zsh/utils.sh
 
 
 clipboard_copy() {
@@ -12,12 +16,12 @@ clipboard_copy() {
   elif [[ "$OSTYPE" == "linux"* ]]; then
     xclip
   else
-    err_exit "Platform not supported."
+    utils__err_exit "Platform not supported."
   fi
 }
 
 main() {
-  check_file_or_dir_exists ".git" "No git repository found."
+  utils__check_file_or_dir_exists ".git" "No git repository found."
   local gitlog=(
     git log \
       --graph \
@@ -43,4 +47,4 @@ main() {
 
 main
 
-# vim: sw=2 ts=2 et ft=sh
+# vim: ft=sh

@@ -1,3 +1,10 @@
+# global gitignore for all git repos
+# (don't add paths that reduces the reproducibility)
+
 .DS_Store
 *.swp
 .Rhistory
+
+# IDE related
+.vscode/
+.idea/

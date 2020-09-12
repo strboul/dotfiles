@@ -1,7 +1,3 @@
-
-## Resources:
-## - https://github.com/honza/vim-snippets/blob/master/UltiSnips/html.snippets
-
 snippet html_skeleton "Insert HTML skeleton"
 <!DOCTYPE html>
 <html>
@@ -55,9 +51,7 @@ snippet <s> "strikethrough" w
 <s>${1:text}</s>
 endsnippet
 
-
-## TABLE RELATED TAGS (START) ##
-
+## ---------- TABLE RELATED TAGS (START) ---------- ##
 snippet <table> "Full table example"
 <table>
 	<tr>
@@ -92,8 +86,7 @@ endsnippet
 snippet <tr> "table row" w
 <tr>${0:${VISUAL}}</tr>
 endsnippet
-
-## TABLE RELATED TAGS (END) ##
+## ---------- TABLE RELATED TAGS (END) ---------- ##
 
 snippet <link> "External Resource Link element"
 <link href="${1:path/to/file.css}" rel="stylesheet">
@@ -119,5 +112,3 @@ snippet <select> "Select (option) elements"
 	<option value="${1:value}">${2:name}</option>
 </select>
 endsnippet
-
-# vim: ts=2 sw=2

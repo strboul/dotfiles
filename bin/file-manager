@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-source "$HOME"/dotfiles/zsh/utils.zsh
+source "$HOME"/dotfiles/zsh/utils.sh
 
 
 main() {
 
   if [ "$#" -gt 1 ]; then
-    err_exit "only provide zero or one argument."
+    utils__err_exit "only provide zero or one argument."
   fi
 
   if [ -z "$1" ]; then
@@ -16,11 +16,19 @@ main() {
   fi
 
   if [[ "$OSTYPE" == "darwin"* ]]; then
+
     open "$path"
+
   elif [[ "$OSTYPE" == "linux"* ]]; then
-    xdg-open "$path"
+
+    if [ -x "$(command -v xdg-open)" ]; then
+      eval "$(printf "xdg-open 2>/dev/null %s" $path)"
+    else
+      utils__err_exit "xdg-open not found."
+    fi
+
   else
-    err_exit "Platform not supported."
+    utils__err_exit "Platform not supported."
   fi
 
   printf "opened file manager at: %s\n" $path
@@ -29,4 +37,4 @@ main() {
 
 main "$@"
 
-# vim: sw=2 ts=2 et ft=sh
+# vim: ft=sh

@@ -1,4 +1,5 @@
 {
+
   // bash LSP: https://github.com/bash-lsp/bash-language-server
   "languageserver": {
     "bash": {
@@ -8,6 +9,8 @@
       "ignoredRootPaths": ["~"]
     }
   },
-  "coc.preferences.extensionUpdateCheck": "daily"
+
+  "coc.preferences.extensionUpdateCheck": "weekly"
+
 }
-// vim: ts=2 sw=2 expandtab
+// vim: ts=2 sw=2 et ft=jsonb

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+main() {
+  git reflog --date=iso --format='%C(auto)%h %<|(17)%gd %C(reset) %gs (%s)'
+}
+
+
+main
+
+# vim: ft=sh

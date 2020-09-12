@@ -1,4 +1,3 @@
-
 snippet include_stdio "#include <stdio.h>"
 #include <stdio.h>
 endsnippet
@@ -18,6 +17,24 @@ int main(void) {
 
 	return 0;
 }
+endsnippet
+
+snippet function "function"
+${1:type} ${2:name}(${3:param}) {
+	return 0;
+}
+endsnippet
+
+snippet doc "doxygen style documentation"
+/**
+ * @brief ${1:<<brief>>}
+ *
+ * ${2:<<description>>}
+ *
+ * @param ${3:<<param>>}: ${4:<<description>>}
+ *
+ * @return ${5:<<return>>}
+ */
 endsnippet
 
 snippet main_full "include<> main(int argc, char *argv[])"
@@ -91,4 +108,3 @@ endsnippet
 snippet sizeof_len "Length of an array (stack)"
 size_t len = sizeof(${0:array}) / sizeof(${0:array}[0]);
 endsnippet
-

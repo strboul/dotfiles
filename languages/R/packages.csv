@@ -1,10 +1,11 @@
-"package","source","link","comments"
+"package","source","link","extra_comment"
 "devtools","CRAN","NULL","NULL"
 "usethis","CRAN","NULL","NULL"
 "microbenchmark","CRAN","NULL","NULL"
 "knitr","CRAN","NULL","NULL"
 "jsonlite","CRAN","NULL","NULL"
+"inline","CRAN","NULL","NULL"
 "tidyverse","CRAN","NULL","NULL"
-"languageserver","CRAN","NULL","for neovim"
+"languageserver","CRAN","NULL","for coc.nvim"
 "mmy","GitHub","strboul/mmy",NULL
 "listviewer","GitHub","timelyportfolio/listviewer","for listviewer::jsonedit"

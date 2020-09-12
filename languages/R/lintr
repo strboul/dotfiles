@@ -1,1 +1,5 @@
-linters: with_defaults(no_tab_linter = FALSE, camel_case_linter = NULL, object_name_linter = NULL)
+linters: with_defaults(
+    line_length_linter = line_length_linter(100),
+    no_tab_linter = FALSE,
+    camel_case_linter = NULL,
+    object_name_linter = NULL)

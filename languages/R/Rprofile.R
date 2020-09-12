@@ -1,5 +1,12 @@
-# a new hidden environment for the profile
+# a tmp environment for the Rprofile
 .Rprofile <- new.env()
+
+
+# private Rprofile file (for private aliases & credentials etc.)
+.Rprofile$rprofile_private <- path.expand("~/.Rprofile_private")
+if (file.exists(.Rprofile$rprofile_private)) {
+  source(.Rprofile$rprofile_private)
+}
 
 
 options(
@@ -17,7 +24,7 @@ options(
   # warnPartialMatchDollar = TRUE,
   # warnPartialMatchArgs = TRUE
 
-  # <Enter> shouldn't repeats the previous command during debugging
+  # <Enter> key shouldn't repeat the previous command at debugging
   browserNLdisabled = TRUE
 )
 
@@ -30,7 +37,7 @@ Sys.setenv(R_HISTSIZE = "100000")
 options(max.print = 200)
 
 
-# install.packages() default package repo
+# define default package repo for `install.packages`
 local({
   r <- getOption("repos")
   r["CRAN"] <- "https://cloud.r-project.org/"
@@ -39,14 +46,12 @@ local({
 
 
 # Warn about the packages only in an *interactive* session:
-if (interactive()) {
-  local({
-    packages <- utils::read.csv(
-      file.path(
-        Sys.getenv("HOME"),
-        "dotfiles/languages/R/packages.csv"
-      )
-    )
+warn_recommended_packages <- function() {
+  if (interactive()) {
+    packages <- utils::read.csv(file.path(
+      Sys.getenv("HOME"),
+      "dotfiles/languages/R/packages.csv"
+    ))
     installed_packages <- utils::installed.packages()
     not_installed <- !packages$package %in% installed_packages
     if (any(not_installed)) {
@@ -66,86 +71,40 @@ if (interactive()) {
         not_installed_pkgs[not_installed_pkgs$source == "GitHub", "link"],
         "remotes::install_github"
       )
-      cat(
-        paste(
-          " Note: Not all packages found in the system. Please run the\n",
-          "script(s) below to install the recommended packages:\n\n",
-          cran_msg,
-          gh_msg
-        ),
-        "\n"
-      )
+      cat(paste(
+        " Note: Not all the recommended packages found in the system. Please run\n",
+        "the line(s) to install them:\n\n",
+        cran_msg,
+        gh_msg
+      ), "\n")
     }
-  })
+  }
+  invisible()
 }
 
-
-options(
-  # https://github.com/randy3k/radian/issues/135#issuecomment-574707750
-  radian.complete_while_typing        = FALSE,
-  radian.highlight_matching_bracket   = TRUE,
-  radian.tab_size                     = 2,
-  radian.insert_new_line              = FALSE,
-  radian.history_search_no_duplicates = TRUE,
-  # ignore case in history search
-  radian.history_search_ignore_case   = TRUE
-)
+warn_recommended_packages()
 
 
-## special options when using R from terminal ----------------------
-
-.Rprofile$vd <- function(x) {
-
-  sym_calls <- list(
-    list(
-      name = "visidata",
-      command = "vd",
-      url = "https://www.visidata.org/"
-    )
+# 'radian' options (https://github.com/randy3k/radian):
+if (nchar(Sys.which("radian"))) {
+  options(
+    # disable complete_while_typing
+    # https://github.com/randy3k/radian/issues/135#issuecomment-574707750
+    radian.complete_while_typing        = FALSE,
+    radian.highlight_matching_bracket   = TRUE,
+    radian.tab_size                     = 2,
+    radian.insert_new_line              = FALSE,
+    radian.history_search_no_duplicates = TRUE,
+    # ignore case in history search
+    radian.history_search_ignore_case   = TRUE
   )
-
-  cmd_exists <- function(cmd_name) {
-    cmd <- Sys.which(cmd_name)
-    if (!nchar(cmd > 0L)) {
-      url <- sym_calls[[
-          which(
-            sapply(sym_calls, `[[`, "command") %in% cmd_name
-          )
-          ]][["url"]]
-      stop(
-        sprintf(
-          "%s cannot be found. See: %s\n",
-          cmd_name,
-          url
-          ),
-        call. = FALSE
-      )
-    }
-  }
-
-  call_system_external <- function(obj, cmd) {
-    cmd_exists(cmd)
-    tmp_name <- "r_view_"
-    if (is.data.frame(obj)) {
-      tmp_file <- tempfile(tmp_name, fileext = ".csv")
-      write.csv(obj, tmp_file)
-    } else if (is.list(obj) && !is.data.frame(obj)) {
-      tmp_file <- tempfile(tmp_name, fileext = ".json")
-      x_json <- jsonlite::toJSON(obj)
-      write(x_json, tmp_file)
-    } else {
-      stop("?", call. = FALSE)
-    }
-    system2(cmd, tmp_file)
-    on.exit(unlink(tmp_file), add = TRUE)
-    invisible(NULL)
-  }
-
-  call_system_external(x, cmd = "vd")
 }
+
+
+## special calls when using R from the Terminal ----------------------
 
 #' Check if session is in an "interactive" terminal
-#' @source
+#' @references
 #' \url{https://github.com/r-lib/prettycode/blob/7275e2a9f972c8837e070cccaf5ef514643cf607/R/utils.R#L4#L11}
 .Rprofile$is_terminal <- function() {
   interactive() &&
@@ -159,13 +118,8 @@ options(
 
 
 if (.Rprofile$is_terminal()) {
-
-  # set prompt:
   options(prompt = "R>> ")
   options(continue = "... ")
-
-  .vd <- .Rprofile$vd
-
 }
 
 # remove tmp environment

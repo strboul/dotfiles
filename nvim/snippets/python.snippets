@@ -1,0 +1,54 @@
+snippet assert "assert isinstance(x, type)"
+assert isinstance(${1:x}, ${1:type})
+endsnippet
+
+snippet doc "docstring (reStructured Text style)"
+"""
+${1:<<Description>>}
+
+:param ${2:<<param>>} ${3:<<type>>}: ${4:<<description>>}
+"""
+endsnippet
+
+snippet main "main boilerplate"
+def main():
+	pass
+	${0}
+
+if __name__ == "__main__":
+	main()
+endsnippet
+
+snippet pdb "pdb breakpoint debugger"
+import pdb; pdb.set_trace()
+endsnippet
+
+snippet breakpoint "breakpoint (Python 3.7+)"
+breakpoint()
+endsnippet
+
+snippet unittest "unittest skeleton" b
+import unittest
+
+# ${0:testcases}
+
+if __name__ == "__main__":
+	unittest.main()
+endsnippet
+
+snippet unittest_testcase "unittest.TestCase" b
+class Test${1:Name}(unittest.TestCase):
+
+	def setUp(self):
+		pass
+
+	def addCleanup(self):
+		pass
+
+	def test_pass(self):
+		self.assertEqual(1, 1)
+
+	def test_failure(self):
+		with self.assertRaisesRegex(ValueError, "invalid literal"):
+			int("a")
+endsnippet
