@@ -26,6 +26,12 @@ coc-json
 coc-yaml
 coc-xml
 
+
+# tooling ------
+
+coc-cmake # https://github.com/voldikss/coc-cmake
+
+
 # others ------
 
 coc-highlight   # https://github.com/neoclide/coc-highlight

@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+
+set -e
+
+
+NVIM_NIGHTLY_APPIMAGE_PAT=https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+NVIM_NIGHTLY_FILE_NAME=nvim-nightly.appimage
+NVIM_SYS_PAT=/usr/local/bin/nvim
+TMP_DIR="$(mktemp -d)"
+
+
+check_for_linux() {
+  if [ "$(uname -s)" != "Linux" ]; then
+    utils__err_exit "Sorry, only works for Linux."
+  fi
+}
+
+
+display_version() {
+  $1 -v | grep "NVIM v"
+}
+
+
+download_nvim_nightly() {
+
+  printf "downloading neovim nightly appimage:\n\n"
+  wget -O "${TMP_DIR}/${NVIM_NIGHTLY_FILE_NAME}" ${NVIM_NIGHTLY_APPIMAGE_PAT}
+
+  chmod u+x "${TMP_DIR}/${NVIM_NIGHTLY_FILE_NAME}"
+
+  printf "\npreviously installed version: \"%s\"\n" \
+    "$(display_version "$(command -v nvim)")"
+
+  printf "\ndownloaded version: \"%s\"\n" \
+    "$(display_version "${TMP_DIR}/${NVIM_NIGHTLY_FILE_NAME}")"
+
+}
+
+
+install_appimage() {
+  printf "\ninstalling the appimage into the system:\n"
+  cp -v "${TMP_DIR}/${NVIM_NIGHTLY_FILE_NAME}" ${NVIM_SYS_PAT}
+}
+
+
+main() {
+  check_for_linux
+  download_nvim_nightly
+  install_appimage
+}
+
+
+main
+
+# vim: ft=sh

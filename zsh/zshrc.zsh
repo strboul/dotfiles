@@ -21,6 +21,11 @@ export PATH="/usr/local/sbin:$PATH"
 # home bin/ path (if exists)
 export PATH="$PATH:$HOME/dotfiles/bin"
 
+# golang path:
+export PATH=$PATH:/usr/local/go/bin
+# $GOPATH env variable
+export PATH=$PATH:$(go env GOPATH)/bin
+
 
 # ---------- zsh plugins ----------
 source "$HOME"/dotfiles/zsh/plugins/fixls.zsh
@@ -40,16 +45,20 @@ export VISUAL=vim
 export LANG=en_US.UTF-8
 HISTFILE=~/.zsh_history
 
-# To save every command before it is executed
-setopt inc_append_history
+# don't write these commands to the history
+# TODO test this, <c-r> or history doesn't work but cat ~/.zsh_history works
+HISTORY_IGNORE='(history|ls|cd|cd ..|pwd|clear|exit|cd|v)'
 
-setopt share_history
+# To save every command before it is executed
+setopt INC_APPEND_HISTORY
+
+setopt SHARE_HISTORY
 
 # avoid duplicate entries in the zsh history (also good for fzf search)
-setopt hist_ignore_all_dups
+setopt HIST_IGNORE_ALL_DUPS
 
 # don't save commands starting with a space in history
-setopt hist_ignore_space
+setopt HIST_IGNORE_SPACE
 
 
 # ---------- Aliases ----------
@@ -61,8 +70,7 @@ alias la='ls -A'
 c() {
   # Custom cd (always ls when cd into a folder)
   # don't quote the param because cd should lead to home like default
-  cd $1;
-  ls;
+  cd $1 && ls
 }
 alias cd="c"
 

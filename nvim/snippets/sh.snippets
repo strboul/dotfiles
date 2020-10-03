@@ -17,3 +17,24 @@ snippet help "help template"
 # - https://
 #
 endsnippet
+
+snippet if "if [ expr ]; then" b
+if [ $1 ]; then
+	$0
+fi
+endsnippet
+
+snippet elif "elif [ expr ]; then" b
+elif [ $1 ]; then
+	$0
+endsnippet
+
+snippet case "case" b
+case ${1:expr} in
+	$0
+esac
+endsnippet
+
+snippet command "Check if a command is available" b
+command -v '$0' > /dev/null 2>&1
+endsnippet

@@ -10,22 +10,9 @@
 """
 """ ---------------------------------------------------------------------------
 
+source $HOME/dotfiles/nvim/mmy.vim
 
-" Check nvim version, display a message if using a non-compatible version
-" (compatible means the most recent used & tested version with this config)
-  function s:CheckNvimVersion()
-    let l:compatible_version='0.4.3'
-    if has(join(["nvim-", l:compatible_version], '-'))
-      echohl WarningMsg |
-        \ echo printf(
-        \ 'Warning: This config is designed to be compatible with neovim
-        \ (version greater than or equal to "%s")',
-        \ l:compatible_version
-        \ ) |
-        \ echohl None
-    endif
-  endfunction
-  call s:CheckNvimVersion()
+call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
 
 """ ---------------------------------------------------------------------------
 """ General settings
@@ -41,6 +28,7 @@
   set encoding=utf-8 " string encoding always UTF-8
   set mouse=a        " enable mouse use (if supported)
   set t_Co=256       " support 256 colors
+  set termguicolors  " 24-bit RGB, use 'gui' instead of 'cterm' attributes
 
 
 " Window display
@@ -59,10 +47,12 @@
 
 
 " Searching
-  set ignorecase " case insensitive search
-  set smartcase  " case-sensitive search if any uppercase char exists in the search term
-  set incsearch  " start matching as soon as something is typed
-
+  set ignorecase         " case insensitive search
+  set smartcase          " case sensitive search (if any uppercase char exists)
+  set incsearch          " start matching as soon as something is typed
+  if exists('+inccommand')
+    set inccommand=split " preview substitution in split window (nvim specific)
+  endif
 
 " No swap & backups - VCS everywhere
   set noswapfile
@@ -81,7 +71,7 @@
   set shiftwidth=2               " use 2 spaces when indenting
   set smarttab                   " tabbing detects when e.g. you have 2 or 4
   set expandtab                  " always add spaces when tab
-  set smartindent                " makes indenting smart # FIXME test this?
+  set smartindent                " makes indenting smart
   set autoindent                 " use indendation of previous line
   set list                       " show listchars
   set listchars=tab:\¦\ ,space:␣ " mark space and tab chars
@@ -93,7 +83,7 @@
 
 " stop continuing comments (see `:help formatoptions` and `:help fo-table`)
 " FIXME doesn't work, it's a bug in vim
-  " autocmd BufNewFile,BufRead * setlocal formatoptions-=cro
+  " autocmd FileType * setlocal formatoptions-=cro
 
 
 " Auto save on focus out (but not in insert-mode, which is by `CursorHoldI`).
@@ -106,13 +96,12 @@
   autocmd FocusGained,BufEnter * :silent! !
 
 
-" Smarter cursorline - enabled only in the Insert mode
-  autocmd InsertLeave,WinEnter * set cursorline
-  autocmd InsertEnter,WinLeave * set nocursorline
+" Smarter cursorline - enabled only in the Normal mode
+  autocmd InsertLeave,WinEnter * setlocal cursorline
+  autocmd InsertEnter,WinLeave * setlocal nocursorline
 
 
 " Restore cursor position when opening file (from :marks)
-" TODO I'm not sure if I want that...
   autocmd BufReadPost *
     \ if line("'\"") > 1 && line("'\"") <= line("$") |
     \   execute "normal! g`\"" |
@@ -128,50 +117,29 @@
   set updatetime=300
 
 
-" for (neo)vim inside tmux
-  if has('termguicolors')
-    let &t_8f='\<Esc>[38;2;%lu;%lu;%lum'
-    let &t_8b='\<Esc>[48;2;%lu;%lu;%lum'
-    set termguicolors
-  endif
-
-
-" netrw
-  " absolute width of netrw window
-  " tree-view
-  let g:netrw_liststyle=3
-  let g:netrw_banner=0
-  " use netrw as 'split windows', not as 'project drawer'
-  let g:netrw_browse_split=0
-  let g:netrw_altv=1
-  let s:hide_list_for_netrw=join(['.*\.swp$','.DS_Store','*/tmp/*','*.so',
-    \ '*.swp','*.zip','.git/*','^\.\.\=/\=$'], ',')
-  let g:netrw_list_hide=s:hide_list_for_netrw
-
-  " - ESC quits netrw window (FIXME)
-  autocmd FileType netrw
-    \ setlocal nolist |
-    \ nnoremap <buffer><silent> <ESC> :Rexplore<CR>
-
-  " open netrw in abs project path:
-  nnoremap <leader>e :exe 'Explore' getcwd()<CR>
+  " keep yanked text highlighted for a given time
+  augroup HighlightYankedText
+    autocmd!
+    autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup='IncSearch', timeout=1500}
+  augroup END
 
 
 " Quickfix
   " - ESC closes the window
-  " - disable line highlight
   autocmd BufWinEnter quickfix
     \ setlocal number |
     \ setlocal norelativenumber |
     \ setlocal signcolumn=no |
     \ setlocal nolist |
-    \ nnoremap <buffer><silent> <ESC> :cclose<CR> |
-    \ highlight QuickFixLine cterm=bold ctermfg=Black ctermbg=DarkGray gui=bold guifg=Black guibg=DarkGray
+    \ nnoremap <buffer><silent> <ESC> :cclose<CR>
 
 
 " Help
   " - ESC closes the window
   autocmd FileType help nnoremap <buffer><silent> <ESC> :helpclose<CR>
+
+  " disable F1 key opening the help
+  nmap <F1> <nop>
 
 
 " terminal
@@ -180,14 +148,22 @@
   " <C-w> window navigation returns to normal mode
   tnoremap <C-w> <C-\><C-n> <C-w>
 
+
   autocmd TermOpen *
     \ setlocal nonumber |
     \ setlocal norelativenumber |
     \ setlocal signcolumn=no |
     \ setlocal scrolloff=0
 
-  " Have terminal Insert mode when cursor is moved there
-  " (Source: https://vi.stackexchange.com/a/3765)
+
+  " disable cursorline in terminal
+  " (FIXME it's disabled after the cursor is moved to terminal buffer)
+  autocmd BufWinEnter,WinEnter term://* set nocursorline
+  autocmd BufLeave term://* set cursorline!
+
+
+" Terminal Insert mode when cursor is moved there
+" (https://vi.stackexchange.com/a/3765)
   "autocmd BufWinEnter,WinEnter term://* startinsert
   "autocmd BufLeave term://* stopinsert
 
@@ -207,17 +183,35 @@
     \ :echo 'Search cleared'<CR>
 
 
-  " Use // to search for visually selected text
-  " (https://vim.fandom.com/wiki/Search_for_visually_selected_text)
-  vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+  " Highlight word under cursor without jumping to next or prev occurrence
+  " https://github.com/scrooloose/vimfiles/blob/a9689e8eace5b38d9fb640294e6e4b681e18981a/vimrc#L497-L509
+
+    nnoremap <silent> * :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<CR>:set hls<CR>
+    nnoremap <silent> # :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<CR>:set hls<CR>
+
+    " visual selection search with */#
+    " FIXME I get a highlighted yank after :nohl, shouldn't get any
+    function! s:VSelectSearch()
+      let temp=@@
+      normal! gvy
+      let @/='\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+      let @@=temp
+    endfunction
+
+    vnoremap <silent> * :<C-u>call <SID>VSelectSearch()<CR>:set hls<CR>
+    vnoremap <silent> # :<C-u>call <SID>VSelectSearch()<CR>:set hls<CR>
 
 
-" o adds new line within the normal mode
+  " o adds new line within the normal mode
   nnoremap o o<Esc>
   nnoremap O O<Esc>
 
 
-" Jump to the middle of the viewport when navigating with n or {
+  " better x (don't push to the register)
+  nnoremap x "_x
+
+
+  " Jump to the middle of the viewport when navigating with n or {
   nnoremap n nzz
   nnoremap N Nzz
 
@@ -225,15 +219,17 @@
   nnoremap { {zz
 
 
-" Custom commands
-  source $HOME/dotfiles/nvim/mmy.vim
+  " delete the whole line without removing the line space
+  nnoremap dx 0d$
+
+
+  " go back to the last window, instead of circular navigation
+  nnoremap <C-w><C-w> <C-w>p
+
 
 """ ---------------------------------------------------------------------------
 """ Plugins
 """ ---------------------------------------------------------------------------
-
-" FIXME is it required in neovim?
-  filetype plugin on
 
 " Auto installation vim-plug
   " FIXME is it still relevant?
@@ -270,12 +266,17 @@ call plug#begin('~/.local/share/nvim/plugged')
   \  "rg --column --line-number --no-heading --color=always --smart-case ".<q-args>,
   \  1, fzf#vim#with_preview(), <bang>0)
 
+
   " use fzf as 'split windows', not as 'project drawer'
   " open fzf pane in current buffer window, not in whole tab
   let g:fzf_layout={'window': '20split enew'}
 
-  " - ESC closes the window
-  autocmd FileType fzf tnoremap <buffer> <ESC> <C-C>
+  augroup fzfsettings
+    autocmd!
+    " ESC closes the window
+    autocmd FileType fzf tnoremap <buffer> <ESC> <C-C>
+  augroup END
+
 
 " NERDTree
 " Use NERDTree as 'project drawer'
@@ -293,11 +294,15 @@ call plug#begin('~/.local/share/nvim/plugged')
   let NERDTreeMouseMode=3
   " close tab after opening file
   let NERDTreeQuitOnOpen=1
-    " ignore some files in NERDTree
-  let NERDTreeIgnore=['^\.vim$', '^\.git$', '\.DS_Store$',
-  \ '\.Rhistory$', '\.Rproj\.user$',
-  \ '__pycache__$'
-  \ ]
+
+  let nerd_tree_ignore_defaults=['^\.git$']
+  " don't show the git ignored files
+  let g:nerd_tree_ignore=uniq(filter(
+    \ nerd_tree_ignore_defaults + mmy#GetGitIgnoredFiles(),
+    \ 'len(v:val) > 0'
+    \ ))
+
+  let NERDTreeIgnore=g:nerd_tree_ignore
 
   " - ESC closes the window
   autocmd FileType nerdtree nnoremap <buffer><silent> <ESC> :NERDTreeClose<CR>
@@ -309,13 +314,15 @@ call plug#begin('~/.local/share/nvim/plugged')
     if &filetype == 'nerdtree' && g:NERDTree.IsOpen()
       :NERDTreeToggle
     else
-      if bufname('%') != '' && bufname('%') != 'NERD_tree_\d'
+      let s:bn=bufname('%')
+      if s:bn != '' && s:bn != 'NERD_tree_\d'
         :NERDTreeFind
       else
         :NERDTreeToggle
       endif
     endif
   endfunction
+
   nnoremap <silent> <leader>n :call MyNERDTreeToggleFind()<CR>
 
 
@@ -331,32 +338,41 @@ call plug#begin('~/.local/share/nvim/plugged')
   Plug 'https://github.com/vim-airline/vim-airline'
   Plug 'https://github.com/vim-airline/vim-airline-themes'
 
+  " statusline settings
+
+    " don't show filetype
+    let g:airline_section_x=''
+    " simplify line, col info:
+    let g:airline_section_z='%p%% ☰ %l:%c'
+
+    if !exists('g:airline_symbols')
+      let g:airline_symbols = {}
+    endif
+
+    let g:airline_symbols.branch='⎇ '
+    let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+
   " tabline settings
-  let g:airline#extensions#tabline#enabled=1
-  let g:airline#extensions#tabline#show_close_button=0
-  " smart file paths display:
-  let g:airline#extensions#tabline#formatter='unique_tail'
-  let g:airline#extensions#tabline#show_tab_nr=0
-  " change labels:
-  let g:airline#extensions#tabline#buffers_label=''
-  let g:airline#extensions#tabline#tabs_label='TABS'
-  " show buffer numbers (as shown in `:ls`):
-  let g:airline#extensions#tabline#buffer_nr_show=1
-  let g:airline#extensions#tabline#buffer_nr_format='%s '
+
+    let g:airline#extensions#tabline#enabled=1
+    let g:airline#extensions#tabline#show_close_button=0
+    " smart file paths display:
+    let g:airline#extensions#tabline#formatter='unique_tail'
+    let g:airline#extensions#tabline#show_tab_nr=0
+    " change labels:
+    let g:airline#extensions#tabline#buffers_label=''
+    let g:airline#extensions#tabline#tabs_label='TABS'
+    " show buffer numbers (as shown in `:ls`):
+    let g:airline#extensions#tabline#buffer_nr_show=1
+    let g:airline#extensions#tabline#buffer_nr_format='%s '
 
 
 " coc.nvim
   Plug 'https://github.com/neoclide/coc.nvim', {'branch': 'release'}
 
-  function ReadCocExtensionsFile()
-    let s:file=readfile(glob('$HOME/dotfiles/nvim/coc-extensions.txt'))
-    " filter out commented lines and empty lines:
-    let s:coc_exts=filter(filter(s:file, 'v:val !~ "#.*$"'), 'v:val !~ "^\s*$"')
-    return s:coc_exts
-  endfunction
-  let g:coc_global_extensions=ReadCocExtensionsFile()
+  let g:coc_global_extensions=mmy#ReadTxtConfFile('$HOME/dotfiles/nvim/coc-extensions.txt')
 
-  so $HOME/dotfiles/nvim/coc.vim
+  source $HOME/dotfiles/nvim/coc.vim
 
 
 " UltiSnips
@@ -369,7 +385,7 @@ call plug#begin('~/.local/share/nvim/plugged')
   Plug 'https://github.com/kassio/neoterm', {'commit': 'e011fa1'}
 
   let g:neoterm_default_mod='belowright'
-  let g:neoterm_size=16
+  " autoscroll to the end of the terminal buffer when new commands are sent
   let g:neoterm_autoscroll=1
   let g:neoterm_direct_open_repl=1
   " calling :Tclose or :Ttoggle kills the terminal
@@ -380,19 +396,23 @@ call plug#begin('~/.local/share/nvim/plugged')
   if executable('bpython') | let g:neoterm_repl_python='bpython' | endif
 
   " send current line and move down
-  nnoremap <silent><leader><cr> :TREPLSendLine<cr>j
+  nnoremap <silent><leader><CR> :TREPLSendLine<CR>j
   " send visual selection
   " ('> goes to the beginning of the last line of the last selected Visual
   " area in the current buffer)
-  vnoremap <silent><leader><cr> :TREPLSendSelection<cr>'>j
+  vnoremap <silent><leader><CR> :TREPLSendSelection<CR>'>j
   " toggle terminal
-  nnoremap <silent><leader>tt :Ttoggle<CR>
-  tnoremap <silent><leader>tt <C-\><C-n>:Ttoggle<CR>
+  nnoremap <silent><leader>tt :Ttoggle<CR>zz
+  tnoremap <silent><leader>tt <C-\><C-n>:Ttoggle<CR>zz
+
+
+" floaterm
+  Plug 'https://github.com/voldikss/vim-floaterm'
 
 
 " vim-bufkill
   Plug 'https://github.com/qpkorr/vim-bufkill'
-  " don't let bufkill create leader mappings, use commands:
+  " don't let bufkill create leader mappings, use Commands instead:
   let g:BufKillCreateMappings=0
 
 
@@ -413,8 +433,13 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 
 " git and other VCS
+
   " fugitive
   Plug 'https://github.com/tpope/vim-fugitive'
+  " ESC closes the window
+  autocmd FileType fugitiveblame nnoremap <buffer><silent> <ESC> :q<CR>
+
+
   " rhubarb for GitHub (for `:Gbrowse`)
   Plug 'https://github.com/tpope/vim-rhubarb'
 
@@ -437,13 +462,6 @@ call plug#begin('~/.local/share/nvim/plugged')
   \}
 
 
-" vim-highlightedyank
-  Plug 'https://github.com/machakann/vim-highlightedyank'
-
-  " redefine highlight yank time
-  let g:highlightedyank_highlight_duration=2500
-
-
 " Colors
   Plug 'https://github.com/romainl/Apprentice'
   Plug 'https://github.com/chriskempson/base16-vim'
@@ -456,11 +474,41 @@ call plug#end()
 """ Colors
 """ ---------------------------------------------------------------------------
 
-colorscheme apprentice
+" General colorscheme
+  colorscheme apprentice
+  set background=dark
+  let g:airline_theme='bubblegum'
 
-set background=dark
-let g:airline_theme='bubblegum'
+
+" Highlight groups
+"
+" Debug tips:
+"   + `verbose hi <Name>` shows where the hi group is set.
+"   + Run `:so $VIMRUNTIME/syntax/hitest.vim` to see all highlight groups.
+  highlight Todo guifg=#800000 guibg=#d0d090
+  highlight DefaultTerminal guifg=#eeeeec guibg=Black
+
+
+  " the vertical split color
+  highlight! VertSplit guibg=NONE
+
+
+  function! s:quickfix_highlight()
+    highlight QuickFixLine gui=bold guifg=Black guibg=DarkGray
+  endfunction
+
+  autocmd BufWinEnter quickfix call s:quickfix_highlight()
+
+
+  function! s:terminal_buffer_colors()
+    if &buftype ==# 'terminal'
+      setlocal winhighlight=Normal:DefaultTerminal
+    endif
+  endfunction
+
+  autocmd TermOpen,WinEnter * call s:terminal_buffer_colors()
+
+  autocmd FileType fzf setlocal winhighlight=Normal:Pmenu
 
 
 " #### THE END ####
-

@@ -48,7 +48,8 @@ install_pynvim() {
 
 
 install_jedi() {
-  # Python autocomplete engine: https://github.com/davidhalter/jedi
+  # Python autocomplete engine
+  # https://github.com/davidhalter/jedi
   "$PIP" install jedi
 }
 
@@ -65,9 +66,17 @@ install_bpython() {
 }
 
 
+install_pdbpp() {
+  # pdb++, a drop-in replacement for pdb
+  # https://github.com/pdbpp/pdbpp
+  "$PIP" install pdbpp
+}
+
+
 install_pyenv
 install_jupyter
 install_pynvim
 install_jedi
 install_radian
 install_bpython
+install_pdbpp

@@ -8,6 +8,7 @@
 #
 # To install everything listed here:
 #   `brew bundle`
+#
 ######################
 ######## BREW ########
 ######################
@@ -17,6 +18,7 @@ brew "bat" # https://github.com/sharkdp/bat
 brew "binutils"
 brew "cargo"
 brew "clang-format" # https://clang.llvm.org/docs/ClangFormat.html
+brew "cloc" # https://github.com/AlDanial/cloc
 brew "cmake"
 brew "cppcheck" # http://cppcheck.sourceforge.net/
 brew "ctop" # https://github.com/bcicen/ctop
@@ -58,7 +60,7 @@ brew "pandoc-citeproc"
 brew "postgresql"
 brew "pre-commit" # https://github.com/pre-commit/pre-commit/
 brew "pspg" # https://github.com/okbob/pspg
-brew "pyenv" # python version manager https://github.com/pyenv/pyenv
+brew "pyenv" # https://github.com/pyenv/pyenv
 brew "python3"
 brew "qt" # https://www.qt.io/
 brew "r"

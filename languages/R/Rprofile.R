@@ -93,7 +93,8 @@ if (nchar(Sys.which("radian"))) {
     radian.complete_while_typing        = FALSE,
     radian.highlight_matching_bracket   = TRUE,
     radian.tab_size                     = 2,
-    radian.insert_new_line              = FALSE,
+    # insert new line between prompts
+    radian.insert_new_line              = TRUE,
     radian.history_search_no_duplicates = TRUE,
     # ignore case in history search
     radian.history_search_ignore_case   = TRUE

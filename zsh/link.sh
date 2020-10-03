@@ -25,8 +25,8 @@ do_link() {
 
 
 # Essentials
-do_link "$HOME"/.zshrc "$HOME"/dotfiles/zsh/zshrc.zsh
-do_link "$HOME"/.tmux.conf "$HOME"/dotfiles/tmux/tmux.conf
+do_link "$HOME"/.zshrc                          "$HOME"/dotfiles/zsh/zshrc.zsh
+do_link "$HOME"/.tmux.conf                      "$HOME"/dotfiles/tmux/tmux.conf
 do_link "$HOME"/.config/alacritty/alacritty.yml "$HOME"/dotfiles/alacritty/alacritty.yml
 
 
@@ -35,22 +35,25 @@ do_link "$HOME"/.R/snippets/r.snippets "$HOME"/dotfiles/editors/rstudio/r_rstudi
 
 
 # nvim
-do_link "$HOME"/.config/nvim/init.vim "$HOME"/dotfiles/nvim/init.vim
+do_link "$HOME"/.config/nvim/init.vim          "$HOME"/dotfiles/nvim/init.vim
 do_link "$HOME"/.config/nvim/coc-settings.json "$HOME"/dotfiles/nvim/coc-settings.json
-do_link "$HOME"/.config/nvim/UltiSnips "$HOME"/dotfiles/nvim/snippets/
+do_link "$HOME"/.config/nvim/UltiSnips         "$HOME"/dotfiles/nvim/snippets/
 
 
 # Languages
-do_link "$HOME"/.Rprofile "$HOME"/dotfiles/languages/R/Rprofile.R
-do_link "$HOME"/.lintr "$HOME"/dotfiles/languages/R/lintr
+do_link "$HOME"/.Rprofile      "$HOME"/dotfiles/languages/R/Rprofile.R
+do_link "$HOME"/.lintr         "$HOME"/dotfiles/languages/R/lintr
 do_link "$HOME"/.pythonstartup "$HOME"/dotfiles/languages/python/pythonstartup.py
 
 
 # Tools
-do_link "$HOME"/.ripgreprc "$HOME"/dotfiles/tools/ripgreprc
-do_link "$HOME"/.batconf "$HOME"/dotfiles/tools/batconf
+do_link "$HOME"/.ripgreprc        "$HOME"/dotfiles/tools/ripgreprc
+do_link "$HOME"/.batconf          "$HOME"/dotfiles/tools/batconf
 do_link "$HOME"/.config/grv/grvrc "$HOME"/dotfiles/tools/grvrc
-do_link "$HOME"/.lldbinit "$HOME"/dotfiles/tools/lldbinit
+do_link "$HOME"/.lldbinit         "$HOME"/dotfiles/tools/lldbinit
+
+do_link "$HOME"/.local/share/fonts "$HOME"/dotfiles/tools/fonts/JetBrainsMono/
+
 
 do_link "$HOME"/.gitconfig "$HOME"/dotfiles/tools/git/gitconfig
 do_link "$HOME"/.gitignore "$HOME"/dotfiles/tools/git/gitignore

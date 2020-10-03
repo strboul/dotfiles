@@ -1,6 +1,17 @@
 {
 
-  // bash LSP: https://github.com/bash-lsp/bash-language-server
+  // --- general settings
+  "coc.preferences.extensionUpdateCheck": "weekly",
+
+
+  // --- diagnostic
+  //"diagnostic.virtualText": true,
+  //"diagnostic.virtualTextPrefix": " ▇ ",
+  "diagnostic.checkCurrentLine": false,
+  //"diagnostic.messageTarget": "echo",
+
+
+  // --- bash LSP: https://github.com/bash-lsp/bash-language-server
   "languageserver": {
     "bash": {
       "command": "bash-language-server",
@@ -10,7 +21,10 @@
     }
   },
 
-  "coc.preferences.extensionUpdateCheck": "weekly"
+
+  // --- python
+  "python.pythonPath": "~/.pyenv/versions/3.7.5/bin/python"
 
 }
+
 // vim: ts=2 sw=2 et ft=jsonb
