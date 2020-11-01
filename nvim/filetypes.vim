@@ -1,6 +1,4 @@
-""" --------------------------------------------------------------------------
-""" Common file extensions & types
-""" --------------------------------------------------------------------------
+" ----- Common file extensions & types --------------------------------------
 
 autocmd BufNewFile,BufRead *.c,*.cpp
   \ setlocal tabstop=4 |
@@ -15,7 +13,6 @@ autocmd BufNewFile,BufRead *.txt,*.md
   \ setlocal wrap textwidth=79
 
 
-" indenting:
 " don't span arguments when indenting (see `:help ft-r-indent`)
 autocmd BufNewFile,BufRead *.R
   \ let r_indent_align_args=0 |
@@ -31,7 +28,6 @@ autocmd BufNewFile,BufRead *.py
 
 
 autocmd BufNewFile,BufRead *.js
-  \ setlocal makeprg=jslint |
   \ setlocal tabstop=2 |
   \ setlocal shiftwidth=2
 
@@ -44,4 +40,3 @@ autocmd BufNewFile,BufRead *.html,*.css
 
 autocmd BufNewFile,BufRead *.yaml,*.yml setlocal tabstop=4 shiftwidth=4
 autocmd FileType make setlocal noexpandtab
-

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+# Search a term in the TheFreeDictionary
+#
+# Usage: the "word to search"
+#
+term=$1
+
+check_term_provided() {
+  [ -z "$term" ] && utils__err_exit "Term is missing."
+}
+
+# replace all blanks
+term_to_link_query() {
+  echo "${1// /+}"
+}
+
+website_opener() {
+  path=$1
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    open "$path"
+  elif [[ "$OSTYPE" == "linux"* ]]; then
+    eval "$(printf "xdg-open 2>/dev/null %s" $path)"
+  else
+    utils__err_exit "Platform not supported."
+  fi
+}
+
+main() {
+  check_term_provided
+
+  website_opener $(printf "%s%s"           \
+    "https://www.thefreedictionary.com/" \
+    $(term_to_link_query $term)          \
+  )
+}
+
+main

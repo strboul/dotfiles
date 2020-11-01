@@ -73,23 +73,41 @@ install__install_with_pkg_manager() {
 
 ### Programs to install ###
 
-# https://github.com/junegunn/fzf
+install__zsh() {
+  install__install_with_pkg_manager "zsh" "zsh"
+}
+
+
+install__neovim() {
+  # FIXME neovim and tmux have outdated versions in apt-get
+  install__install_with_pkg_manager "nvim" "neovim"
+}
+
+
+install__tmux() {
+  install__install_with_pkg_manager "tmux" "tmux"
+  tic "$HOME"/dotfiles/tmux/tmux-256color.terminfo
+  tic "$HOME"/dotfiles/tmux/xterm-256color-italic.terminfo
+}
+
+
 install__fzf() {
+  # https://github.com/junegunn/fzf
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
     ~/.fzf/install
 }
 
 
-# https://github.com/BurntSushi/ripgrep
 install__ripgrep() {
+  # https://github.com/BurntSushi/ripgrep
   # TODO fix the do_install_with_pkg_manager function definition file
   install__install_with_pkg_manager ripgrep
 }
 
 
-# https://github.com/sharkdp/fd
 install__fd() {
   # FIXME
+  # https://github.com/sharkdp/fd
   install__install_with_pkg_manager fd
 }
 
@@ -106,8 +124,8 @@ install__nodejs() {
 }
 
 
-# https://github.com/universal-ctags/ctags.git
 install__universal_ctags() {
+  # https://github.com/universal-ctags/ctags.git
   git clone https://github.com/universal-ctags/ctags.git /tmp/ctags && \
     pushd /tmp/ctags &&               \
     ./autogen.sh &&                   \
@@ -133,13 +151,9 @@ install__htop() {
 }
 
 
-# https://github.com/strboul/git-substatus
 install__git_substatus() {
-  # FIXME move it to install/python with pip (when applicable)
-  curl -L \
-    https://raw.githubusercontent.com/strboul/git-substatus/master/git-substatus.py \
-    > "$HOME"/bin/git-substatus && \
-    chmod u+x "$HOME"/bin/git-substatus
+  # https://github.com/strboul/git-substatus
+  pip install git-substatus
 }
 
 
@@ -213,15 +227,12 @@ main() {
   utils__user_prompt "Let's get started?"
   echo
 
-  install__install_with_pkg_manager "zsh" "zsh"
-  echo
 
-  # FIXME neovim and tmux have outdated versions in apt-get
-  install__install_with_pkg_manager "nvim" "neovim"
-  echo
+  install__zsh
 
-  install__install_with_pkg_manager "tmux" "tmux"
-  echo
+  install__neovim
+
+  install__tmux
 
 
   # Link all files:

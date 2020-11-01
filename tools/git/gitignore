@@ -1,7 +1,7 @@
-# global gitignore to be excluded in all git files
+# Global gitignore for all git repos
 #
-# this should be portable for everyone so do not 
-# add to exclude specific files (e.g.'*.o').
+# This ignore file should be portable for every case. Do not add specific file
+# exclusions (e.g.'*.o').
 *.lock
 *.swp
 *.swo

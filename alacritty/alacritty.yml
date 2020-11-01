@@ -1,6 +1,6 @@
 env:
   # this variable is used to check whether the "terminal emulator" is alacritty
-  TERM_EMU: 'alacritty'
+  TERM_PROGRAM: 'alacritty'
 
 
 window:

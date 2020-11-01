@@ -2,8 +2,7 @@
 
 " ----- Utils ------------------------------------------------------------
 
-" Get character under the cursor
-" (source: https://vi.stackexchange.com/a/19709/)
+" Get character under the cursor (https://vi.stackexchange.com/a/19709/)
   function mmy#GetCharUnderCursor()
     return strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)
   endfunction
@@ -14,7 +13,7 @@
 " Check nvim version, display a warning message if versions aren't the same
   function mmy#CheckNvimVersion(compatible_version)
     let s:nvim_v=matchstr(execute('version'), 'NVIM v\zs[^\n]*')
-    if s:nvim_v != a:compatible_version
+    if s:nvim_v !~ a:compatible_version
       echohl WarningMsg |
         \ echo printf(
         \ 'Warning: This config is designed to be compatible with neovim
@@ -112,8 +111,7 @@
   command SpanLinesByComma :call mmy#FunSpanLinesByComma()
 
 
-  " Search & highlight non-ASCII characters
-  " (https://stackoverflow.com/a/16987522)
+" Search & highlight non-ASCII chars (https://stackoverflow.com/a/16987522)
   function mmy#FunSearchNonASCIIChars()
     " built query as <CR> isn't read between double quotes, see:
     " https://vim.fandom.com/wiki/Using_normal_command_in_a_script_for_searching

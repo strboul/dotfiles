@@ -3,9 +3,15 @@
 # (2) terminal emulator is alacritty.
 if command -v tmux>/dev/null; then
   [ -z "$TMUX" ] && \
-    [ "$TERM_EMU" = "alacritty" ] && \
-      exec tmux -u # -u is for UTF-8
+    [ "$TERM_PROGRAM" = "alacritty" ] && \
+      # -u   is for UTF-8
+      # -2   force tmux to assume the terminal supports 256 colours.
+      exec tmux -2 -u
 fi
+
+
+# change the default term to TMUX that it can display 256 colors
+export TERM=xterm-256color
 
 
 # Private zsh file
@@ -16,10 +22,11 @@ fi
 
 
 # ---------- Paths ----------
+# See line by line:  echo "${PATH//:/$'\n'}"
 export PATH="/usr/local/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
-# home bin/ path (if exists)
-export PATH="$PATH:$HOME/dotfiles/bin"
+export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/dotfiles/bin:$PATH"
 
 # golang path:
 export PATH=$PATH:/usr/local/go/bin

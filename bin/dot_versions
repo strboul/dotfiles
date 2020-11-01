@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+
+# prints the versions of the programs in the dotfiles
+#
+
+zsh_version() {
+  zsh --version
+}
+
+tmux_version() {
+  tmux -V
+}
+
+nvim_version() {
+  nvim --version | head -n 1
+}
+
+alacritty_version() {
+  alacritty --version
+}
+
+git_version() {
+  git --version
+}
+
+item() {
+  printf "* %s\n" "$1"
+}
+
+main() {
+  item "$(zsh_version)"
+  item "$(tmux_version)"
+  item "$(nvim_version)"
+  item "$(alacritty_version)"
+  item "$(git_version)"
+}
+
+"main"
+
+# vim: ft=sh

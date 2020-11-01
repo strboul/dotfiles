@@ -1,25 +1,8 @@
-""" ---------------------------------------------------------------------------
-""" init file for nvim
-"""
-""" Measure the startup speed:
-""" `for i in $(seq 1 5); do time nvim -c quit; done`
-"""
-""" Profile the startup time:
-""" (https://github.com/mhinz/vim-galore#profiling-startup-time)
-""" `nvim --startuptime /tmp/startup.log +q && nvim /tmp/startup.log`
-"""
-""" ---------------------------------------------------------------------------
-
 source $HOME/dotfiles/nvim/mmy.vim
 
-call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
+call mmy#CheckNvimVersion('0.5.0-741')
 
-""" ---------------------------------------------------------------------------
-""" General settings
-""" ---------------------------------------------------------------------------
-
-" leader key
-  let mapleader=','
+" ----- General settings ---------------------------------------------------
 
 
 " Essentials
@@ -29,6 +12,10 @@ call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
   set mouse=a        " enable mouse use (if supported)
   set t_Co=256       " support 256 colors
   set termguicolors  " 24-bit RGB, use 'gui' instead of 'cterm' attributes
+
+
+" leader key
+  let mapleader=','
 
 
 " Window display
@@ -73,12 +60,20 @@ call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
   set expandtab                  " always add spaces when tab
   set smartindent                " makes indenting smart
   set autoindent                 " use indendation of previous line
+
+
+" listchars
   set list                       " show listchars
-  set listchars=tab:\¦\ ,space:␣ " mark space and tab chars
+  set listchars=tab:\¦\ ,space:␣
+  set listchars+=trail:·
 
 
 " darken the screen after the 80th char
   let &colorcolumn='80,'.join(range(80,999),',')
+
+
+" virtual editing on the window, can do block/rectangular selections:
+  set virtualedit=block
 
 
 " stop continuing comments (see `:help formatoptions` and `:help fo-table`)
@@ -108,13 +103,20 @@ call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
     \ endif
 
 
+" Notification after file change (https://vi.stackexchange.com/a/13093)
+  autocmd FileChangedShellPost *
+    \ echohl WarningMsg |
+    \ echo "File changed on disk. Buffer reloaded." |
+    \ echohl None
+
+
 " Timeout when press on ESC to switch from Insert to Normal mode
 " If use nvim with tmux, be sure tmux.conf has: `set -s escape-time 0`
   set timeout timeoutlen=500 ttimeout ttimeoutlen=10
 
 
 " Default (4000 ms ~ 4 s) is too slow. And a very low value can slow down vim.
-  set updatetime=300
+  set updatetime=100
 
 
   " keep yanked text highlighted for a given time
@@ -138,8 +140,9 @@ call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
   " - ESC closes the window
   autocmd FileType help nnoremap <buffer><silent> <ESC> :helpclose<CR>
 
-  " disable F1 key opening the help
-  nmap <F1> <nop>
+  " disable F1 key opening the vim-help
+  nnoremap <F1> <nop>
+  inoremap <F1> <nop>
 
 
 " terminal
@@ -157,9 +160,9 @@ call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
 
 
   " disable cursorline in terminal
-  " (FIXME it's disabled after the cursor is moved to terminal buffer)
-  autocmd BufWinEnter,WinEnter term://* set nocursorline
-  autocmd BufLeave term://* set cursorline!
+  " TODO remove unnecessary autocmd groups, experiment it
+  autocmd BufWinEnter,WinEnter,TermOpen term://* set nocursorline
+  autocmd BufLeave,TermLeave term://* set cursorline!
 
 
 " Terminal Insert mode when cursor is moved there
@@ -171,9 +174,8 @@ call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
 " Language specific configs are here
   source $HOME/dotfiles/nvim/filetypes.vim
 
-""" ---------------------------------------------------------------------------
-""" Custom keymappings
-""" ---------------------------------------------------------------------------
+
+" ----- Custom keymappings -------------------------------------------------
 
   " clear the search and redraw the screen
   " (https://github.com/mhinz/vim-galore/blob/b64abe3e6afaa90e4da5928d78a5b3fa03829548/README.md#saner-ctrl-l)
@@ -185,7 +187,6 @@ call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
 
   " Highlight word under cursor without jumping to next or prev occurrence
   " https://github.com/scrooloose/vimfiles/blob/a9689e8eace5b38d9fb640294e6e4b681e18981a/vimrc#L497-L509
-
     nnoremap <silent> * :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<CR>:set hls<CR>
     nnoremap <silent> # :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<CR>:set hls<CR>
 
@@ -202,9 +203,13 @@ call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
     vnoremap <silent> # :<C-u>call <SID>VSelectSearch()<CR>:set hls<CR>
 
 
-  " o adds new line within the normal mode
+  " add new lines in the Normal mode
   nnoremap o o<Esc>
   nnoremap O O<Esc>
+
+    " these keep the line location unchanged (https://vi.stackexchange.com/a/3881)
+    nnoremap <silent> <leader>o :<C-u>call append(line('.'), repeat([''], v:count1))<CR>
+    nnoremap <silent> <leader>O :<C-u>call append(line('.')-1, repeat([''], v:count1))<CR>
 
 
   " better x (don't push to the register)
@@ -227,10 +232,9 @@ call mmy#CheckNvimVersion('0.5.0-718-g090551a80')
   nnoremap <C-w><C-w> <C-w>p
 
 
-""" ---------------------------------------------------------------------------
-""" Plugins
-""" ---------------------------------------------------------------------------
+" ----- Plugins ------------------------------------------------------------
 
+" https://github.com/junegunn/vim-plug
 " Auto installation vim-plug
   " FIXME is it still relevant?
   if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
@@ -262,9 +266,10 @@ call plug#begin('~/.local/share/nvim/plugged')
   " Rg with arguments
   " (https://github.com/junegunn/fzf.vim/issues/838#issuecomment-509902575)
   command! -bang -nargs=* Rg
-  \  call fzf#vim#grep(
-  \  "rg --column --line-number --no-heading --color=always --smart-case ".<q-args>,
-  \  1, fzf#vim#with_preview(), <bang>0)
+    \ call fzf#vim#grep(
+    \ "rg --column --line-number --no-heading --color=always --smart-case ".<q-args>,
+    \ 1, fzf#vim#with_preview(), <bang>0
+    \ )
 
 
   " use fzf as 'split windows', not as 'project drawer'
@@ -334,12 +339,10 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 
 " vim-airline
-" (100% vim script. Better than 'vim-powerline' requiring python)
   Plug 'https://github.com/vim-airline/vim-airline'
   Plug 'https://github.com/vim-airline/vim-airline-themes'
 
   " statusline settings
-
     " don't show filetype
     let g:airline_section_x=''
     " simplify line, col info:
@@ -353,7 +356,6 @@ call plug#begin('~/.local/share/nvim/plugged')
     let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
 
   " tabline settings
-
     let g:airline#extensions#tabline#enabled=1
     let g:airline#extensions#tabline#show_close_button=0
     " smart file paths display:
@@ -369,13 +371,20 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 " coc.nvim
   Plug 'https://github.com/neoclide/coc.nvim', {'branch': 'release'}
-
   let g:coc_global_extensions=mmy#ReadTxtConfFile('$HOME/dotfiles/nvim/coc-extensions.txt')
-
   source $HOME/dotfiles/nvim/coc.vim
 
 
+" tagbar
+  Plug 'preservim/tagbar'
+
+
+" any-jump
+  Plug 'https://github.com/pechorin/any-jump.vim' " <leader>j
+
+
 " UltiSnips
+" TODO look for alternatives, as it's slow.
   Plug 'https://github.com/sirver/UltiSnips'
   " don't use any expand key (because using `coc-snippets` for)
   let g:UltiSnipsExpandTrigger='<nop>'
@@ -406,10 +415,6 @@ call plug#begin('~/.local/share/nvim/plugged')
   tnoremap <silent><leader>tt <C-\><C-n>:Ttoggle<CR>zz
 
 
-" floaterm
-  Plug 'https://github.com/voldikss/vim-floaterm'
-
-
 " vim-bufkill
   Plug 'https://github.com/qpkorr/vim-bufkill'
   " don't let bufkill create leader mappings, use Commands instead:
@@ -418,14 +423,12 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 " vim-better-whitespace (highlight and remove trailing whitespace)
   Plug 'https://github.com/ntpeters/vim-better-whitespace'
-
   let g:better_whitespace_ctermcolor='red'
   let g:strip_whitespace_on_save=1
 
 
 " vim-easy-align
   Plug 'https://github.com/junegunn/vim-easy-align'
-
   " align backslashes in e.g. multi-line bash, C macros etc.:
   let g:easy_align_delimiters={
     \ '\': {'pattern': '\\$'}
@@ -436,11 +439,11 @@ call plug#begin('~/.local/share/nvim/plugged')
 
   " fugitive
   Plug 'https://github.com/tpope/vim-fugitive'
-  " ESC closes the window
+  " - ESC closes the window
   autocmd FileType fugitiveblame nnoremap <buffer><silent> <ESC> :q<CR>
 
 
-  " rhubarb for GitHub (for `:Gbrowse`)
+  " rhubarb for GitHub (for `:Gbrowse` mainly)
   Plug 'https://github.com/tpope/vim-rhubarb'
 
 
@@ -451,8 +454,6 @@ call plug#begin('~/.local/share/nvim/plugged')
 " ale (syntax checker)
 " it's still useful for some checks, e.g. shellcheck for bash/zsh
   Plug 'https://github.com/dense-analysis/ale'
-
-
   " disable linting on some files
   " https://github.com/dense-analysis/ale/issues/371#issuecomment-304313091
   let g:ale_pattern_options={
@@ -467,12 +468,17 @@ call plug#begin('~/.local/share/nvim/plugged')
   Plug 'https://github.com/chriskempson/base16-vim'
 
 
+" FIXME Experimental plugins ----
+  Plug 'https://github.com/voldikss/vim-floaterm' " :FloatermToggle
+  Plug 'https://github.com/hkupty/iron.nvim' " IronRepl
+  Plug 'https://github.com/lambdalisue/fern.vim' " :Fern . -reveal=%
+
+
 call plug#end()
 
 
-""" ---------------------------------------------------------------------------
-""" Colors
-""" ---------------------------------------------------------------------------
+" ----- Colors -------------------------------------------------------------
+
 
 " General colorscheme
   colorscheme apprentice
@@ -483,14 +489,12 @@ call plug#end()
 " Highlight groups
 "
 " Debug tips:
-"   + `verbose hi <Name>` shows where the hi group is set.
-"   + Run `:so $VIMRUNTIME/syntax/hitest.vim` to see all highlight groups.
+"   - `verbose hi <Name>` shows where the hi group is set.
+"   - Run `:so $VIMRUNTIME/syntax/hitest.vim` to see all highlight groups.
   highlight Todo guifg=#800000 guibg=#d0d090
   highlight DefaultTerminal guifg=#eeeeec guibg=Black
-
-
   " the vertical split color
-  highlight! VertSplit guibg=NONE
+  highlight VertSplit guibg=NONE
 
 
   function! s:quickfix_highlight()

@@ -1,13 +1,15 @@
 # dotfiles
 
-zsh, tmux and neovim.
+neovim, zsh, tmux and *others*.
 
-Tested on *mac OS 10.15 Catalina* and *Debian 10 buster*.
+Tested on **macOS 10.15 Catalina** and **Ubuntu 18.04 LTS**.
 
 ## Installation
 
-Clone this repository in your home directory (`$HOME/`). Change
-directory into the `dotfiles` folder and execute the setup script.
+First, clone this repository into your home (`$HOME/`) and then change
+directory into the `dotfiles` folder. After all, execute the setup script.
+
+Example below:
 
 ```bash
 git clone git@github.com:strboul/dotfiles.git "$HOME"/dotfiles

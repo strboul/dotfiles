@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -e
+
+profile_startup_time() {
+  # https://github.com/mhinz/vim-galore#profiling-startup-time
+  nvim --startuptime /tmp/startup.log +q && cat /tmp/startup.log
+}
+
+
+main() {
+  profile_startup_time
+}
+
+
+main
+
+
+# vim: ft=sh
