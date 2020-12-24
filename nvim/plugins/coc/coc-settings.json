@@ -11,17 +11,6 @@
   //"diagnostic.messageTarget": "echo",
 
 
-  // --- bash LSP: https://github.com/bash-lsp/bash-language-server
-  "languageserver": {
-    "bash": {
-      "command": "bash-language-server",
-      "args": ["start"],
-      "filetypes": ["sh"],
-      "ignoredRootPaths": ["~"]
-    }
-  },
-
-
   // --- python
   "python.pythonPath": "~/.pyenv/versions/3.7.5/bin/python"
 

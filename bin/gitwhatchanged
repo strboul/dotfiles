@@ -5,12 +5,17 @@
 # Usage: gitwhatchanged <branch(Optional)>
 #
 
+get_current_branch() {
+  git symbolic-ref --short HEAD
+}
+
 whatchanged() {
   branch=$1
   if [ -z "$branch" ]; then
     branch="master"
   fi
-  git diff --name-status "$branch"
+  current_branch="$(get_current_branch)"
+  git diff --name-status "$branch"..."$current_branch"
 }
 
 main() {

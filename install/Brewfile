@@ -57,6 +57,7 @@ brew "node" # npm will be installed with node
 brew "openssl"
 brew "pandoc"
 brew "pandoc-citeproc"
+brew "pgcli" # https://github.com/dbcli/pgcli
 brew "postgresql"
 brew "pre-commit" # https://github.com/pre-commit/pre-commit/
 brew "pspg" # https://github.com/okbob/pspg

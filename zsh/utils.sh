@@ -39,6 +39,14 @@ utils__check_file_or_dir_exists() {
   fi
 }
 
+utils__stop_if_not_command_exists() {
+  local cmd=$1
+  local msg=$2
+  if [ ! -x "$(command -v "$1")" ]; then
+    utils__err_exit "$(printf "%s not found. %s" "$cmd" "$msg")"
+  fi
+}
+
 
 # Source: https://stackoverflow.com/a/27875395/
 utils__user_prompt() {

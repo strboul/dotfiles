@@ -1,6 +1,11 @@
 " coc.vim plugin config
 " Adapted from https://github.com/neoclide/coc.nvim#example-vim-configuration
 
+source $HOME/dotfiles/nvim/mmy.vim
+let g:coc_global_extensions=mmy#ReadTxtConfFile(
+  \ '$HOME/dotfiles/nvim/plugins/coc/coc-extensions.txt'
+  \ )
+
 " Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
 
@@ -21,13 +26,10 @@ endfunction
 " Use <c-space> to trigger completion in INSERT mode
 inoremap <silent><expr> <c-space> coc#refresh()
 
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-if exists('*complete_info')
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-  imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " GoTo code navigation.
 " Edited: bring the viewport to the middle of the screen afterwards.
@@ -38,11 +40,14 @@ nmap <silent> gr <Plug>(coc-references)zz
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
   else
-    call CocAction('doHover')
+    execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
 
@@ -54,8 +59,8 @@ endfunction
 
 " Use <TAB> for selections ranges.
 " NOTE: Requires 'textDocument/selectionRange' support from the language server.
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
+nmap <silent> <TAB><TAB> <Plug>(coc-range-select)
+xmap <silent> <TAB><TAB> <Plug>(coc-range-select)
 
 " Mappings using CoCList:
 " Show all diagnostics.

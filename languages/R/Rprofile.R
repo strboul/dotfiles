@@ -46,7 +46,7 @@ local({
 
 
 # Warn about the packages only in an *interactive* session:
-warn_recommended_packages <- function() {
+.Rprofile$warn_recommended_packages <- function() {
   if (interactive()) {
     packages <- utils::read.csv(file.path(
       Sys.getenv("HOME"),
@@ -82,7 +82,7 @@ warn_recommended_packages <- function() {
   invisible()
 }
 
-warn_recommended_packages()
+.Rprofile$warn_recommended_packages()
 
 
 # 'radian' options (https://github.com/randy3k/radian):

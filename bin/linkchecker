@@ -10,16 +10,11 @@ source "$HOME"/dotfiles/zsh/utils.sh
 # - https://github.com/linkchecker/linkchecker
 # - https://wummel.github.io/linkchecker/
 
-if [ ! -x "$(command -v docker)" ]; then
-  utils__err_exit "docker not found."
-fi
+utils__stop_if_not_command_exists "docker"
 
+URL=$1
 
-LINK=$1
-
-if [ ! -n "$LINK" ]; then
-  utils__err_exit "website link is missing"
-fi
+[ -z "$URL" ] && utils__err_exit "provide an URL"
 
 FOLDER_NAME="$(printf "linkchecker_%s\n" $(utils__timestamp))"
 
@@ -32,7 +27,7 @@ docker run --rm -it           \
   -Fhtml/linkchecker.html     \
   -Fcsv/linkchecker.csv       \
   --verbose                   \
-  $LINK
+  $URL
 
 
 # vim: ft=sh

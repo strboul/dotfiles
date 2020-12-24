@@ -49,20 +49,25 @@
 
 " ----- Commands ---------------------------------------------------------
 
-" Echo buffer absolute file path
-  function mmy#FunEchoBufferAbsPath()
-    let l:pat=expand('%:p')
-    if l:pat != ""
-      " put the variable in register:
-      call setreg('f', l:pat)
-      echo printf('"%s" buffer full path (stored in :reg "f)', l:pat)
+" Echo buffer file path and put them in the register
+  function mmy#FunEchoRegisterBufferPath()
+    let l:abs_pat=expand('%:p')
+    let l:rel_pat=expand('%')
+    if l:abs_pat != ""
+      call setreg('f', l:abs_pat)
+      call setreg('g', l:rel_pat)
+      echohl Statement |echon printf('"%s" ', l:rel_pat) | echohl None
+      echon 'relative path stored in :reg'
+      echohl Statement | echon ' "g' | echohl None
+      echon ' and absolute path in'
+      echohl Statement | echon ' "f' | echohl None
     else
       echohl WarningMsg | echo 'No file in the buffer' | echohl None
     endif
   endfunction
 
-  command EchoFileAbsPath :call mmy#FunEchoBufferAbsPath()
-  nnoremap <silent> <C-g> :call mmy#FunEchoBufferAbsPath()<CR>
+  command EchoRegisterBufferPath :call mmy#FunEchoRegisterBufferPath()
+  nnoremap <silent> <C-g> :EchoRegisterBufferPath<CR>
 
 
 " Convert single quotes to double and vice versa
@@ -120,3 +125,11 @@
   endfunction
 
   command SearchNonASCIIChars :call mmy#FunSearchNonASCIIChars()
+
+
+" Remove zero width unicode chars displayed as <200b>
+  function mmy#FunRemoveZeroWidthSpaceChars()
+    :%s/\%u200b//g
+  endfunction
+
+  command RemoveZeroWidthSpaceChars :call mmy#FunRemoveZeroWidthSpaceChars()

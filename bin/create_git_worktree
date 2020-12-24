@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Creates a git worktree (https://git-scm.com/docs/git-worktree) from a branch
+# and puts in "$HOME/<repo-name>-wt/<branch>/"
+#
+# Worktrees are useful when want to change into a new branch as it is less
+# expensive than git checkout requiring the current index to be clean. Use
+# cases: PR reviews, long standing branches etc.
+#
+# Usage: create_worktree <branch>
+#
+
+set -e
+
+BRANCH_NAME=$1
+
+get_repo_name() {
+  basename -s .git "$(git remote get-url origin)"
+}
+
+REPO_NAME="$(get_repo_name)"
+WT_DIR_NAME="$REPO_NAME-wt"
+WT_DIR_PAT="$HOME/$WT_DIR_NAME"
+WT_PAT="$WT_DIR_PAT/$BRANCH_NAME"
+
+make_wt_dir_if_not_exists() {
+  if [ ! -d "$WT_DIR_PAT" ]; then
+    mkdir -p "$WT_DIR_PAT"
+    echo "WT dir not exist, created \"$WT_DIR_PAT\""
+  fi
+}
+
+create_worktree() {
+  "$(command -v git)" worktree add "$WT_PAT" "$BRANCH_NAME"
+  echo "worktree created!"
+  echo "$WT_PAT"
+}
+
+main() {
+  make_wt_dir_if_not_exists
+  create_worktree
+}
+
+main

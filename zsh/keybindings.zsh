@@ -37,7 +37,7 @@ ctrl_g() {
   fi
 
   if [ -z "$BUFFER" ]; then
-    BUFFER="git add -u; git commit -v && git push"
+    BUFFER="git add -u; git commit && git push"
   fi
 
   zle accept-line

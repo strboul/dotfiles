@@ -27,7 +27,7 @@ do_link() {
 # Essentials
 do_link "$HOME"/.zshrc                          "$HOME"/dotfiles/zsh/zshrc.zsh
 do_link "$HOME"/.tmux.conf                      "$HOME"/dotfiles/tmux/tmux.conf
-do_link "$HOME"/.config/alacritty/alacritty.yml "$HOME"/dotfiles/alacritty/alacritty.yml
+do_link "$HOME"/.config/alacritty/alacritty.yml "$HOME"/dotfiles/tools/alacritty/alacritty.yml
 
 
 # Editors
@@ -36,7 +36,7 @@ do_link "$HOME"/.R/snippets/r.snippets "$HOME"/dotfiles/editors/rstudio/r_rstudi
 
 # nvim
 do_link "$HOME"/.config/nvim/init.vim          "$HOME"/dotfiles/nvim/init.vim
-do_link "$HOME"/.config/nvim/coc-settings.json "$HOME"/dotfiles/nvim/coc-settings.json
+do_link "$HOME"/.config/nvim/coc-settings.json "$HOME"/dotfiles/nvim/plugins/coc/coc-settings.json
 do_link "$HOME"/.config/nvim/UltiSnips         "$HOME"/dotfiles/nvim/snippets/
 
 

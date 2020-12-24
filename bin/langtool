@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# Run LanguageTool locally for grammar & vocabulary checks
+# https://github.com/languagetool-org/languagetool
+#
+# Start the server, e.g.:
+#
+# java -cp ~/LanguageTool-5.1/languagetool-server.jar \
+#   org.languagetool.server.HTTPServer \
+#   --port 8081 --allow-origin "*"
+#
+# Usage: langtool <file>
+#
+
+set -e
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+INPUT=$1
+
+check_if_server_up() {
+  nc -vz 127.0.0.1 8081 || \
+    { utils__err_exit "Port 8081 is not open. LanguageTool server seems not running..."; }
+}
+
+run_langtool() {
+  curl --silent --data "language=en-US&text=$(cat "${INPUT}")" \
+    http://localhost:8081/v2/check | \
+    jq ".matches[] | {shortMessage: .shortMessage, message: .message, sentence: .sentence, replacements: .replacements}"
+}
+
+main() {
+  utils__stop_if_not_command_exists "jq" "Please install https://stedolan.github.io/jq/"
+  check_if_server_up
+  run_langtool
+}
+
+main

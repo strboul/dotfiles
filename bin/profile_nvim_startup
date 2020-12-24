@@ -2,18 +2,29 @@
 
 set -e
 
+# Profile NeoVim startup time
+#
+# Usage:
+#  # uses default nvim config
+#  profile_startup_time
+#
+#  # use a different config:
+#  profile_nvim_startup -u ~/path/to/config.file
+#
+# Options:
+#  ... multiple arguments to be passed on to `nvim`.
+#
+
 profile_startup_time() {
   # https://github.com/mhinz/vim-galore#profiling-startup-time
-  nvim --startuptime /tmp/startup.log +q && cat /tmp/startup.log
+  nvim "$@" --startuptime /tmp/startup.log +q && \
+    nvim "+normal G$" -u NONE /tmp/startup.log
 }
-
 
 main() {
-  profile_startup_time
+  profile_startup_time "$@"
 }
 
-
-main
-
+main "$@"
 
 # vim: ft=sh

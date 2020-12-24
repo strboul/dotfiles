@@ -71,8 +71,8 @@ setopt HIST_IGNORE_SPACE
 # ---------- Aliases ----------
 alias cp='cp -iv' # 'cp' prompt and verbose
 alias mv='mv -iv' # 'mv' prompt and verbose
-alias l='ls -al'
-alias la='ls -A'
+alias ll='ls -l'
+alias la='ls -al'
 
 c() {
   # Custom cd (always ls when cd into a folder)
@@ -81,6 +81,17 @@ c() {
 }
 alias cd="c"
 
+# Colorful man
+# https://wiki.archlinux.org/index.php/Color_output_in_console#man
+man() {
+  LESS_TERMCAP_md=$'\e[01;31m' \
+  LESS_TERMCAP_me=$'\e[0m' \
+  LESS_TERMCAP_se=$'\e[0m' \
+  LESS_TERMCAP_so=$'\e[01;44;33m' \
+  LESS_TERMCAP_ue=$'\e[0m' \
+  LESS_TERMCAP_us=$'\e[01;32m' \
+  command man "$@"
+}
 
 # ---------- Commands ----------
 alias python=python3
@@ -91,6 +102,9 @@ alias v='eval $(command -v nvim)'
 alias r='eval $(command -v radian)'
 # https://github.com/bpython/bpython
 alias py='eval $(command -v bpython)'
+
+# FIXME
+alias v2='nvim -u $HOME/dotfiles/nvim/init2.vim'
 
 
 # ---------- Configuration ----------

@@ -1,0 +1,43 @@
+# languages ------
+
+coc-python
+coc-r-lsp  # https://github.com/neoclide/coc-r-lsp
+coc-sh     # https://github.com/josa42/coc-sh
+coc-clangd # https://github.com/clangd/coc-clangd
+coc-java
+coc-sql
+coc-vimlsp # https://github.com/iamcco/coc-vimlsp
+coc-vimtex # https://github.com/neoclide/coc-vimtex
+coc-julia  # https://github.com/fannheyward/coc-julia
+coc-go     # https://github.com/josa42/coc-go
+coc-lua    # https://github.com/josa42/coc-lua
+
+# js-ts ------
+
+coc-tsserver
+coc-eslint
+coc-prettier
+
+# web/markups ------
+
+coc-html
+coc-css
+coc-svg
+
+# data ------
+
+coc-json
+coc-yaml
+coc-xml
+
+# tooling ------
+
+coc-cmake # https://github.com/voldikss/coc-cmake
+
+# others ------
+
+coc-highlight # colorizer https://github.com/neoclide/coc-highlight
+coc-snippets  # https://github.com/neoclide/coc-snippets
+coc-markmap   # https://github.com/gera2ld/coc-markmap
+
+# vim: nospell

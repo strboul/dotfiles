@@ -6,10 +6,10 @@ source "$HOME"/dotfiles/zsh/utils.sh
 #
 # Usage: the "word to search"
 #
-term=$1
+TERM=$1
 
 check_term_provided() {
-  [ -z "$term" ] && utils__err_exit "Term is missing."
+  [ -z "$TERM" ] && utils__err_exit "term is missing."
 }
 
 # replace all blanks
@@ -30,10 +30,9 @@ website_opener() {
 
 main() {
   check_term_provided
-
   website_opener $(printf "%s%s"           \
     "https://www.thefreedictionary.com/" \
-    $(term_to_link_query $term)          \
+    $(term_to_link_query $TERM)          \
   )
 }
 

@@ -15,30 +15,19 @@ check__dotfiles_in_home_dir() {
 }
 
 
-check__pkg_managers_installed() {
-  echo "Checking OS package manager availability"
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    if [ -x "$(command -v brew)" ]; then
-      utils__color_msg "green" "brew found."
-    else
-      utils__err_exit "brew not found. Install brew \"https://brew.sh\""
-    fi
-  elif [[ "$OSTYPE" == "linux"* ]]; then
-    if [ -x "$(command -v apt-get)" ]; then
-      utils__color_msg "green" "apt found."
-    else
-      utils__err_exit "apt not found in the system."
-    fi
-  else
-    utils__err_exit "platform not supported."
-  fi
+check__curl_installed() {
+  utils__stop_if_not_command_exists "curl" "Install cURL first https://curl.se/"
 }
 
 
-check__curl_installed() {
-  if [ ! -x "$(command -v curl)" ]; then
-    echo "curl not found. Install cURL first."
-    utils__err_exit "Aborted."
+check__pkg_managers_installed() {
+  echo "Checking OS package manager availability"
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    utils__stop_if_not_command_exists "brew" "Install brew \"https://brew.sh\""
+  elif [[ "$OSTYPE" == "linux"* ]]; then
+    utils__stop_if_not_command_exists "apt-get" "Check Ubuntu page."
+  else
+    utils__err_exit "platform not supported."
   fi
 }
 
@@ -70,8 +59,21 @@ install__install_with_pkg_manager() {
   fi
 }
 
+### Languages installed first ###
 
-### Programs to install ###
+install__python() {
+  # TODO make it work
+  source "$HOME"/dotfiles/install/python.sh
+}
+
+
+install__nodejs() {
+  # FIXME
+  install__install_with_pkg_manager "node" "nodejs"
+}
+
+
+### Programs & tools to install ###
 
 install__zsh() {
   install__install_with_pkg_manager "zsh" "zsh"
@@ -79,6 +81,11 @@ install__zsh() {
 
 
 install__neovim() {
+  install_pynvim() {
+    # python neovim modules. See `:h provider-python` in neovim
+    "$(command -v python3)" -m pip install -U pynvim --user
+  }
+  install_pynvim
   # FIXME neovim and tmux have outdated versions in apt-get
   install__install_with_pkg_manager "nvim" "neovim"
 }
@@ -101,31 +108,25 @@ install__fzf() {
 install__ripgrep() {
   # https://github.com/BurntSushi/ripgrep
   # TODO fix the do_install_with_pkg_manager function definition file
-  install__install_with_pkg_manager ripgrep
+  install__install_with_pkg_manager "rg" "ripgrep"
 }
 
 
 install__fd() {
   # FIXME
   # https://github.com/sharkdp/fd
-  install__install_with_pkg_manager fd
+  install__install_with_pkg_manager "fd" "fd"
 }
 
 
-install__python() {
-  # TODO make it work
-  source "$HOME"/dotfiles/install/python.sh
-}
-
-
-install__nodejs() {
- # FIXME
-  install__install_with_pkg_manager nodejs
+install__bat() {
+  # https://github.com/sharkdp/bat
+  install__install_with_pkg_manager "bat" "bat"
 }
 
 
 install__universal_ctags() {
-  # https://github.com/universal-ctags/ctags.git
+  # https://github.com/universal-ctags/ctags
   git clone https://github.com/universal-ctags/ctags.git /tmp/ctags && \
     pushd /tmp/ctags &&               \
     ./autogen.sh &&                   \
@@ -136,8 +137,8 @@ install__universal_ctags() {
 }
 
 
-# https://github.com/tpope/vim-sensible
 install__vim_sensible() {
+  # https://github.com/tpope/vim-sensible
   if [ ! -f "$HOME"/.vimrc ]; then
     wget -O \
     "$HOME"/.vimrc \
@@ -147,7 +148,13 @@ install__vim_sensible() {
 
 
 install__htop() {
-  install__install_with_pkg_manager htop htop
+  install__install_with_pkg_manager "htop" "htop"
+}
+
+
+install__git_cola() {
+  # https://github.com/git-cola/git-cola
+  install__install_with_pkg_manager "git-cola" "git-cola"
 }
 
 
@@ -159,7 +166,7 @@ install__git_substatus() {
 
 install__shellcheck() {
   # https://github.com/koalaman/shellcheck
-  install__install_with_pkg_manager shellcheck shellcheck
+  install__install_with_pkg_manager "shellcheck" "shellcheck"
 }
 
 
@@ -244,6 +251,7 @@ main() {
   install__fzf
   install__ripgrep
   install__fd
+  install__bat
   install__python
   install__nodejs
   install__universal_ctags

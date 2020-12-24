@@ -18,7 +18,7 @@ install_pyenv() {
 
     # install the latest stable pyenv version
     # (Source: https://stackoverflow.com/a/33423958/)
-    pyenv install $(pyenv install --list | grep -v - | grep -v b | tail -1)
+    pyenv install "$(pyenv install --list | grep -v - | grep -v b | tail -1)"
 
     pyenv install 3.8.0
     pyenv install 3.7.5
@@ -37,13 +37,6 @@ install_pyenv() {
 install_jupyter() {
   # https://jupyter.org/install
   "$PIP" install jupyter
-}
-
-
-install_pynvim() {
-  # python neovim modules
-  # See `:help provider-python` in neovim
-  "$PIP" install -U pynvim --user
 }
 
 
@@ -75,7 +68,6 @@ install_pdbpp() {
 
 install_pyenv
 install_jupyter
-install_pynvim
 install_jedi
 install_radian
 install_bpython

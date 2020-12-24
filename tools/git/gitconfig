@@ -2,12 +2,24 @@
 	editor = vim
 	excludesfile = ~/.gitignore
 	autocrlf = input
+
+[push]
+	default = simple
+
+[user]
+	useConfigOnly = true
+
+[diff]
+	colorMoved = default
+
 [merge]
 	tool = vimdiff
 	conflictstyle = diff3
+
 [mergetool]
 	prompt = false
 	keepBackup = false
+
 [color "branch"]
 	current = yellow bold
 	local = green bold
@@ -22,11 +34,9 @@
 	added = green bold
 	changed = yellow bold
 	untracked = red bold
-[push]
-	default = simple
-[alias]
-	# enabling git-gui. Source: https://stackoverflow.com/a/12608076
-	gui = !sh -c '/usr/local/git/libexec/git-core/git-gui'
 
-[user]
-	useConfigOnly = true
+# git-cola
+[cola]
+	spellcheck = true
+[commit]
+	verbose = true
