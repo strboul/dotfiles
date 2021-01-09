@@ -1,4 +1,15 @@
 {
+  "files.autoSave": "afterDelay",
+
+  "terminal.integrated.shell.linux": "/usr/bin/zsh",
+
+  "workbench.colorCustomizations": {
+    "terminal.background":"#000000",
+    "terminal.foreground":"#dddada"
+  },
+
+  "explorer.confirmDragAndDrop": false,
+
   "vim.normalModeKeyBindingsNonRecursive": [
     {
       "before": ["o"],
@@ -10,4 +21,3 @@
     }
   ]
 }
-

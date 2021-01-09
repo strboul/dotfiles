@@ -4,17 +4,13 @@ call mmy#CheckNvimVersion('0.5.0-741')
 
 " ----- General settings ---------------------------------------------------
 
-
 " Essentials
   set hidden         " able to keep multiple open buffers
   set encoding=utf-8 " string encoding always UTF-8
   set mouse=a        " enable mouse use (if supported)
   set t_Co=256       " support 256 colors
   set termguicolors  " 24-bit RGB, use 'gui' instead of 'cterm' attributes
-
-
-" leader key
-  let mapleader=','
+  let mapleader=','  " leader key
 
 
 " Window display
@@ -104,6 +100,17 @@ call mmy#CheckNvimVersion('0.5.0-741')
 " Help
   " - ESC closes the window
   autocmd FileType help nnoremap <buffer><silent> <ESC> :helpclose<CR>
+
+
+" Clear cmd messages after some time (https://unix.stackexchange.com/a/613645)
+  function! s:clear_message(timer)
+    if mode() ==# 'n' | echon '' | endif
+  endfunction
+
+  augroup clear_cmd_messages
+      autocmd!
+      autocmd CmdlineLeave : call timer_start(5000, funcref('s:clear_message'))
+  augroup END
 
 
   source $HOME/dotfiles/nvim/filetypes.vim
@@ -214,7 +221,6 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 " nerdcommenter
   Plug 'https://github.com/preservim/nerdcommenter'
-
   " add an extra space after comment symbol
   let NERDSpaceDelims=1
 
@@ -225,7 +231,6 @@ call plug#begin('~/.local/share/nvim/plugged')
 
   " powerline symbols
   let g:airline_powerline_fonts=1
-
 
   " statusline settings
     " simplify line, col info:
@@ -271,7 +276,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 
 " urlview
-  Plug 'https://github.com/strboul/urlview.vim'
+  Plug 'https://github.com/strboul/urlview.vim' " :Urlview
 
 
 " any-jump
@@ -386,9 +391,10 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 
 " FIXME Experimental plugins ----
-  Plug 'https://github.com/voldikss/vim-floaterm' " :FloatermToggle
-  Plug 'https://github.com/hkupty/iron.nvim' " IronRepl
-  Plug 'https://github.com/lambdalisue/fern.vim' " :Fern . -reveal=%
+
+  Plug 'https://github.com/bfredl/nvim-luadev'
+  nmap <leader>l <Plug>(Luadev-RunLine)
+  vmap <leader>l <Plug>(Luadev-Run)
 
 
 call plug#end()
@@ -401,18 +407,15 @@ call plug#end()
   set background=dark
   let g:airline_theme='bubblegum'
 
-
-" FIXME terminal color is changed so it should come after colorscheme. Find a
-" way.
+" terminal stuff
   source $HOME/dotfiles/nvim/terminal.vim
-
 
 " Highlight groups
 "
 " Debug tips:
 "   - `verbose hi <Name>` shows where the hi group is set.
 "   - Run `:so $VIMRUNTIME/syntax/hitest.vim` to see all highlight groups.
-  highlight Todo guifg=#800000 guibg=#d0d090
+  highlight Todo guibg=#800000 guifg=#d0d090 gui=italic
   highlight Comment gui=italic
   " the vertical split color:
   highlight VertSplit guibg=NONE
@@ -436,5 +439,8 @@ call plug#end()
   endfunction
   autocmd FileType tagbar call s:tagbar_colors()
 
+
+" lua
+  lua require('utils')
 
 " #### THE END ####

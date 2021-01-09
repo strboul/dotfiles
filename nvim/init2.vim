@@ -10,67 +10,9 @@ set termguicolors
 
 call plug#begin('~/.local/share/nvim/plugged2')
 
-Plug 'https://github.com/strboul/urlview.vim'
-
-" disable arrow keys
-Plug 'https://github.com/wikitopian/hardmode'
-let g:HardMode_level='wannabe'
-let g:HardMode_hardmodeMsg=''
-autocmd VimEnter,BufNewFile,BufReadPost * silent! call HardMode()
-
-
-Plug 'https://github.com/junegunn/vim-peekaboo'
-let g:peekaboo_window='botright 35new'
-let g:peekaboo_compact=1
-let g:peekaboo_delay=300
-
-
 Plug 'https://github.com/mhartington/oceanic-next'
 let g:oceanic_next_terminal_bold=1
 let g:oceanic_next_terminal_italic=1
-
-
-Plug 'https://github.com/itchyny/lightline.vim'
-Plug 'https://github.com/itchyny/vim-gitbranch'
-
-let g:lightline={
-  \ 'colorscheme': 'wombat',
-  \ 'enable': {
-  \   'statusline': 1,
-  \   'tabline': 1
-  \ }
-  \ }
-
-function! LightlineModified()
-  return &ft =~# 'help\|vimfiler' ? '' : &modified ? '+' : &modifiable ? '' : '-'
-endfunction
-function! LightlineReadonly()
-  return &ft !~? 'help\|vimfiler' && &readonly ? 'RO' : ''
-endfunction
-function! LightlineFullFilename()
-  return (LightlineReadonly() !=# '' ? LightlineReadonly() . ' ' : '') .
-    \ (&ft ==# 'vimfiler' ? vimfiler#get_status_string() :
-    \  &ft ==# 'unite' ? unite#get_status_string() :
-    \ expand('%:t') !=# '' ? expand('%:t') : '[No Name]') .
-    \ (LightlineModified() !=# '' ? ' ' . LightlineModified() : '')
-endfunction
-
-let g:lightline.component_function={
-  \ 'gitbranch': 'gitbranch#name',
-  \ 'fullfilename': 'LightlineFullFilename'
-  \ }
-
-let g:lightline.active={
-  \ 'left': [ [ 'mode', 'paste' ],
-  \           [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-  \ }
-let g:lightline.inactive = {
-  \ 'left': [ [ 'filename' ] ]
-  \ }
-
-let g:lightline.separator={'left':"\ue0b0",'right':"\ue0b2"}
-let g:lightline.subseparator={'left':"\ue0b1",'right':"\ue0b3"}
-
 
 " --------- Lua plugins ---------
 
@@ -86,45 +28,24 @@ Plug 'nvim-telescope/telescope.nvim'
 " nnoremap <C-p> <cmd>lua require'telescope.builtin'.find_files{}<CR>
 nnoremap <c-p> <cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({  }))<CR>
 
-" Plug 'romgrk/barbar.nvim'
-" let bufferline={}
-" let bufferline.animation=v:false
-" let bufferline.closable=v:false
-" let bufferline.maximum_padding=1
-
-" Plug 'akinsho/nvim-bufferline.lua'
-
 Plug 'https://github.com/neovim/nvim-lspconfig'
-
 Plug 'https://github.com/nvim-lua/completion-nvim'
-
 Plug 'norcalli/nvim-colorizer.lua'
-
 Plug 'https://github.com/norcalli/snippets.nvim'
-
-Plug 'https://github.com/tjdevries/express_line.nvim'
+Plug 'https://github.com/hoob3rt/lualine.nvim'
 
 call plug#end()
 
 lua << EOF
-require'lspconfig'.vimls.setup{}
+	require'lspconfig'.vimls.setup{}
 EOF
 
-
-"lua << EOF
-"  require'bufferline'.setup{
-"    options = {
-"      numbers = "buffer_id",
-"      number_style = "",
-"      show_buffer_close_icons = false,
-"      separator_style = "thin",
-"    }
-"  }
-"EOF
-
+lua << EOF
+	local lualine = require('lualine')
+	lualine.status()
+EOF
 
 lua require'colorizer'.setup()
-
 
 lua require'snippets'.use_suggested_mappings()
 
@@ -151,7 +72,6 @@ require'snippets'.snippets = {
 }
 EOF
 
-
 set statusline+=%{nvim_treesitter#statusline(65)}
 
 lua <<EOF
@@ -165,7 +85,6 @@ EOF
 
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
-
 
 " --- Colors ---
 colorscheme OceanicNext

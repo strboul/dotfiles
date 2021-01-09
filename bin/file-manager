@@ -10,19 +10,19 @@ main() {
   fi
 
   if [ -z "$1" ]; then
-    path="$PWD"
+    pat="$PWD"
   else
-    path="$1"
+    pat="$1"
   fi
 
   if [[ "$OSTYPE" == "darwin"* ]]; then
 
-    open "$path"
+    open "$pat"
 
   elif [[ "$OSTYPE" == "linux"* ]]; then
 
     if [ -x "$(command -v xdg-open)" ]; then
-      eval "$(printf "xdg-open 2>/dev/null %s" $path)"
+      eval "$(printf "xdg-open 2>/dev/null %s" $pat)"
     else
       utils__err_exit "xdg-open not found."
     fi
@@ -31,7 +31,7 @@ main() {
     utils__err_exit "Platform not supported."
   fi
 
-  printf "opened file manager at: %s\n" $path
+  printf "opened file manager at: %s\n" $pat
 }
 
 

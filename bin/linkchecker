@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source "$HOME"/dotfiles/zsh/utils.sh
-
 # Crawl and parse links on a website
 #
 # Usage: linkchecker [WEBSITE_LINK]
@@ -9,6 +7,8 @@ source "$HOME"/dotfiles/zsh/utils.sh
 # Sources:
 # - https://github.com/linkchecker/linkchecker
 # - https://wummel.github.io/linkchecker/
+
+source "$HOME"/dotfiles/zsh/utils.sh
 
 utils__stop_if_not_command_exists "docker"
 
@@ -20,13 +20,13 @@ FOLDER_NAME="$(printf "linkchecker_%s\n" $(utils__timestamp))"
 
 mkdir -p "$FOLDER_NAME"
 
-docker run --rm -it           \
-  -u $(id -u):$(id -g)        \
-  -v $PWD/"$FOLDER_NAME":/mnt \
-  linkchecker/linkchecker     \
-  -Fhtml/linkchecker.html     \
-  -Fcsv/linkchecker.csv       \
-  --verbose                   \
+"$(command -v docker)" run --rm -it \
+  -u $(id -u):$(id -g)              \
+  -v "$PWD"/"$FOLDER_NAME":/mnt     \
+  linkchecker/linkchecker           \
+  -Fhtml/linkchecker.html           \
+  -Fcsv/linkchecker.csv             \
+  --verbose                         \
   $URL
 
 

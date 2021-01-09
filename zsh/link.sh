@@ -36,6 +36,7 @@ do_link "$HOME"/.R/snippets/r.snippets "$HOME"/dotfiles/editors/rstudio/r_rstudi
 
 # nvim
 do_link "$HOME"/.config/nvim/init.vim          "$HOME"/dotfiles/nvim/init.vim
+do_link "$HOME"/.config/nvim/lua               "$HOME"/dotfiles/nvim/lua/
 do_link "$HOME"/.config/nvim/coc-settings.json "$HOME"/dotfiles/nvim/plugins/coc/coc-settings.json
 do_link "$HOME"/.config/nvim/UltiSnips         "$HOME"/dotfiles/nvim/snippets/
 

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Run Github Linguist on a git repository
+# https://github.com/github/linguist
+#
+# Usage:
+# linguist <path>
+
+set -e
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+utils__stop_if_not_command_exists "docker"
+
+get_path() {
+  if [ -z "$1" ]; then
+    echo "$PWD"
+  else
+    echo "$1"
+  fi
+}
+
+PAT=$(get_path "$@")
+
+utils__check_git_repository "$PAT"
+
+# TODO: official github image doesn't exist, replace once it's ready
+# https://github.com/github/linguist/issues/4613
+"$(command -v docker)" run --rm -it \
+  -v "$PAT":/repo                   \
+  crazymax/linguist:latest

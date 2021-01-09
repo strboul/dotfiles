@@ -4,16 +4,13 @@
 " (https://github.com/justinforce/dotfiles/blob/master/files/nvim/init.vim#L82)
   autocmd BufLeave,CursorHold,FocusLost * silent! wa
 
-
 " Trigger autoread when changing buffers or coming back to vim.
 " (https://stackoverflow.com/a/20418591)
   autocmd FocusGained,BufEnter * :silent! !
 
-
 " Smarter cursorline (enabled only in the Normal mode)
   autocmd InsertLeave,WinEnter * setlocal cursorline
   autocmd InsertEnter,WinLeave * setlocal nocursorline
-
 
 " Restore cursor position when opening file (from :marks)
   autocmd BufReadPost *
@@ -21,13 +18,11 @@
     \   execute "normal! g`\"" |
     \ endif
 
-
 " Notification after file change (https://vi.stackexchange.com/a/13093)
   autocmd FileChangedShellPost *
     \ echohl WarningMsg |
     \ echo "File changed on disk. Buffer reloaded." |
     \ echohl None
-
 
 " Keep yanked text highlighted for a given time
   augroup HighlightYankedText

@@ -6,11 +6,9 @@ utils__print_dashes() {
   echo
 }
 
-
 utils__timestamp() {
   date "+%Y-%m-%dT%H-%M-%S"
 }
-
 
 utils__color_msg() {
   # Example:
@@ -22,13 +20,11 @@ utils__color_msg() {
   echo
 }
 
-
 utils__err_exit() {
   local msg=$(utils__color_msg "red" $(printf "Error: %s\n" "${1}"))
   echo >&2 "$msg"
   exit 1
 }
-
 
 utils__check_file_or_dir_exists() {
   # Check a file or folder exists. May be useful to call this before symlinks.
@@ -47,7 +43,6 @@ utils__stop_if_not_command_exists() {
   fi
 }
 
-
 # Source: https://stackoverflow.com/a/27875395/
 utils__user_prompt() {
   utils__color_msg "yellow" $(printf "%s [y/N]" "$@")
@@ -61,5 +56,17 @@ utils__user_prompt() {
   else
     echo "$answer"
     utils__err_exit "Aborted."
+  fi
+}
+
+utils__is_git_repository() {
+  pat=$1
+  git -C "$1" rev-parse >/dev/null 2>&1 || return 1
+}
+
+utils__check_git_repository() {
+  pat=$1
+  if ! utils__is_git_repository "$pat"; then
+    utils__err_exit "not a git repository"
   fi
 }

@@ -7,7 +7,6 @@
     return strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)
   endfunction
 
-
 " ----- Functions --------------------------------------------------------
 
 " Check nvim version, display a warning message if versions aren't the same
@@ -25,14 +24,12 @@
     endif
   endfunction
 
-
 " Read a file (e.g. a txt) as a conf by removing commented and empty lines:
   function mmy#ReadTxtConfFile(file_path)
     let s:file=readfile(glob(a:file_path))
     let s:out_array=filter(filter(s:file, 'v:val !~ "#.*$"'), 'v:val !~ "^\s*$"')
     return s:out_array
   endfunction
-
 
 " Get git ignored files as a list (if the current wd is a git repository)
   function mmy#GetGitIgnoredFiles()
@@ -45,7 +42,6 @@
     let s:out=uniq(s:esc_tail)
     return s:out
   endfunction
-
 
 " ----- Commands ---------------------------------------------------------
 
@@ -71,6 +67,7 @@
 
 
 " Convert single quotes to double and vice versa
+" FIXME: doesn't work well sometimes
   function mmy#FunQuoteTypesToggle()
     " (maybe write this fun recursively one day)
     " get the cursor position:

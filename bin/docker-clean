@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Force remove all docker images
+#
+# Usage:
+# docker-clean
+
+# TODO expand to remove containers as well
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+utils__stop_if_not_command_exists "docker"
+
+LEN_IMAGES="$(docker image list | wc -l)"
+if [ "$LEN_IMAGES" -le "1" ]; then
+  utils__err_exit "no docker images found"
+fi
+
+docker image list
+echo
+utils__user_prompt "Are you sure to remove all images?"
+
+echo
+docker rmi -f $(docker images -a -q)
