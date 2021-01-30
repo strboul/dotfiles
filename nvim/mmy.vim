@@ -11,14 +11,14 @@
 
 " Check nvim version, display a warning message if versions aren't the same
   function mmy#CheckNvimVersion(compatible_version)
-    let s:nvim_v=matchstr(execute('version'), 'NVIM v\zs[^\n]*')
-    if s:nvim_v !~ a:compatible_version
+    let l:nvim_v=matchstr(execute('version'), 'NVIM v\zs[^\n]*')
+    if l:nvim_v !~ a:compatible_version
       echohl WarningMsg |
         \ echo printf(
         \ 'Warning: This config is designed to be compatible with neovim
         \ version "%s" (you have "%s")',
         \ a:compatible_version,
-        \ s:nvim_v
+        \ l:nvim_v
         \ ) |
         \ echohl None
     endif
@@ -26,21 +26,21 @@
 
 " Read a file (e.g. a txt) as a conf by removing commented and empty lines:
   function mmy#ReadTxtConfFile(file_path)
-    let s:file=readfile(glob(a:file_path))
-    let s:out_array=filter(filter(s:file, 'v:val !~ "#.*$"'), 'v:val !~ "^\s*$"')
-    return s:out_array
+    let l:file=readfile(glob(a:file_path))
+    let l:out_array=filter(filter(l:file, 'v:val !~ "#.*$"'), 'v:val !~ "^\s*$"')
+    return l:out_array
   endfunction
 
 " Get git ignored files as a list (if the current wd is a git repository)
   function mmy#GetGitIgnoredFiles()
-    let s:git_ignored=system('git status --ignored --porcelain')
-    let s:ignored_text=matchstr(s:git_ignored, '!!.*')
-    let s:text=substitute(s:ignored_text, '!!', '', 'g')
-    let s:text=substitute(s:text, '/', '', 'g')
-    let s:sp=split(s:text, '\n')
-    let s:esc_tail=map(copy(s:sp), 'escape(fnamemodify(trim(v:val), ":t"), ".")')
-    let s:out=uniq(s:esc_tail)
-    return s:out
+    let l:git_ignored=system('git status --ignored --porcelain')
+    let l:ignored_text=matchstr(l:git_ignored, '!!.*')
+    let l:text=substitute(l:ignored_text, '!!', '', 'g')
+    let l:text=substitute(l:text, '/', '', 'g')
+    let l:sp=split(l:text, '\n')
+    let l:esc_tail=map(copy(l:sp), 'escape(fnamemodify(trim(v:val), ":t"), ".")')
+    let l:out=uniq(l:esc_tail)
+    return l:out
   endfunction
 
 " ----- Commands ---------------------------------------------------------
@@ -117,8 +117,8 @@
   function mmy#FunSearchNonASCIIChars()
     " built query as <CR> isn't read between double quotes, see:
     " https://vim.fandom.com/wiki/Using_normal_command_in_a_script_for_searching
-    let s:query='/[^\x00-\x7F]'
-    execute 'normal! /' . s:query . "\<CR>"
+    let l:query='/[^\x00-\x7F]'
+    execute 'normal! /' . l:query . "\<CR>"
   endfunction
 
   command SearchNonASCIIChars :call mmy#FunSearchNonASCIIChars()

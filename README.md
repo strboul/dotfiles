@@ -2,8 +2,6 @@
 
 neovim, zsh, tmux and *others*.
 
-Tested on **macOS 10.15 Catalina** and **Ubuntu 18.04 LTS**.
-
 ## Installation
 
 First, clone this repository into your home (`$HOME/`) and then change

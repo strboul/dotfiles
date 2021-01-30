@@ -183,14 +183,26 @@ call plug#begin('~/.local/share/nvim/plugged')
   " close tab after opening file
   let NERDTreeQuitOnOpen=1
 
-  let nerd_tree_ignore_defaults=['^\.git$']
-  " don't show the git ignored files
-  let g:nerd_tree_ignore=uniq(filter(
-    \ nerd_tree_ignore_defaults + mmy#GetGitIgnoredFiles(),
-    \ 'len(v:val)>0'
-    \ ))
+  " Smart ignore for NERDTree.
+  " Excludes a list of hand-selected files/folders. Also excludes the git
+  " ignored files.
+  " But it's also possible to force allow files (regardless git ignore).
+  function! s:NERDTreeSmartIgnore(list_ignore, list_allow)
+    let l:git_ignored_files=mmy#GetGitIgnoredFiles()
+    let l:ignore_uniq=uniq(filter(
+      \ a:list_ignore + l:git_ignored_files,
+      \ 'len(v:val)>0'
+      \ ))
+    let l:with_allow=filter(l:ignore_uniq, 'index(a:list_allow, v:val)<0')
+    return l:with_allow
+  endfunction
 
-  let NERDTreeIgnore=g:nerd_tree_ignore
+  let s:nerd_tree_default_ignore=['^\.git$']
+  let s:nerd_tree_default_allow=['\.env']
+  let NERDTreeIgnore=s:NERDTreeSmartIgnore(
+    \ s:nerd_tree_default_ignore,
+    \ s:nerd_tree_default_allow
+    \ )
 
   " Toggle NERDTree window
   " 1. if the active buffer exists, find (point out) the file in NERDTree
@@ -201,8 +213,8 @@ call plug#begin('~/.local/share/nvim/plugged')
       :normal PX
       :NERDTreeToggle
     else
-      let s:bn=bufname('%')
-      if s:bn != '' && s:bn != 'NERD_tree_\d'
+      let l:bn=bufname('%')
+      if l:bn != '' && l:bn != 'NERD_tree_\d'
         :NERDTreeFind
       else
         :NERDTreeToggle
@@ -215,7 +227,9 @@ call plug#begin('~/.local/share/nvim/plugged')
   augroup NERDTreeWindow
     autocmd!
     " - Pressing ESC in nerdtree window toggles the window
-    autocmd FileType nerdtree nnoremap <buffer><silent> <ESC> :call <SID>MyNERDTreeToggleFind()<CR>
+    autocmd FileType nerdtree
+      \ setlocal signcolumn=no |
+      \ nnoremap <buffer><silent> <ESC> :call <SID>MyNERDTreeToggleFind()<CR>
   augroup END
 
 
@@ -290,34 +304,69 @@ call plug#begin('~/.local/share/nvim/plugged')
   let g:UltiSnipsExpandTrigger='<nop>'
 
 
-" neoterm
-  Plug 'https://github.com/kassio/neoterm', {'commit': 'e011fa1'}
+" floaterm
+  Plug 'voldikss/vim-floaterm'
 
-  let g:neoterm_default_mod='belowright'
-  " autoscroll to the end of the terminal buffer when new commands are sent
-  let g:neoterm_autoscroll=1
-  let g:neoterm_direct_open_repl=1
-  " calling :Tclose or :Ttoggle kills the terminal
-  let g:neoterm_keep_term_open=0
+  " don't enter insert mode after opening a floaterm
+  let g:floaterm_autoinsert=0
 
-  " set REPLs
-  if executable('radian')  | let g:neoterm_repl_r='radian'       | endif
-  if executable('bpython') | let g:neoterm_repl_python='bpython' | endif
+  " REPL utility based on floaterm
+  let s:repl_list={}
+  let s:repl_list['r']=executable('radian') ? 'radian' : 'R'
+  let s:repl_list['python']=executable('bpython') ? 'bpython' : 'python3'
+  let s:repl_list['javascript']="node"
 
-  " send current line and move down
-  nnoremap <silent><leader><CR> :TREPLSendLine<CR>
+  function s:GetREPLCommand(file_type)
+    if has_key(s:repl_list,a:file_type)
+      let l:cmd=s:repl_list[a:file_type]
+    else
+      let l:cmd=g:floaterm_shell
+    endif
+    return l:cmd
+  endfunction
+
+  " TODO new command :REPLToggle <empty>, :REPLToggle python
+  let s:repl_toggle_term_name="REPLToggleTerm"
+  function! s:REPLToggle()
+    let l:has_repl=floaterm#buflist#curr()
+    if l:has_repl>0
+      FloatermKill s:repl_toggle_term_name
+    else
+      let l:file_type=&filetype
+      let l:repl_cmd=s:GetREPLCommand(l:file_type)
+      execute 'FloatermNew ' .
+        \ '--name=' . s:repl_toggle_term_name . ' ' .
+        \ '--height=0.5 ' .
+        \ '--wintype=split ' .
+        \ '--position=belowright ' .
+        \ l:repl_cmd
+      " don't focus to the repl terminal, keep cursor on the editor.
+      execute "wincmd p"
+    endif
+  endfunction
+
+  function! s:REPLSendLine()
+    FloatermSend --name=s:repl_toggle_term_name
+  endfunction
+
+  function! s:REPLSendSelection()
+    '<,'>FloatermSend --name=s:repl_toggle_term_name
+  endfunction
+
+  " toggle terminal
+  nnoremap <silent><leader>tt :call <SID>REPLToggle()<CR>
+  tnoremap <silent><leader>tt <C-\><C-n> :call <SID>REPLToggle()<CR>
+  " send current line
+  nnoremap <silent><leader><CR> :call <SID>REPLSendLine()<CR>
   " send visual selection
   " ('> goes to the beginning of the last line of the last selected Visual
   " area in the current buffer)
-  vnoremap <silent><leader><CR> :TREPLSendSelection<CR>'>
-  " toggle terminal
-  nnoremap <silent><leader>tt :Ttoggle<CR>zz
-  tnoremap <silent><leader>tt <C-\><C-n>:Ttoggle<CR>zz
+  vnoremap <silent><leader><CR> :<C-u>call <SID>REPLSendSelection()<CR>'>
 
 
 " vim-bufkill (for :BD)
   Plug 'https://github.com/qpkorr/vim-bufkill'
-  " don't let bufkill create leader mappings, use Commands instead:
+  " don't let bufkill create leader mappings, use Command Mode instead:
   let g:BufKillCreateMappings=0
 
 
@@ -374,7 +423,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 
 " ale (syntax checker)
-" it's still useful for some checks, e.g. shellcheck for bash/zsh
+" it's still useful for some checks, e.g. shellcheck for bash/zsh TODO is it?
   Plug 'https://github.com/dense-analysis/ale'
   " disable linting on some files
   " https://github.com/dense-analysis/ale/issues/371#issuecomment-304313091

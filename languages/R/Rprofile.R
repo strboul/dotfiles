@@ -104,6 +104,32 @@ if (nchar(Sys.which("radian"))) {
 
 ## special calls when using R from the Terminal ----------------------
 
+#' View a data frame in the browser with reactable
+#' Note: Pagination is must for performance for the large tables.
+#' @param x a.data.frame or a matrix.
+#' @references
+#' \url{https://glin.github.io/reactable/articles/examples.html}
+.Rprofile$view_tbl <- function(x) {
+  x <- mmy::std_rownames(x)
+  x_len <- nrow(x)
+  reactable::reactable(
+    x,
+    searchable = TRUE,
+    filterable = TRUE,
+    showSortable = TRUE,
+    bordered = TRUE,
+    striped = TRUE,
+    highlight = TRUE,
+    compact = TRUE,
+    height = 900,
+    pagination = TRUE,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = c(10, if (x_len <= 100) x_len else c(100, x_len)),
+    defaultPageSize = pmin(100, x_len)
+  )
+}
+
+
 #' Check if session is in an "interactive" terminal
 #' @references
 #' \url{https://github.com/r-lib/prettycode/blob/7275e2a9f972c8837e070cccaf5ef514643cf607/R/utils.R#L4#L11}
@@ -119,8 +145,15 @@ if (nchar(Sys.which("radian"))) {
 
 
 if (.Rprofile$is_terminal()) {
+
   options(prompt = "R>> ")
   options(continue = "... ")
+
+  # utils::View is not great on terminal
+  unlockBinding("View", getNamespace("utils"))
+  assign("View", .Rprofile$view_tbl, getNamespace("utils"))
+  lockBinding("View", getNamespace("utils"))
+
 }
 
 # remove tmp environment

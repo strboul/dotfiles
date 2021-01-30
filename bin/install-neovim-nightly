@@ -9,7 +9,7 @@ set -e
 NVIM_NIGHTLY_APPIMAGE_PAT=https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
 NVIM_NIGHTLY_FILE_NAME=nvim-nightly.appimage
 NVIM_SYS_PAT=/usr/local/bin/nvim
-TMP_DIR="$(mktemp -d)"
+TMPDIR="$(mktemp -d)"
 
 
 check_for_linux() {
@@ -27,22 +27,22 @@ display_version() {
 download_nvim_nightly() {
 
   printf "downloading neovim nightly appimage:\n\n"
-  wget -O "${TMP_DIR}/${NVIM_NIGHTLY_FILE_NAME}" ${NVIM_NIGHTLY_APPIMAGE_PAT}
+  wget -O "${TMPDIR}/${NVIM_NIGHTLY_FILE_NAME}" ${NVIM_NIGHTLY_APPIMAGE_PAT}
 
-  chmod u+x "${TMP_DIR}/${NVIM_NIGHTLY_FILE_NAME}"
+  chmod u+x "${TMPDIR}/${NVIM_NIGHTLY_FILE_NAME}"
 
   printf "\npreviously installed version: \"%s\"\n" \
     "$(display_version "$(command -v nvim)")"
 
   printf "\ndownloaded version: \"%s\"\n" \
-    "$(display_version "${TMP_DIR}/${NVIM_NIGHTLY_FILE_NAME}")"
+    "$(display_version "${TMPDIR}/${NVIM_NIGHTLY_FILE_NAME}")"
 
 }
 
 
 install_appimage() {
   printf "\ninstalling the appimage into the system:\n"
-  cp -v "${TMP_DIR}/${NVIM_NIGHTLY_FILE_NAME}" ${NVIM_SYS_PAT}
+  cp -v "${TMPDIR}/${NVIM_NIGHTLY_FILE_NAME}" ${NVIM_SYS_PAT}
 }
 
 

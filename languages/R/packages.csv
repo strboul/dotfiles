@@ -7,5 +7,6 @@
 "inline","CRAN","NULL","NULL"
 "tidyverse","CRAN","NULL","NULL"
 "languageserver","CRAN","NULL","for coc.nvim"
+"reactable","CRAN","NULL","handy data.frame inspect"
 "mmy","GitHub","strboul/mmy",NULL
 "listviewer","GitHub","timelyportfolio/listviewer","for listviewer::jsonedit"

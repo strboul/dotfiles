@@ -28,6 +28,13 @@ prompt__git_status() {
 }
 
 
+prompt__git_stash() {
+  if [ "$(git stash list 2> /dev/null)" ]; then
+    PS1+="%{$fg[cyan]%}+$(git rev-list --walk-reflogs --count refs/stash)%{$reset_color%}"
+  fi
+}
+
+
 # https://stackoverflow.com/questions/2704635/is-there-a-way-to-find-the-running-time-of-the-last-executed-command-in-the-shel
 prompt__timer () {
   if [[ $_elapsed[-1] -ne 0 ]]; then
@@ -72,6 +79,7 @@ set_prompt() {
   prompt__pwd         $PS1
   prompt__status_code $PS1
   prompt__git_status  $PS1
+  prompt__git_stash   $PS1
   prompt__timer       $PS1
   prompt__pid         $PS1
   prompt__sudo        $PS1

@@ -1,13 +1,20 @@
+#!/usr/bin/env bash
+
 # Util functions
 # reusable functions across sh scripts
 
 utils__print_dashes() {
-  printf -- "-%.0s" $(echo $(seq $1))
+  local num_dashes=$1
+  printf -- "-%.0s" $(seq "$num_dashes")
   echo
 }
 
 utils__timestamp() {
-  date "+%Y-%m-%dT%H-%M-%S"
+  date "+%F %T"
+}
+
+utils__log_message() {
+  printf "\e[33m[$(utils__timestamp)] %s\n\e[0m" "$@"
 }
 
 utils__color_msg() {
@@ -30,8 +37,10 @@ utils__check_file_or_dir_exists() {
   # Check a file or folder exists. May be useful to call this before symlinks.
   # Example:
   # check_file_or_dir_exists ".git" "git not found"
-  if [ ! -d "$1" ] && [ ! -f "$1" ]; then
-    utils__err_exit "$2"
+  local file_dir=$1
+  local msg=$2
+  if [ ! -d "$file_dir" ] && [ ! -f "$file_dir" ]; then
+    utils__err_exit "$msg"
   fi
 }
 
@@ -60,12 +69,12 @@ utils__user_prompt() {
 }
 
 utils__is_git_repository() {
-  pat=$1
-  git -C "$1" rev-parse >/dev/null 2>&1 || return 1
+  local pat=$1
+  git -C "$pat" rev-parse >/dev/null 2>&1 || return 1
 }
 
 utils__check_git_repository() {
-  pat=$1
+  local pat=$1
   if ! utils__is_git_repository "$pat"; then
     utils__err_exit "not a git repository"
   fi

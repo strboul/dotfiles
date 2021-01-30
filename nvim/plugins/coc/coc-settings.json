@@ -12,7 +12,18 @@
 
 
   // --- python
-  "python.pythonPath": "~/.pyenv/versions/3.7.5/bin/python"
+  "python.pythonPath": "~/.pyenv/versions/3.7.5/bin/python",
+
+  // prettier
+  "coc.preferences.formatOnSaveFiletypes": [
+    "html",
+    "css",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "json"
+  ],
 
 }
 

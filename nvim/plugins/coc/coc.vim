@@ -51,11 +51,10 @@ function! s:show_documentation()
   endif
 endfunction
 
-" Disabled highlight as it's too distractive
-  " Highlight the symbol and its references when holding the cursor.
-  " autocmd CursorHold * silent call CocActionAsync('highlight')
-  " change the color of highlight as it's not so visible
-  " autocmd ColorScheme * hi default CocHighlightText guibg=Black
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+" change the color of highlight as it's not so visible
+autocmd ColorScheme * hi default CocHighlightText guibg=Black
 
 " Use <TAB> for selections ranges.
 " NOTE: Requires 'textDocument/selectionRange' support from the language server.
