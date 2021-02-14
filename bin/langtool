@@ -30,7 +30,7 @@ run_langtool() {
 }
 
 main() {
-  utils__stop_if_not_command_exists "jq" "Please install https://stedolan.github.io/jq/"
+  utils__stop_if_not_command_exists "jq"
   check_if_server_up
   run_langtool
 }

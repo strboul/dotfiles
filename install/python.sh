@@ -12,25 +12,19 @@ install_pyenv() {
   # pyenv local    | Set a local python version into a .python-version file
   # pyenv global   | Set the global version of Python
 
-
-  # install pyenv versions:
-  if command -v pyenv>/dev/null; then
-
-    # install the latest stable pyenv version
-    # (Source: https://stackoverflow.com/a/33423958/)
-    pyenv install "$(pyenv install --list | grep -v - | grep -v b | tail -1)"
-
-    pyenv install 3.8.0
-    pyenv install 3.7.5
-    pyenv install 3.6.0
-    pyenv install 2.7.15 # some old version for legacy code
-
-  else
-
-    # https://github.com/pyenv/pyenv-installer
+  # https://github.com/pyenv/pyenv-installer
+  if [ ! -x "$(command -v pyenv>/dev/null)" ]; then
     curl https://pyenv.run | bash
-
   fi
+
+  # install the latest stable pyenv version
+  # (Source: https://stackoverflow.com/a/33423958/)
+  pyenv install "$(pyenv install --list | grep -v - | grep -v b | tail -1)"
+
+  pyenv install 3.8.0
+  pyenv install 3.7.5
+  pyenv install 2.7.15 # some old version for legacy code
+
 }
 
 

@@ -7,10 +7,6 @@ autocmd BufNewFile,BufRead *.txt,*.md
   \ setlocal spell spelllang=en_us |
   \ setlocal wrap textwidth=79
 
-autocmd BufNewFile,BufRead *.c,*.cpp
-  \ setlocal tabstop=4 |
-  \ setlocal shiftwidth=4
-
 " don't span arguments when indenting (see `:help ft-r-indent`)
 autocmd BufNewFile,BufRead *.R
   \ let r_indent_align_args=0 |

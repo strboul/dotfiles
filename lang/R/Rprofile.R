@@ -50,7 +50,7 @@ local({
   if (interactive()) {
     packages <- utils::read.csv(file.path(
       Sys.getenv("HOME"),
-      "dotfiles/languages/R/packages.csv"
+      "dotfiles/lang/R/packages.csv"
     ))
     installed_packages <- utils::installed.packages()
     not_installed <- !packages$package %in% installed_packages
@@ -97,7 +97,9 @@ if (nchar(Sys.which("radian"))) {
     radian.insert_new_line              = TRUE,
     radian.history_search_no_duplicates = TRUE,
     # ignore case in history search
-    radian.history_search_ignore_case   = TRUE
+    radian.history_search_ignore_case   = TRUE,
+    # don't auto match brackets and quotes
+    radian.auto_match = FALSE
   )
 }
 
@@ -112,20 +114,31 @@ if (nchar(Sys.which("radian"))) {
 .Rprofile$view_tbl <- function(x) {
   x <- mmy::std_rownames(x)
   x_len <- nrow(x)
-  reactable::reactable(
-    x,
-    searchable = TRUE,
-    filterable = TRUE,
-    showSortable = TRUE,
-    bordered = TRUE,
-    striped = TRUE,
-    highlight = TRUE,
-    compact = TRUE,
-    height = 900,
-    pagination = TRUE,
-    showPageSizeOptions = TRUE,
-    pageSizeOptions = c(10, if (x_len <= 100) x_len else c(100, x_len)),
-    defaultPageSize = pmin(100, x_len)
+  site_title <- deparse(match.call())
+  call_reactable <- function() {
+    reactable::reactable(
+      x,
+      searchable = TRUE,
+      filterable = TRUE,
+      showSortable = TRUE,
+      bordered = TRUE,
+      striped = TRUE,
+      highlight = TRUE,
+      compact = TRUE,
+      height = 900,
+      pagination = TRUE,
+      showPageSizeOptions = TRUE,
+      pageSizeOptions = c(10, if (x_len <= 100) x_len else c(100, x_len)),
+      defaultPageSize = pmin(100, x_len)
+    )
+  }
+  htmltools::browsable(
+    htmltools::tagList(
+      htmltools::tags$head(
+        htmltools::tags$title(site_title)
+      ),
+      call_reactable()
+    )
   )
 }
 

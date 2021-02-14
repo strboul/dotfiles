@@ -34,6 +34,9 @@ Plug 'norcalli/nvim-colorizer.lua'
 Plug 'https://github.com/norcalli/snippets.nvim'
 Plug 'https://github.com/hoob3rt/lualine.nvim'
 
+Plug 'https://github.com/kevinhwang91/nvim-hlslens'
+
+
 call plug#end()
 
 lua << EOF
@@ -102,6 +105,11 @@ set cursorline
 set splitright
 set splitbelow
 
+" No swap & backups - VCS everywhere
+set noswapfile
+set nobackup
+set nowritebackup
+
 source $HOME/dotfiles/nvim/filetypes.vim
 source $HOME/dotfiles/nvim/mappings.vim
 source $HOME/dotfiles/nvim/autocmds.vim
@@ -117,3 +125,15 @@ augroup colorschemes
   autocmd!
   autocmd VimEnter,ColorScheme * call s:oceanic_next_tweak()
 augroup END
+
+nnoremap <silent> n <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+nnoremap <silent> N <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+nnoremap * *<Cmd>lua require('hlslens').start()<CR>
+nnoremap # #<Cmd>lua require('hlslens').start()<CR>
+nnoremap g* g*<Cmd>lua require('hlslens').start()<CR>
+nnoremap g# g#<Cmd>lua require('hlslens').start()<CR>
+
+" TODO make it work with no cursor style
+nnoremap <silent> * :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<CR><Cmd>lua require('hlslens').start()<CR>

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Run currency to get conversion rated prices
+#
+# Use YahooFinance to get the live data.
+#
+# Usage: currency <amount> <source currency> <target currency>
+# Example: currency 100 usd eur
+#
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+utils__stop_if_not_command_exists "jq"
+
+AMOUNT=$1
+SOURCE_CURR=$2
+TARGET_CURR=$3
+
+get_conversion_rate() {
+  local curr_str=$(echo "${SOURCE_CURR}${TARGET_CURR}" | tr "[:lower:]" "[:upper:]")
+  local rate=$(curl -s "https://query1.finance.yahoo.com/v8/finance/chart/${curr_str}=X" | \
+    jq ". | .chart.result[0].meta.regularMarketPrice")
+  [ "$rate" == "null" ]  && utils__err_exit "source or target currency not found"
+  echo "${rate}"
+}
+
+
+calc_amount() {
+  local conv_rate=$1
+  Rscript -e "cat(${AMOUNT}*${conv_rate},'\n')"
+}
+
+
+main() {
+  echo "[$(utils__timestamp)]"
+  local conv_rate=$(get_conversion_rate)
+  echo "conversion rate: ${conv_rate}"
+  local calcd="$(calc_amount "${conv_rate}")"
+  echo "total: ${calcd}"
+}
+
+main

@@ -1,4 +1,5 @@
 " M.Y.'s custom vim commands
+" Move to? https://github.com/strboul/mmy.vim
 
 " ----- Utils ------------------------------------------------------------
 
@@ -130,3 +131,16 @@
   endfunction
 
   command RemoveZeroWidthSpaceChars :call mmy#FunRemoveZeroWidthSpaceChars()
+
+
+" Scratch buffer
+  function mmy#FunScratch()
+    vsplit
+    noswapfile hide enew
+    setlocal buftype=nofile
+    setlocal bufhidden=hide
+    setlocal winhighlight=Normal:SignColumn
+    file scratch
+  endfunction
+
+  command Scratch :call mmy#FunScratch()

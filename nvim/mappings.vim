@@ -54,3 +54,7 @@
 
 " delete the whole line without removing the line space
   nnoremap dx 0d$
+
+" When indenting/dedenting with visual mode, keep selection
+  xnoremap > >gv
+  xnoremap < <gv

@@ -42,9 +42,9 @@ do_link "$HOME"/.config/nvim/UltiSnips         "$HOME"/dotfiles/nvim/snippets/
 
 
 # Languages
-do_link "$HOME"/.Rprofile      "$HOME"/dotfiles/languages/R/Rprofile.R
-do_link "$HOME"/.lintr         "$HOME"/dotfiles/languages/R/lintr
-do_link "$HOME"/.pythonstartup "$HOME"/dotfiles/languages/python/pythonstartup.py
+do_link "$HOME"/.Rprofile      "$HOME"/dotfiles/lang/R/Rprofile.R
+do_link "$HOME"/.lintr         "$HOME"/dotfiles/lang/R/lintr
+do_link "$HOME"/.pythonstartup "$HOME"/dotfiles/lang/python/pythonstartup.py
 
 
 # Tools
