@@ -2,173 +2,193 @@
 
 source "$HOME"/dotfiles/zsh/utils.sh
 
-set -e
-
 # --------------------------------------------------------------------------- #
-# check ----
+# checks ----
 # --------------------------------------------------------------------------- #
 
 check__dotfiles_in_home_dir() {
   if [[ ! -d "$HOME"/dotfiles ]]; then
-    utils__err_exit "dotfiles/ not found in the home directory. Aborted."
+    utils__err_exit "/dotfiles not found in the home directory. Aborted."
   fi
 }
 
-
-check__curl_installed() {
-  utils__stop_if_not_command_exists "curl" "Install cURL first https://curl.se/"
-}
-
-
-check__pkg_managers_installed() {
-  echo "Checking OS package manager availability"
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    utils__stop_if_not_command_exists "brew" "Install brew \"https://brew.sh\""
-  elif [[ "$OSTYPE" == "linux"* ]]; then
-    utils__stop_if_not_command_exists "apt-get" "Check Ubuntu page."
-  else
-    utils__err_exit "platform not supported."
-  fi
-}
-
+check__dotfiles_in_home_dir
 
 # --------------------------------------------------------------------------- #
-# install ----
+# installs ----
 # --------------------------------------------------------------------------- #
 
-# Asks first and then installs by using (available) package managers
-install__ask_install_with_pkg_manager() {
-  echo "Checking to see whether [$1|$2] is installed"
-  if [ ! -x "$(command -v "$1")" ]; then
-    utils__user_prompt "\"$1\" not found. Would you like to install it?" >&2
-    install__install_with_pkg_manager "$2"
+get_package_manager() {
+  local ostype
+  ostype="$(utils__get_ostype)"
+  if [[ "$ostype" == "darwin"* ]]; then
+    utils__stop_if_not_command_exists "brew" "Install brew [ https://brew.sh ]"
+    echo "brew"
+  elif [[ "$ostype" == "linux"* ]]; then
+    local distro_name
+    distro_name="$(utils__get_distro_name)"
+      if [[ "$distro_name" == "Debian" ]]; then
+        utils__stop_if_not_command_exists "apt-get" "Check the Ubuntu website."
+        echo "apt"
+      elif [[ "$distro_name" == "Manjaro"* || "$distro_name" == "Arch"* ]]; then
+        utils__stop_if_not_command_exists "yay" "Install yay [ https://github.com/Jguer/yay ]"
+        echo "yay"
+      else
+        utils__err_exit "unknown linux distro"
+      fi
   else
-    echo "$1 : $2 is installed. Skipping."
+    utils__err_exit "platform not supported"
   fi
 }
 
+get_package_manager_inst_prefix() {
+  local package_manager="$1"
+  declare -A installation_prefix=(
+    ["brew"]="brew install"
+    ["apt"]="apt-get -y install"
+    ["yay"]="yay -Sy"
+  )
+  echo "${installation_prefix["$package_manager"]}"
+}
 
-# Installs with the built-in package manager
+PKG_MAN=$(get_package_manager)
+PKG_MAN_INST_PREFIX="$(get_package_manager_inst_prefix "$PKG_MAN")"
+
+install_if_command_not_exist() {
+  local command="$1"
+  local fun="$2"
+  if [ "$(utils__check_if_command_exists "$command")" = false ]; then
+    utils__color_msg "yellow" "\"$command\" not found on local. Installing..."
+    "$fun"
+  else
+    utils__color_msg "yellow" "\"$command\" is already installed. Skipping."
+    echo
+  fi
+}
+
 install__install_with_pkg_manager() {
-  if [ -x "$(command -v apt-get)" ]; then
-    sudo apt-get install "$1" -y
-  elif [ -x "$(command -v brew)" ]; then
-    brew install "$1"
-  else
-    echo "platform/pkg manager not supported."
-  fi
-}
-
-### Languages installed first ###
-
-install__python() {
-  # TODO make it work
-  source "$HOME"/dotfiles/install/python.sh
-}
-
-
-install__nodejs() {
-  # FIXME
-  install__install_with_pkg_manager "node" "nodejs"
-}
-
-
-### Programs & tools to install ###
-
-install__zsh() {
-  install__install_with_pkg_manager "zsh" "zsh"
-}
-
-
-install__neovim() {
-  install_pynvim() {
-    # python neovim modules. See `:h provider-python` in neovim
-    "$(command -v python3)" -m pip install -U pynvim --user
+  local command="$1"
+  local -n package_arr=$2
+  install_with_pkg_manager() {
+    utils__color_msg "green" "installing \"$command\" via the package manager"
+    local package_name
+    package_name="${package_arr[$PKG_MAN]}"
+    [ -z "$package_name" ] && package_name="${package_arr["all"]}"
+    $PKG_MAN_INST_PREFIX "$package_name"
   }
-  install_pynvim
-  # FIXME neovim and tmux have outdated versions in apt-get
-  install__install_with_pkg_manager "nvim" "neovim"
+  install_if_command_not_exist "$command" install_with_pkg_manager
+}
+
+install__install_custom() {
+  local command="$1"
+  local inst_fun="$2"
+  install_custom() {
+    utils__color_msg "green" "installing \"$command\" via custom script"
+    "$inst_fun"
+  }
+  install_if_command_not_exist "$command" install_custom
 }
 
 
-install__tmux() {
-  install__install_with_pkg_manager "tmux" "tmux"
+# The data structure designed around that if the package version doesn't exist,
+# the 'all' key is looked in the array. That way, I don't have to list the
+# names in all.
+{
+  declare -A pkg_zsh=( ["all"]="zsh" )
+  install__install_with_pkg_manager "zsh" "pkg_zsh"
+}
+{
+  declare -A pkg_tmux=( ["all"]="tmux" )
+  install__install_with_pkg_manager "tmux" "pkg_tmux"
+  # extra terminfo run for tmux:
   tic "$HOME"/dotfiles/tmux/tmux-256color.terminfo
   tic "$HOME"/dotfiles/tmux/xterm-256color-italic.terminfo
 }
-
-
-install__fzf() {
-  # https://github.com/junegunn/fzf
-  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
-    ~/.fzf/install
+{
+  # https://github.com/neovim/neovim
+  declare -A pkg_neovim=( ["brew"]="nvim" ["apt"]="nvim" ["yay"]="neovim" )
+  install__install_with_pkg_manager "nvim" "pkg_neovim"
 }
-
-
-install__ripgrep() {
+{
   # https://github.com/BurntSushi/ripgrep
-  # TODO fix the do_install_with_pkg_manager function definition file
-  install__install_with_pkg_manager "rg" "ripgrep"
+  declare -A pkg_ripgrep=( ["all"]="ripgrep" )
+  install__install_with_pkg_manager "rg" "pkg_ripgrep"
 }
-
-
-install__fd() {
-  # FIXME
+{
   # https://github.com/sharkdp/fd
-  install__install_with_pkg_manager "fd" "fd"
+  declare -A pkg_fd=( ["all"]="fd" )
+  install__install_with_pkg_manager "fd" "pkg_fd"
 }
-
-
-install__bat() {
+{
   # https://github.com/sharkdp/bat
-  install__install_with_pkg_manager "bat" "bat"
+  declare -A pkg_bat=( ["all"]="bat" )
+  install__install_with_pkg_manager "bat" "pkg_bat"
 }
-
-
-install__universal_ctags() {
-  # https://github.com/universal-ctags/ctags
-  git clone https://github.com/universal-ctags/ctags.git /tmp/ctags && \
-    pushd /tmp/ctags &&               \
-    ./autogen.sh &&                   \
-    ./configure --program-prefix=u && \
-    make && make install &&           \
-    popd &&                           \
-    rm -rf /tmp/ctags/
+{
+  # https://github.com/stedolan/jq
+  declare -A pkg_jq=( ["all"]="jq" )
+  install__install_with_pkg_manager "jq" "pkg_jq"
 }
-
-
-install__vim_sensible() {
-  # https://github.com/tpope/vim-sensible
-  if [ ! -f "$HOME"/.vimrc ]; then
-    wget -O \
-    "$HOME"/.vimrc \
-    https://raw.githubusercontent.com/tpope/vim-sensible/master/plugin/sensible.vim
-  fi
-}
-
-
-install__htop() {
-  install__install_with_pkg_manager "htop" "htop"
-}
-
-
-install__git_cola() {
-  # https://github.com/git-cola/git-cola
-  install__install_with_pkg_manager "git-cola" "git-cola"
-}
-
-
-install__git_substatus() {
-  # https://github.com/strboul/git-substatus
-  pip install git-substatus
-}
-
-
-install__shellcheck() {
+{
   # https://github.com/koalaman/shellcheck
-  install__install_with_pkg_manager "shellcheck" "shellcheck"
+  declare -A pkg_shellcheck=( ["all"]="shellcheck" )
+  install__install_with_pkg_manager "shellcheck" "pkg_shellcheck"
+}
+{
+  # https://github.com/jesseduffield/lazygit
+  declare -A pkg_lazygit=( ["all"]="lazygit" )
+  install__install_with_pkg_manager "lazygit" "pkg_lazygit"
+}
+{
+  # https://github.com/universal-ctags/ctags
+  declare -A pkg_ctags=( ["brew"]="--HEAD universal-ctags/universal-ctags/universal-ctags" ["yay"]="ctags" )
+  install__install_with_pkg_manager "ctags" "pkg_ctags"
+}
+{
+  declare -A pkg_nodejs=( ["all"]="nodejs" )
+  install__install_with_pkg_manager "node" "pkg_nodejs"
+}
+{
+  # https://github.com/junegunn/fzf
+  install_fzf() {
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
+      ~/.fzf/install
+  }
+  install__install_custom "fzf" install_fzf
 }
 
+install__install_ohmyzsh() {
+
+  local ohmyzsh_exists
+  ohmyzsh_exists="$(utils__check_variable_exists "$ZSH")"
+
+  if [ "$ohmyzsh_exists" ]; then
+    utils__color_msg "yellow" "\"ohmyzsh\" is already installed. Skipping."
+    echo
+    return 1
+  fi
+
+  utils__color_msg "yellow" "Installing \"ohmyzsh\" and plugins"
+
+  install_ohmyzsh() {
+    sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  }
+
+  install_plugin_autosuggestions() {
+    git clone https://github.com/zsh-users/zsh-autosuggestions.git \
+      "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
+  }
+
+  install_plugin_syntax_highlighting() {
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+      "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-syntax-highlighting
+  }
+
+  install_plugin_autosuggestions
+  install_plugin_syntax_highlighting
+}
+
+install__install_ohmyzsh
 
 # --------------------------------------------------------------------------- #
 # shell ----
@@ -181,14 +201,14 @@ shell__change_default_shell() {
   else
     utils__user_prompt "
     Default shell is not \"zsh\".
-    Do you want to \`chsh -s $(command -v zsh)\`?
+    Do you want to \`sudo chsh -s $(command -v zsh)\`?
     (Tip: leave the password prompt empty by pressing the <Enter> right away.)
     "
-    chsh -s "$(command -v zsh)"
+    utils__stop_if_not_command_exists "sudo"
+    sudo chsh -s "$(command -v zsh)"
     echo "Success! Shell should be changed upon the next login."
   fi
 }
-
 
 shell__check_default_shell() {
   {
@@ -202,72 +222,20 @@ shell__check_default_shell() {
     "Open file \`sudo vi /etc/pam.d/chsh\`"                        \
     "\`auth       required   pam_shells.so\` should be:"           \
     "\`auth       sufficient   pam_shells.so\`"
-    utils__err_exit "Aborted."
   }
 }
 
-# --------------------------------------------------------------------------- #
-# main ----
-# --------------------------------------------------------------------------- #
-
-main() {
-
-  # main variables:
-  num_dashes_to_print=79
-
-  utils__print_dashes $num_dashes_to_print
-
-  echo
-  echo "Pulling latest changes from the remote..."
-  (cd ~/dotfiles && git pull && git submodule update --init --recursive)
-  echo
-
-  # Pre-installation checks
-  check__dotfiles_in_home_dir
-  check__curl_installed
-  check__pkg_managers_installed
-  echo
-
-  # Prompting user first time
-  echo "Configure and install the dotfiles"
-  echo "Installing: zsh, neovim, tmux"
-  utils__user_prompt "Let's get started?"
-  echo
-
-
-  install__zsh
-
-  install__neovim
-
-  install__tmux
-
-
-  # Link all files:
-  source "$HOME"/dotfiles/zsh/link.sh
-  echo
-
-
-  # program installs:
-  install__fzf
-  install__ripgrep
-  install__fd
-  install__bat
-  install__python
-  install__nodejs
-  install__universal_ctags
-  install__vim_sensible
-  install__htop
-  install__git_substatus
-  install__shellcheck
-
-
+change_default_shell="$(utils__yesno_prompt "Do you want to change the default shell to zsh?")"
+if [ "${change_default_shell}" == "y" ]; then
   shell__check_default_shell
-  echo
+fi
 
+link_files="$(utils__yesno_prompt "Do you want to link the files?")"
+if [ "${link_files}" == "y" ]; then
+  source "$HOME"/dotfiles/zsh/link.sh
+fi
 
-  echo "Please log out and log back in for default shell to be initialized."
-
-  utils__print_dashes $num_dashes_to_print
-}
-
-main
+echo
+echo "-----------"
+echo "Setup done."
+echo "-----------"

@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-PIP="$(command -v pip)"
+set -e
 
-
-install_pyenv() {
+install__pyenv() {
   # pyenv: Simple Python version management
   # https://github.com/pyenv/pyenv
   #
@@ -21,48 +20,23 @@ install_pyenv() {
   # (Source: https://stackoverflow.com/a/33423958/)
   pyenv install "$(pyenv install --list | grep -v - | grep -v b | tail -1)"
 
+  pyenv install 3.9.1
   pyenv install 3.8.0
-  pyenv install 3.7.5
   pyenv install 2.7.15 # some old version for legacy code
-
 }
 
+install__pyenv
 
-install_jupyter() {
-  # https://jupyter.org/install
-  "$PIP" install jupyter
-}
+"$(command -v pyenv)" global 3.8.0
 
+PIP_INSTALL="python -m pip install --user"
 
-install_jedi() {
-  # Python autocomplete engine
-  # https://github.com/davidhalter/jedi
-  "$PIP" install jedi
-}
-
-
-install_radian() {
-  # https://github.com/randy3k/radian
-  "$PIP" install -U radian --user
-}
-
-
-install_bpython() {
-  # https://github.com/bpython/bpython
-  "$PIP" install bpython
-}
-
-
-install_pdbpp() {
-  # pdb++, a drop-in replacement for pdb
-  # https://github.com/pdbpp/pdbpp
-  "$PIP" install pdbpp
-}
-
-
-install_pyenv
-install_jupyter
-install_jedi
-install_radian
-install_bpython
-install_pdbpp
+$PIP_INSTALL virtualenv
+$PIP_INSTALL pynvim        # python neovim modules. See `:h provider-python` in neovim
+$PIP_INSTALL jupyter       # https://jupyter.org/install
+$PIP_INSTALL pylint        # https://github.com/PyCQA/pylint
+$PIP_INSTALL radian        # https://github.com/randy3k/radian
+$PIP_INSTALL bpython       # https://github.com/bpython/bpython
+$PIP_INSTALL pdbpp         # https://github.com/pdbpp/pdbpp (drop-in replacement for pdb)
+$PIP_INSTALL git-substatus # https://github.com/strboul/git-substatus
+$PIP_INSTALL tmuxp         # https://github.com/tmux-python/tmuxp

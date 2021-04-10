@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
+# Very basic todo functionality
+#
+# Usage:
+# todo 'message here'
+#
+
 set -e
 
 source "$HOME"/dotfiles/zsh/utils.sh
 
 MESSAGE="$1"
 printf -- "- %s\n\n" "$MESSAGE" >> todo
-utils__color_msg "green" "message added"
-
+utils__color_msg "green" "todo added"

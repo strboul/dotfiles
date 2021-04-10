@@ -1,3 +1,11 @@
+# disable the update prompt
+DISABLE_UPDATE_PROMPT=true
+
+# Private zsh file
+# (e.g. for private aliases & env vars that are credentials)
+[ -f "$HOME"/.zshrc_private ] && source "$HOME"/.zshrc_private
+
+# ===== tmux =====
 # Initialize tmux on zsh start-up if
 # (1) tmux exists,
 # (2) terminal emulator is alacritty.
@@ -9,19 +17,23 @@ if command -v tmux>/dev/null; then
       exec tmux -2 -u
 fi
 
-
 # change the default term to TMUX that it can display 256 colors
 export TERM=xterm-256color
 
+# ===== oh-my-zsh =====
+export ZSH="$HOME/.oh-my-zsh"
 
-# Private zsh file
-# (mainly for private aliases & env vars that are credentials)
-if [ -f "$HOME"/.zshrc_private ]; then
-  source "$HOME"/.zshrc_private
-fi
+ZSH_THEME="strboul"
 
+plugins=(
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  docker-compose
+)
 
-# ---------- Paths ----------
+source $ZSH/oh-my-zsh.sh
+
+# ===== paths =====
 # See line by line:  echo "${PATH//:/$'\n'}"
 export PATH="/usr/local/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
@@ -33,81 +45,56 @@ export PATH=$PATH:/usr/local/go/bin
 # $GOPATH env variable
 export PATH=$PATH:$(go env GOPATH)/bin
 
-
-# ---------- zsh plugins ----------
-source "$HOME"/dotfiles/zsh/plugins/fixls.zsh
-source "$HOME"/dotfiles/zsh/plugins/oh-my-zsh/lib/history.zsh
-source "$HOME"/dotfiles/zsh/plugins/oh-my-zsh/lib/key-bindings.zsh
-source "$HOME"/dotfiles/zsh/plugins/oh-my-zsh/lib/completion.zsh
-source "$HOME"/dotfiles/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source "$HOME"/dotfiles/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# zsh customization
+# ===== sources =====
 source "$HOME"/dotfiles/zsh/keybindings.zsh
-source "$HOME"/dotfiles/zsh/prompt.zsh
 
-
-# ---------- Settings ----------
-export VISUAL=vim
+# ===== settings =====
 export LANG=en_US.UTF-8
-HISTFILE=~/.zsh_history
+export EDITOR="nvim -u DEFAULTS"
+export DISABLE_AUTO_TITLE="true"
 
-# don't write these commands to the history
-# TODO test this, <c-r> or history doesn't work but cat ~/.zsh_history works
-HISTORY_IGNORE='(history|ls|cd|cd ..|pwd|clear|exit|cd|v)'
-
-# To save every command before it is executed
+# don't change dir without 'cd' command
+unsetopt AUTO_CD
+# don't use `less` pager for some commands, e.g. git
+unset LESS
+# save commands to history on type, not at shell exit
 setopt INC_APPEND_HISTORY
-
+# share history across zsh sessions
 setopt SHARE_HISTORY
-
-# avoid duplicate entries in the zsh history (also good for fzf search)
+# ignore all duplicate entries in the zsh history (also good for fzf search)
 setopt HIST_IGNORE_ALL_DUPS
-
+# removes blank lines from history
+setopt HIST_REDUCE_BLANKS
 # don't save commands starting with a space in history
 setopt HIST_IGNORE_SPACE
 
+# don't write these commands to the history
+# TODO test this, <c-r> or history doesn't work but cat ~/.zsh_history works
+HISTORY_IGNORE="(history|ls|cd|cd ..|pwd|clear|exit|cd|v)"
 
-# ---------- Aliases ----------
-alias cp='cp -iv' # 'cp' prompt and verbose
-alias mv='mv -iv' # 'mv' prompt and verbose
-alias ll='ls -l'
-alias la='ls -al'
+# ===== aliases =====
 
-c() {
+cdls() {
   # Custom cd (always ls when cd into a folder)
   # don't quote the param because cd should lead to home like default
-  cd $1 && ls
+  builtin cd "$@" && ls
 }
-alias cd="c"
+alias cd="cdls"
 
-# Colorful man
-# https://wiki.archlinux.org/index.php/Color_output_in_console#man
-man() {
-  LESS_TERMCAP_md=$'\e[01;31m' \
-  LESS_TERMCAP_me=$'\e[0m' \
-  LESS_TERMCAP_se=$'\e[0m' \
-  LESS_TERMCAP_so=$'\e[01;44;33m' \
-  LESS_TERMCAP_ue=$'\e[0m' \
-  LESS_TERMCAP_us=$'\e[01;32m' \
-  command man "$@"
-}
+alias cp="cp -iv" # 'cp' prompt and verbose
+alias mv="mv -iv" # 'mv' prompt and verbose
+alias ll="ls -l"
+alias la="ls -al"
 
-# ---------- Commands ----------
-alias python=python3
-alias pip=pip3
-
-alias v='eval $(command -v nvim)'
+alias v="eval $(command -v nvim)"
+alias v2="nvim -u $HOME/.config/nvim/lua/init.lua"
 # https://github.com/randy3k/radian
-alias r='eval $(command -v radian)'
+alias r="eval $(command -v radian)"
 # https://github.com/bpython/bpython
-alias py='eval $(command -v bpython)'
-
-# FIXME
-alias v2='nvim -u $HOME/dotfiles/nvim/init2.vim'
+alias py="eval $(command -v bpython)"
 
 
-# ---------- Configuration ----------
+# ===== configs =====
 
 # https://github.com/BurntSushi/ripgrep/blob/0.8.0/GUIDE.md#configuration-file
 export RIPGREP_CONFIG_PATH="$HOME"/.ripgreprc
@@ -115,17 +102,16 @@ export RIPGREP_CONFIG_PATH="$HOME"/.ripgreprc
 export BAT_CONFIG_PATH="$HOME"/.batconf
 export PYTHONSTARTUP=$HOME/.pythonstartup
 
-# https://github.com/pyenv/pyenv)
+# pyenv (https://github.com/pyenv/pyenv)
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
 
-
 # fzf (https://github.com/junegunn/fzf)
-
-# use 'fd' in fzf, that's better for exclusion
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# use 'fd' in fzf, that's better for exclusion.
 # (Source: https://github.com/junegunn/dotfiles/blob/ba5013726515e5185a2840b4b133991fe37b8827/bashrc#L369-L373)
 if command -v fd > /dev/null; then
   export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
@@ -134,7 +120,3 @@ if command -v fd > /dev/null; then
 else
   echo "fd not found. Install for a better fzf experience: https://github.com/sharkdp/fd"
 fi
-
-
-# the line below is managed by fzf:
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

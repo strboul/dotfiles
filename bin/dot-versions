@@ -1,41 +1,31 @@
 #!/usr/bin/env bash
 
-
-# prints the versions of the programs in the dotfiles
+# Print the versions of the programs in the dotfiles.
+#
+# Usage:
+# dot-versions
 #
 
-zsh_version() {
-  zsh --version
-}
+zsh_version() { zsh --version; }
+tmux_version() { tmux -V; }
+nvim_version() { nvim --version | head -n 1; }
+fzf_version() { printf "fzf %s" "$(fzf --version)"; }
+alacritty_version() { alacritty --version; }
+ripgrep_version() { rg --version | awk 'ORS=" "'; }
+bat_version() { bat --version; }
+fd_version() { fd --version; }
+git_version() { git --version; }
 
-tmux_version() {
-  tmux -V
-}
+# ---
 
-nvim_version() {
-  nvim --version | head -n 1
-}
+item() { printf "* %s\n" "$1"; }
 
-alacritty_version() {
-  alacritty --version
-}
-
-git_version() {
-  git --version
-}
-
-item() {
-  printf "* %s\n" "$1"
-}
-
-main() {
-  item "$(zsh_version)"
-  item "$(tmux_version)"
-  item "$(nvim_version)"
-  item "$(alacritty_version)"
-  item "$(git_version)"
-}
-
-"main"
-
-# vim: ft=sh
+item "$(git_version)"
+item "$(zsh_version)"
+item "$(tmux_version)"
+item "$(nvim_version)"
+item "$(fzf_version)"
+item "$(alacritty_version)"
+item "$(ripgrep_version)"
+item "$(bat_version)"
+item "$(fd_version)"

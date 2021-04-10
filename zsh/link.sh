@@ -5,57 +5,44 @@
 
 source "$HOME"/dotfiles/zsh/utils.sh
 
-
 do_link() {
-
   utils__check_file_or_dir_exists \
-    "$2" \
-    "$(printf "file or folder not exist in dotfiles: \"%s\"" "$2")"
-
-  mkdir -p "${1%/*}"
-
-  if [[ -h "$1" ]]; then
-    printf "symlink already exists in: \"%s\" -> \"%s\"\n" "$2" "$1"
+    "$1" \
+    "$(printf "file or folder not exist in dotfiles: \"%s\"" "$1")"
+  mkdir -p "${2%/*}"
+  if [[ -h "$2" ]]; then
+    printf "symlink already exists in: \"%s\" -> \"%s\"\n" "$1" "$2"
   else
-    utils__color_msg "green" "$(printf "Linking: \"%s\" -> \"%s\"\n" "$2" "$1")"
-    ln -sfn "$2" "$1"
+    utils__color_msg "green" "$(printf "Linking: \"%s\" -> \"%s\"\n" "$1" "$2")"
+    ln -sfn "$1" "$2"
   fi
-
 }
 
+# zsh
+do_link "$HOME"/dotfiles/zsh/zshrc.zsh "$HOME"/.zshrc
+do_link "$HOME"/dotfiles/zsh/strboul-theme.zsh "$ZSH"/themes/strboul.zsh-theme
 
-# Essentials
-do_link "$HOME"/.zshrc                          "$HOME"/dotfiles/zsh/zshrc.zsh
-do_link "$HOME"/.tmux.conf                      "$HOME"/dotfiles/tmux/tmux.conf
-do_link "$HOME"/.config/alacritty/alacritty.yml "$HOME"/dotfiles/tools/alacritty/alacritty.yml
-
-
-# Editors
-do_link "$HOME"/.R/snippets/r.snippets "$HOME"/dotfiles/editors/rstudio/r_rstudio.snippets
-
+# tmux
+do_link "$HOME"/dotfiles/tmux/tmux.conf "$HOME"/.tmux.conf
 
 # nvim
-do_link "$HOME"/.config/nvim/init.vim          "$HOME"/dotfiles/nvim/init.vim
-do_link "$HOME"/.config/nvim/lua               "$HOME"/dotfiles/nvim/lua/
-do_link "$HOME"/.config/nvim/coc-settings.json "$HOME"/dotfiles/nvim/plugins/coc/coc-settings.json
-do_link "$HOME"/.config/nvim/UltiSnips         "$HOME"/dotfiles/nvim/snippets/
+do_link "$HOME"/dotfiles/nvim/init.vim "$HOME"/.config/nvim/init.vim
+do_link "$HOME"/dotfiles/nvim/lua/ "$HOME"/.config/nvim/lua
+do_link "$HOME"/dotfiles/nvim/plugins/coc/coc-settings.json "$HOME"/.config/nvim/coc-settings.json
+do_link "$HOME"/dotfiles/nvim/snippets/ "$HOME"/.config/nvim/UltiSnips
 
+# lang
+do_link "$HOME"/dotfiles/lang/R/Rprofile.R "$HOME"/.Rprofile
+do_link "$HOME"/dotfiles/lang/python/pythonstartup.py "$HOME"/.pythonstartup
 
-# Languages
-do_link "$HOME"/.Rprofile      "$HOME"/dotfiles/lang/R/Rprofile.R
-do_link "$HOME"/.lintr         "$HOME"/dotfiles/lang/R/lintr
-do_link "$HOME"/.pythonstartup "$HOME"/dotfiles/lang/python/pythonstartup.py
+# tools
+do_link "$HOME"/dotfiles/tools/alacritty/alacritty.yml "$HOME"/.config/alacritty/alacritty.yml
+do_link "$HOME"/dotfiles/tools/ripgreprc "$HOME"/.ripgreprc
+do_link "$HOME"/dotfiles/tools/batconf "$HOME"/.batconf
+do_link "$HOME"/dotfiles/tools/fonts/JetBrainsMono/ "$HOME"/.local/share/fonts
 
+do_link "$HOME"/dotfiles/tools/git/gitconfig "$HOME"/.gitconfig
+do_link "$HOME"/dotfiles/tools/git/gitignore_global "$HOME"/.gitignore
 
-# Tools
-do_link "$HOME"/.ripgreprc        "$HOME"/dotfiles/tools/ripgreprc
-do_link "$HOME"/.batconf          "$HOME"/dotfiles/tools/batconf
-do_link "$HOME"/.config/grv/grvrc "$HOME"/dotfiles/tools/grvrc
-do_link "$HOME"/.lldbinit         "$HOME"/dotfiles/tools/lldbinit
-
-do_link "$HOME"/.local/share/fonts "$HOME"/dotfiles/tools/fonts/JetBrainsMono/
-
-
-do_link "$HOME"/.gitconfig "$HOME"/dotfiles/tools/git/gitconfig
-do_link "$HOME"/.gitignore "$HOME"/dotfiles/tools/git/gitignore
-
+# editors
+do_link "$HOME"/dotfiles/editors/rstudio/r_rstudio.snippets "$HOME"/.R/snippets/r.snippets

@@ -10,21 +10,6 @@
 
 " ----- Functions --------------------------------------------------------
 
-" Check nvim version, display a warning message if versions aren't the same
-  function mmy#CheckNvimVersion(compatible_version)
-    let l:nvim_v=matchstr(execute('version'), 'NVIM v\zs[^\n]*')
-    if l:nvim_v !~ a:compatible_version
-      echohl WarningMsg |
-        \ echo printf(
-        \ 'Warning: This config is designed to be compatible with neovim
-        \ version "%s" (you have "%s")',
-        \ a:compatible_version,
-        \ l:nvim_v
-        \ ) |
-        \ echohl None
-    endif
-  endfunction
-
 " Read a file (e.g. a txt) as a conf by removing commented and empty lines:
   function mmy#ReadTxtConfFile(file_path)
     let l:file=readfile(glob(a:file_path))
@@ -132,15 +117,3 @@
 
   command RemoveZeroWidthSpaceChars :call mmy#FunRemoveZeroWidthSpaceChars()
 
-
-" Scratch buffer
-  function mmy#FunScratch()
-    vsplit
-    noswapfile hide enew
-    setlocal buftype=nofile
-    setlocal bufhidden=hide
-    setlocal winhighlight=Normal:SignColumn
-    file scratch
-  endfunction
-
-  command Scratch :call mmy#FunScratch()

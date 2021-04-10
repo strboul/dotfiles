@@ -2,6 +2,8 @@
 
 neovim, zsh, tmux and *others*.
 
+Compatible with MacOS, Debian/Ubuntu, and Manjaro/Arch.
+
 ## Installation
 
 First, clone this repository into your home (`$HOME/`) and then change

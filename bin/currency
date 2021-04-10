@@ -10,7 +10,8 @@
 
 source "$HOME"/dotfiles/zsh/utils.sh
 
-utils__stop_if_not_command_exists "jq"
+utils__stop_if_not_command_exists "jq" "Please install it."
+utils__stop_if_not_command_exists "Rscript"
 
 AMOUNT=$1
 SOURCE_CURR=$2
@@ -33,10 +34,14 @@ calc_amount() {
 
 main() {
   echo "[$(utils__timestamp)]"
-  local conv_rate=$(get_conversion_rate)
+
+  local conv_rate
+  conv_rate=$(get_conversion_rate)
   echo "conversion rate: ${conv_rate}"
-  local calcd="$(calc_amount "${conv_rate}")"
-  echo "total: ${calcd}"
+
+  local calcd
+  calcd="$(calc_amount "${conv_rate}")"
+  echo "total:  ${calcd} ${TARGET_CURR}"
 }
 
 main

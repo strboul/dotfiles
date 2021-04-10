@@ -13,6 +13,9 @@ options(
   # set editor
   editor = "vim",
 
+  # default browser
+  browser = "chromium",
+
   # disable tcl/tk
   menu.graphics = FALSE,
 
@@ -55,7 +58,7 @@ local({
     installed_packages <- utils::installed.packages()
     not_installed <- !packages$package %in% installed_packages
     if (any(not_installed)) {
-      not_installed_pkgs <- packages[not_installed,]
+      not_installed_pkgs <- packages[not_installed, ]
       generate_install_msg <- function(pkgs, call_name) {
         pkgs_len <- length(pkgs)
         if (!pkgs_len > 0L) return(NULL)

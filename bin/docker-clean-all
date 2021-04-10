@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Clean all images and containers
+#
+# Usage:
+# docker-clean-all
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+utils__stop_if_not_command_exists "docker"
+
+DOCKER="$(command -v docker)"
+
+remove_cont_img="$(utils__yesno_prompt "Are you sure to remove all images and containers (after force stop)")"
+if [ "$remove_cont_img" == "y" ]; then
+  "$DOCKER" rm $("$DOCKER" ps -qa) --force
+  "$DOCKER" rmi --force $("$DOCKER" images -aq)
+fi
+
+remove_volumes="$(utils__yesno_prompt "Do you also want to remove volumes?")"
+if [ "$remove_volumes" == "y" ]; then
+  "$DOCKER" volume prune
+fi

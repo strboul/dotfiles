@@ -7,8 +7,11 @@
 # expensive than git checkout requiring the current index to be clean. Use
 # cases: PR reviews, long standing branches etc.
 #
-# Usage: create_worktree <branch>
+# Worktree commands:
+# - git worktree list
+# - git worktree prune
 #
+# Usage: create-git-worktree <path>
 
 set -e
 

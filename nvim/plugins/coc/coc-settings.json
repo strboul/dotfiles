@@ -9,10 +9,13 @@
   //"diagnostic.virtualTextPrefix": " ▇ ",
   "diagnostic.checkCurrentLine": false,
   //"diagnostic.messageTarget": "echo",
+  "diagnostic.errorSign": "⊘",
+  "diagnostic.warningSign": "⚠",
+  "diagnostic.infoSign": "🛈",
 
 
   // --- python
-  "python.pythonPath": "~/.pyenv/versions/3.7.5/bin/python",
+  "python.pythonPath": "~/.pyenv/shims/python",
 
   // prettier
   "coc.preferences.formatOnSaveFiletypes": [

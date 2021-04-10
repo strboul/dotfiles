@@ -1,4 +1,0 @@
-# https://bugs.llvm.org/show_bug.cgi?id=40200
-# settings set prompt \033[31m(lldb)\033[0m
-settings set prompt "(lldb) ============= "
-

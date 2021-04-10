@@ -56,10 +56,10 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " change the color of highlight as it's not so visible
 autocmd ColorScheme * hi default CocHighlightText guibg=Black
 
-" Use <TAB> for selections ranges.
+" Use vv for selections ranges.
 " NOTE: Requires 'textDocument/selectionRange' support from the language server.
-nmap <silent> <TAB><TAB> <Plug>(coc-range-select)
-xmap <silent> <TAB><TAB> <Plug>(coc-range-select)
+nmap <silent> vv <Plug>(coc-range-select)
+xmap <silent> vv <Plug>(coc-range-select)
 
 " Mappings using CoCList:
 " Show all diagnostics.

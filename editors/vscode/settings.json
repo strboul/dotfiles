@@ -1,7 +1,11 @@
 {
+  "editor.trimAutoWhitespace": true,
+
   "files.autoSave": "afterDelay",
+  "files.insertFinalNewline": true,
 
   "terminal.integrated.shell.linux": "/usr/bin/zsh",
+  "terminal.integrated.cursorBlinking": true,
 
   "workbench.colorCustomizations": {
     "terminal.background":"#000000",

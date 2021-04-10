@@ -1,0 +1,38 @@
+# Install with yay: Yet Another Yogurt - An AUR Helper Written in Go
+# https://github.com/Jguer/yay
+#
+# Search AUR packages in https://aur.archlinux.org/packages/
+#
+# Example:
+# yay -S <package-name>
+#
+docker
+docker-compose
+nodejs
+libgit2
+pandoc
+shellcheck
+gcc-fortran
+neovim-nightly-bin
+xsel
+tmux
+fd
+jq
+ctags
+lazygit
+# --- binaries
+firefox
+chromium
+rstudio-desktop-bin
+signal-desktop
+dbeaver # https://dbeaver.io/
+visual-studio-code-bin
+slack-desktop
+virtualbox-ext-oracle
+gnome-boxes
+zoom
+kitty
+git-cola
+pinta-git # https://www.pinta-project.com/
+flameshot # https://github.com/flameshot-org/flameshot
+postman-bin

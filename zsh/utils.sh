@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
-# Util functions
-# reusable functions across sh scripts
+# Reusable util functions for the dotfiles
+# POSIX compatible.
+
+utils__get_ostype() {
+  echo "$OSTYPE"
+}
+
+utils__get_distro_name() {
+  grep "^NAME=" /etc/os-release | awk -F= '{print $2}' | tr -d '"'
+}
 
 utils__print_dashes() {
   local num_dashes=$1
@@ -44,28 +52,31 @@ utils__check_file_or_dir_exists() {
   fi
 }
 
+utils__check_variable_exists() {
+  if [ -z "$1" ]; then echo true; else echo false; fi
+}
+
+utils__check_if_command_exists() {
+  if [ -x "$(command -v "$1")" ]; then echo true; else echo false; fi
+}
+
 utils__stop_if_not_command_exists() {
   local cmd=$1
   local msg=$2
-  if [ ! -x "$(command -v "$1")" ]; then
-    utils__err_exit "$(printf "%s not found. %s" "$cmd" "$msg")"
-  fi
+  [ "$(utils__check_if_command_exists "$cmd")" = false ] && utils__err_exit "$(printf "command \"%s\" not found. %s" "$cmd" "$msg")"
+  : # proceed
 }
 
-# Source: https://stackoverflow.com/a/27875395/
-utils__user_prompt() {
-  utils__color_msg "yellow" $(printf "%s [y/N]" "$@")
-  local old_stty_cfg=$(stty -g)
-  stty raw -echo
-  local answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-  stty "$old_stty_cfg"
-  if echo "$answer" | grep -iq "^y" ;then
-    echo "$answer"
-    : # do nothing. proceed to script.
-  else
-    echo "$answer"
-    utils__err_exit "Aborted."
-  fi
+utils__yesno_prompt() {
+  local msg=$1
+  while true; do
+    read -r -p "$(utils__color_msg "yellow" "${msg} [y/N]?")" answer
+    case ${answer} in
+      y) echo "y"; return 0 ;;
+      N) echo "N"; return 1 ;;
+      *) echo "Error: invalid option ${answer}. Try again [y/N]." ;;
+    esac
+  done
 }
 
 utils__is_git_repository() {

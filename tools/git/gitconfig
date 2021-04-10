@@ -1,25 +1,21 @@
 [core]
-	editor = vim
+	editor = "nvim -u DEFAULTS"
 	excludesfile = ~/.gitignore
 	autocrlf = input
-
 [push]
 	default = simple
-
+[pull]
+	ff = only
 [user]
 	useConfigOnly = true
-
 [diff]
 	colorMoved = default
-
 [merge]
 	tool = vimdiff
 	conflictstyle = diff3
-
 [mergetool]
 	prompt = false
 	keepBackup = false
-
 [color "branch"]
 	current = yellow bold
 	local = green bold
@@ -34,7 +30,6 @@
 	added = green bold
 	changed = yellow bold
 	untracked = red bold
-
 # git-cola
 [cola]
 	spellcheck = true

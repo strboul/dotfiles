@@ -1,17 +1,8 @@
 source $HOME/dotfiles/nvim/mmy.vim
 
-call mmy#CheckNvimVersion('0.5.0-741')
-
 " ----- General settings ---------------------------------------------------
 
-" Essentials
-  set hidden         " able to keep multiple open buffers
-  set encoding=utf-8 " string encoding always UTF-8
-  set mouse=a        " enable mouse use (if supported)
-  set t_Co=256       " support 256 colors
-  set termguicolors  " 24-bit RGB, use 'gui' instead of 'cterm' attributes
-  let mapleader=','  " leader key
-
+  source $HOME/dotfiles/nvim/essential.vim
 
 " Window display
   set nonumber         " line numbers
@@ -33,11 +24,6 @@ call mmy#CheckNvimVersion('0.5.0-741')
   set smartcase        " case sensitive search (if any uppercase char exists)
   set incsearch        " start matching as soon as something is typed
   set inccommand=split " preview substitution in split window (nvim specific)
-
-" No swap & backups - VCS everywhere
-  set noswapfile
-  set nobackup
-  set nowritebackup
 
 
 " Pasting
@@ -107,9 +93,7 @@ call mmy#CheckNvimVersion('0.5.0-741')
 
 " ----- Plugins ------------------------------------------------------------
 
-" https://github.com/junegunn/vim-plug
-" Auto installation vim-plug
-  " FIXME is it still relevant?
+" Auto installation vim-plug (https://github.com/junegunn/vim-plug)
   if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
     silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
           \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -129,12 +113,8 @@ call plug#begin('~/.local/share/nvim/plugged')
 
   " map commands
   nnoremap <silent> <c-p> :Files<CR>
-  nnoremap <silent> <c-a-p> :Commands<CR>
-
   " list open buffers
   nnoremap <silent> <leader>b :Buffers<CR>
-  " search lines in current buffer.
-  nnoremap <silent> <leader>l :BLines<CR>
 
   " Rg with arguments
   " (https://github.com/junegunn/fzf.vim/issues/838#issuecomment-509902575)
@@ -159,10 +139,14 @@ call plug#begin('~/.local/share/nvim/plugged')
   Plug 'https://github.com/preservim/nerdtree'
   source $HOME/dotfiles/nvim/plugins/nerdtree.vim
 
+
 " nerdcommenter
   Plug 'https://github.com/preservim/nerdcommenter'
   " add an extra space after comment symbol
   let NERDSpaceDelims=1
+  let g:NERDCustomDelimiters={
+    \ 'javascript': { 'left': '//', 'right': '', 'leftAlt': '{/*', 'rightAlt': '*/}' },
+    \}
 
 
 " vim-airline
@@ -213,6 +197,9 @@ call plug#begin('~/.local/share/nvim/plugged')
   Plug 'https://github.com/preservim/tagbar'
   " tags should be sorted by order of their apperance, not alphabetically
   let g:tagbar_sort=0
+
+" Vista
+  Plug 'https://github.com/liuchengxu/vista.vim'
 
 
 " urlview
@@ -293,6 +280,10 @@ call plug#begin('~/.local/share/nvim/plugged')
   Plug 'https://github.com/sheerun/vim-polyglot'
 
 
+" prisma2 syntax highlighting
+  Plug 'https://github.com/pantharshit00/vim-prisma'
+
+
 " ale (syntax checker)
 " it's still useful for some checks, e.g. shellcheck for bash/zsh TODO is it?
   Plug 'https://github.com/dense-analysis/ale'
@@ -301,7 +292,8 @@ call plug#begin('~/.local/share/nvim/plugged')
   let g:ale_pattern_options={
     \ '.R$':   {'ale_enabled': 0},
     \ '.Rmd$': {'ale_enabled': 0},
-    \ '.py$':  {'ale_enabled': 0}
+    \ '.py$':  {'ale_enabled': 0},
+    \ '.js$':  {'ale_enabled': 0}
   \}
 
 
@@ -315,8 +307,6 @@ call plug#begin('~/.local/share/nvim/plugged')
   Plug 'https://github.com/bfredl/nvim-luadev'
   nmap <leader>l <Plug>(Luadev-RunLine)
   vmap <leader>l <Plug>(Luadev-Run)
-
-  Plug 'https://github.com/liuchengxu/vista.vim'
 
 
 call plug#end()
