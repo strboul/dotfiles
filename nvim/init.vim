@@ -72,21 +72,11 @@ source $HOME/dotfiles/nvim/mmy.vim
 " essential autocommands
   source $HOME/dotfiles/nvim/autocmds.vim
 
-
 " Quickfix
-  " - ESC closes the window
-  autocmd BufWinEnter quickfix
-    \ setlocal number |
-    \ setlocal norelativenumber |
-    \ setlocal signcolumn=no |
-    \ setlocal nolist |
-    \ nnoremap <buffer><silent> <ESC> :cclose<CR>
-
+  source $HOME/dotfiles/nvim/quickfix.vim
 
 " Help
-  " - ESC closes the window
-  autocmd FileType help nnoremap <buffer><silent> <ESC> :helpclose<CR>
-
+  source $HOME/dotfiles/nvim/help.vim
 
   source $HOME/dotfiles/nvim/filetypes.vim
   source $HOME/dotfiles/nvim/mappings.vim
@@ -146,7 +136,7 @@ call plug#begin('~/.local/share/nvim/plugged')
   let NERDSpaceDelims=1
   let g:NERDCustomDelimiters={
     \ 'javascript': { 'left': '//', 'right': '', 'leftAlt': '{/*', 'rightAlt': '*/}' },
-    \}
+  \ }
 
 
 " vim-airline
@@ -219,6 +209,12 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 " floaterm
   Plug 'voldikss/vim-floaterm'
+
+  function! s:floaterm_lazygit()
+    :FloatermNew lazygit
+  endfunction
+  command Lg :call s:floaterm_lazygit()
+
   source $HOME/dotfiles/nvim/plugins/floaterm.vim
 
 
@@ -236,24 +232,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 " vim-peekaboo:  " / @ / C-r
   Plug 'https://github.com/junegunn/vim-peekaboo'
-  let g:peekaboo_window='botright 35new'
-  let g:peekaboo_compact=1
-  " don't open immediately, esp. for obvious ones eg. repeating last macro `@@`
-  let g:peekaboo_delay=300
-
-  function! s:vim_peekaboo_win()
-    setlocal nolist
-    setlocal nonumber
-    setlocal signcolumn=no
-    setlocal colorcolumn=
-    setlocal scrolloff=0
-    setlocal winhighlight=Normal:Pmenu
-  endfunction
-
-  augroup PeekabooWindow
-    autocmd!
-    autocmd FileType peekaboo call s:vim_peekaboo_win()
-  augroup END
+  source $HOME/dotfiles/nvim/plugins/peekaboo.vim
 
 
 " vim-easy-align
@@ -293,7 +272,10 @@ call plug#begin('~/.local/share/nvim/plugged')
     \ '.R$':   {'ale_enabled': 0},
     \ '.Rmd$': {'ale_enabled': 0},
     \ '.py$':  {'ale_enabled': 0},
-    \ '.js$':  {'ale_enabled': 0}
+    \ '.js$':  {'ale_enabled': 0},
+    \ '.jsx$':  {'ale_enabled': 0},
+    \ '.ts$':  {'ale_enabled': 0},
+    \ '.tsx$':  {'ale_enabled': 0}
   \}
 
 
@@ -308,6 +290,14 @@ call plug#begin('~/.local/share/nvim/plugged')
   nmap <leader>l <Plug>(Luadev-RunLine)
   vmap <leader>l <Plug>(Luadev-Run)
 
+Plug 'https://github.com/kdav5758/HighStr.nvim'
+nnoremap <silent> <f1> :HSRmHighlight<CR>
+vnoremap <silent> <f1> :<c-u>HSRmHighlight<CR>
+vnoremap <silent> <f2> :<c-u>HSHighlight 1<CR>
+vnoremap <silent> <f3> :<c-u>HSHighlight 7<CR>
+vnoremap <silent> <f4> :<c-u>HSHighlight 3<CR>
+
+Plug 'https://github.com/hkupty/iron.nvim'
 
 call plug#end()
 
@@ -331,6 +321,7 @@ call plug#end()
   highlight Comment gui=italic
   " the vertical split color:
   highlight VertSplit guibg=NONE
+  highlight SignColumn guibg=#1c1c1c
   highlight ColorColumn guibg=#1c1c1c
   highlight CursorLine guibg=#1c1c1c
 
@@ -351,8 +342,5 @@ call plug#end()
   endfunction
   autocmd FileType tagbar call s:tagbar_colors()
 
-
-" lua
-  lua require('utils')
 
 " #### THE END ####

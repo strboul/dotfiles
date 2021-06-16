@@ -5,10 +5,10 @@
 
 
   // --- diagnostic
-  //"diagnostic.virtualText": true,
-  //"diagnostic.virtualTextPrefix": " ▇ ",
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextPrefix": " ▇ ",
   "diagnostic.checkCurrentLine": false,
-  //"diagnostic.messageTarget": "echo",
+  "diagnostic.messageTarget": "echo",
   "diagnostic.errorSign": "⊘",
   "diagnostic.warningSign": "⚠",
   "diagnostic.infoSign": "🛈",

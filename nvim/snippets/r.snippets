@@ -7,33 +7,8 @@ Reduce(
 )
 endsnippet
 
-snippet doc "roxygen documentation"
-#' ${1:<<Title>>}
-#'
-#' @description
-#' ${2:<<Description>>}
-#'
-#' @param ${3:<<param>>} ${4:<<description>>}
-#'
-#' @export
-endsnippet
-
 snippet colnames "rename data.frame colnames"
 colnames(${1:df})[colnames(${1:df}) == "${2:old_name}"] <- "${3:new_name}"
-endsnippet
-
-snippet shinyapp "shinyapp skeleton"
-library(shiny)
-
-ui <- fluidPage(
-	${0}
-)
-
-server <- function(input, output, session) {
-	${1}
-}
-
-shinyApp(ui, server)
 endsnippet
 
 snippet cfunction "inline::cfunction"
@@ -44,16 +19,16 @@ fun <- inline::cfunction(c(x = "numeric"), '
 endsnippet
 
 snippet R6Class "R6 OOP skeleton"
-${1:name} <- R6::R6Class(
-	"${1:name}",
+${0:name} <- R6::R6Class(
+	"${0:name}",
 	public = list(
-			param = NULL,
+		param = NULL,
 
-			initialize = function(param) {
-				self\$param <- param
-			}
+		initialize = function(param) {
+			self\$param <- param
+		}
 
-		),
+	),
 	private = NULL
 )
 endsnippet

@@ -2,6 +2,10 @@
 #
 # Beware of user permissions.
 
+# typescript
+typescript
+ts-node
+
 # linters
 eslint
 prettier

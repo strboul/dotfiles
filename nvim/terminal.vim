@@ -1,5 +1,4 @@
-" ----- Terminal emulator ---------------------------------------------------
-
+""" Terminal emulator
 " ESC turns terminal to normal mode
 tnoremap <Esc> <C-\><C-n>
 " <C-w> window navigation returns to normal mode

@@ -56,6 +56,9 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " change the color of highlight as it's not so visible
 autocmd ColorScheme * hi default CocHighlightText guibg=Black
 
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
 " Use vv for selections ranges.
 " NOTE: Requires 'textDocument/selectionRange' support from the language server.
 nmap <silent> vv <Plug>(coc-range-select)

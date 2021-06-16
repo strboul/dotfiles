@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# TODO refactor it
+# https://github.com/aitemr/awesome-git-hooks/blob/master/prepare-commit-msg/prepare-commit-msg-jira
+
+FILE=$1
+MESSAGE=$(cat $FILE)
+
+TICKET=$(git rev-parse --abbrev-ref HEAD | grep -Eo '^(\w+/)?(\w+[-_])?[0-9]+' | grep -Eo '(\w+[-])?[0-9]+')
+if [[ -z $TICKET || "$MESSAGE" == "$TICKET"* ]];then
+  exit 0;
+fi
+
+echo "[#$TICKET] $MESSAGE" > $FILE

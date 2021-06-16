@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2001
+
+# Browse git remote repository on a browser (default is Firefox)
+#
+# Usage:
+# gbrowse . --browser=<command-name>
+#
+# Examples:
+# gbrowse . --browser="google-chrome-stable" # (however google-chrome is called on
+# the system)
+#
+
+# TODO: Add path and browser arguments
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+utils__check_git_repository "${PWD}"
+
+
+get_git_remote_ssh_address() {
+  git config --get remote.origin.url
+}
+
+open_browser() {
+  eval "$(printf "xdg-open 2>/dev/null %s" "$1")"
+}
+
+str__remove_git_begin() {
+  echo "$1" | sed "s/^git@//"
+}
+
+str__remove_git_end() {
+  echo "$1" | sed "s/\.git$//"
+}
+
+str__replace_colon_slash() {
+  echo "$1" | sed "s/\:/\//"
+}
+
+str__add_https_begin() {
+  echo "$1" | sed "s/^/https:\/\//"
+}
+
+ssh_address_to_url() {
+  local str
+  str="$1"
+  str="$(str__remove_git_begin "${str}")"
+  str="$(str__remove_git_end "${str}")"
+  str="$(str__replace_colon_slash "${str}")"
+  str="$(str__add_https_begin "${str}")"
+  echo "${str}"
+}
+
+main() {
+  local ssh_address
+  ssh_address="$(get_git_remote_ssh_address)"
+
+  local url
+  url="$(ssh_address_to_url "${ssh_address}")"
+
+  open_browser "${url}"
+  utils__log_message "opened \"${url}\""
+}
+
+main "$@"

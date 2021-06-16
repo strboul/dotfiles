@@ -21,7 +21,7 @@ clipboard_copy() {
 }
 
 main() {
-  utils__check_file_or_dir_exists ".git" "No git repository found."
+  utils__check_git_repository "${PWD}"
   local gitlog=(
     git log \
       --graph \

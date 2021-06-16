@@ -3,36 +3,46 @@
 #
 # Search AUR packages in https://aur.archlinux.org/packages/
 #
-# Example:
-# yay -S <package-name>
+# Usage:
+# Install with
+#   yay -S <package-name>
 #
+# Uninstall with
+#   yay -R <package-name>
+#
+ctags
 docker
 docker-compose
-nodejs
-libgit2
-pandoc
-shellcheck
-gcc-fortran
-neovim-nightly-bin
-xsel
-tmux
 fd
+gcc-fortran
 jq
-ctags
-lazygit
-# --- binaries
-firefox
+lazygit # https://github.com/jesseduffield/lazygit
+libgit2
+neovim-nightly-bin
+nix
+nnn # https://github.com/jarun/nnn
+nodejs
+pandoc
+ranger # https://github.com/ranger/ranger
+shellcheck # https://github.com/koalaman/shellcheck
+tmux
+xsel
+####################
+##### binaries #####
+####################
+brave
 chromium
+dbeaver # https://dbeaver.io/
+firefox
+flameshot # https://github.com/flameshot-org/flameshot
+gnome-boxes
+google-chrome
+kitty
+pinta-git # https://www.pinta-project.com/
+postman-bin
 rstudio-desktop-bin
 signal-desktop
-dbeaver # https://dbeaver.io/
-visual-studio-code-bin
 slack-desktop
 virtualbox-ext-oracle
-gnome-boxes
+visual-studio-code-bin
 zoom
-kitty
-git-cola
-pinta-git # https://www.pinta-project.com/
-flameshot # https://github.com/flameshot-org/flameshot
-postman-bin

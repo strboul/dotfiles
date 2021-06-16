@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-source "$HOME"/dotfiles/zsh/utils.sh
+# fm
+# Open File Manager of the desktop environment
+#
+# Usage:
+# fm
+# fm <dir>
 
+source "$HOME"/dotfiles/zsh/utils.sh
 
 main() {
 
@@ -9,32 +15,29 @@ main() {
     utils__err_exit "only provide zero or one argument."
   fi
 
+  local pat
   if [ -z "$1" ]; then
     pat="$PWD"
   else
     pat="$1"
   fi
 
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-
+  local ostype
+  ostype="$(utils__get_ostype)"
+  if [[ ${ostype} == "darwin"* ]]; then
     open "$pat"
-
-  elif [[ "$OSTYPE" == "linux"* ]]; then
-
+  elif [[ ${ostype} == "linux"* ]]; then
     if [ -x "$(command -v xdg-open)" ]; then
-      eval "$(printf "xdg-open 2>/dev/null %s" $pat)"
+      eval "$(printf "xdg-open 2>/dev/null %s" "${pat}")"
     else
       utils__err_exit "xdg-open not found."
     fi
-
   else
     utils__err_exit "Platform not supported."
   fi
 
-  printf "opened file manager at: %s\n" $pat
+  printf "opened file manager at: %s\n" "${pat}"
 }
 
 
 main "$@"
-
-# vim: ft=sh

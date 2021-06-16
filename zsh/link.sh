@@ -27,7 +27,6 @@ do_link "$HOME"/dotfiles/tmux/tmux.conf "$HOME"/.tmux.conf
 
 # nvim
 do_link "$HOME"/dotfiles/nvim/init.vim "$HOME"/.config/nvim/init.vim
-do_link "$HOME"/dotfiles/nvim/lua/ "$HOME"/.config/nvim/lua
 do_link "$HOME"/dotfiles/nvim/plugins/coc/coc-settings.json "$HOME"/.config/nvim/coc-settings.json
 do_link "$HOME"/dotfiles/nvim/snippets/ "$HOME"/.config/nvim/UltiSnips
 

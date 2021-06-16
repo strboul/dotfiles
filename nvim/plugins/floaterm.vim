@@ -1,3 +1,4 @@
+""" Floaterm plugin
 " don't enter insert mode after opening a floaterm
   let g:floaterm_autoinsert=0
 
@@ -6,6 +7,7 @@
   let s:repl_list['r']=executable('radian') ? 'radian' : 'R'
   let s:repl_list['python']=executable('bpython') ? 'bpython' : 'python3'
   let s:repl_list['javascript']="node"
+  let s:repl_list['typescript']="ts-node"
 
   function s:GetREPLCommand(file_type)
     if has_key(s:repl_list,a:file_type)

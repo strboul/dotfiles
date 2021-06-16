@@ -1,13 +1,11 @@
-# List of packages can be installed with Homebrew https://brew.sh/
+# List of packages to be installed with Homebrew https://brew.sh/
 #
-# To install everything, call `brew bundle` when in this file's directory.
-#
-# To install individual apps:
-#  `brew install <name>`
-#  `brew cask install <name>`
+# To install individual packages:
+#  `brew install <pkg>`
+#  `brew cask install <pkg>`
 #
 # To install everything listed here:
-#   `brew bundle`
+#   `brew bundle --file=brewfile`
 #
 ######################
 ######## BREW ########
@@ -90,10 +88,10 @@ cask "chromedriver"
 cask "db-browser-for-sqlite" # https://sqlitebrowser.org/
 cask "dbeaver-community" # https://dbeaver.io/
 cask "docker"
-cask "github" # https://desktop.github.com/
 cask "emacs"
 cask "firefox"
 cask "gimp" # https://www.gimp.org/downloads/
+cask "github" # https://desktop.github.com/
 cask "google-backup-and-sync" # ..file-stream for business
 cask "google-chrome"
 cask "intellij-idea-ce"
@@ -116,4 +114,3 @@ cask "virtualbox"
 cask "visual-studio-code"
 cask "vlc"
 cask "zotero"
-# vim: ft=ruby

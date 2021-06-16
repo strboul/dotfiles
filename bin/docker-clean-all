@@ -4,12 +4,16 @@
 #
 # Usage:
 # docker-clean-all
+# docker-clean-all -y # don't prompt, 'Y' to all
 
 source "$HOME"/dotfiles/zsh/utils.sh
 
 utils__stop_if_not_command_exists "docker"
 
 DOCKER="$(command -v docker)"
+
+# TODO
+FLAG_Y="$1"
 
 remove_cont_img="$(utils__yesno_prompt "Are you sure to remove all images and containers (after force stop)")"
 if [ "$remove_cont_img" == "y" ]; then
@@ -19,5 +23,5 @@ fi
 
 remove_volumes="$(utils__yesno_prompt "Do you also want to remove volumes?")"
 if [ "$remove_volumes" == "y" ]; then
-  "$DOCKER" volume prune
+  "$DOCKER" volume prune -f
 fi

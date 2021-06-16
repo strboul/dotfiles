@@ -1,3 +1,4 @@
+""" NERDTree plugin
 " Use NERDTree as 'project drawer'
 
 " position of NERDTree panel

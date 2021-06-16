@@ -6,6 +6,7 @@
 # dot-versions
 #
 
+# ----- Version strings -----
 zsh_version() { zsh --version; }
 tmux_version() { tmux -V; }
 nvim_version() { nvim --version | head -n 1; }
@@ -16,16 +17,31 @@ bat_version() { bat --version; }
 fd_version() { fd --version; }
 git_version() { git --version; }
 
-# ---
+# ----- Utils -----
+itemize() {
+  printf "* %s\n" "$1";
+}
 
-item() { printf "* %s\n" "$1"; }
+replace_first_space() {
+  echo "$1" | sed -r "s/\s+/|/";
+}
 
-item "$(git_version)"
-item "$(zsh_version)"
-item "$(tmux_version)"
-item "$(nvim_version)"
-item "$(fzf_version)"
-item "$(alacritty_version)"
-item "$(ripgrep_version)"
-item "$(bat_version)"
-item "$(fd_version)"
+new_row() {
+  itemize "$(replace_first_space "$1")";
+}
+
+# ----- Main -----
+main() {
+  new_row "$(git_version)"
+  new_row "$(zsh_version)"
+  new_row "$(tmux_version)"
+  new_row "$(nvim_version)"
+  new_row "$(fzf_version)"
+  new_row "$(alacritty_version)"
+  new_row "$(ripgrep_version)"
+  new_row "$(bat_version)"
+  new_row "$(fd_version)"
+}
+
+# align the columns
+main | column -t -s "|"

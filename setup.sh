@@ -27,15 +27,19 @@ get_package_manager() {
   elif [[ "$ostype" == "linux"* ]]; then
     local distro_name
     distro_name="$(utils__get_distro_name)"
-      if [[ "$distro_name" == "Debian" ]]; then
-        utils__stop_if_not_command_exists "apt-get" "Check the Ubuntu website."
-        echo "apt"
-      elif [[ "$distro_name" == "Manjaro"* || "$distro_name" == "Arch"* ]]; then
-        utils__stop_if_not_command_exists "yay" "Install yay [ https://github.com/Jguer/yay ]"
-        echo "yay"
-      else
-        utils__err_exit "unknown linux distro"
-      fi
+    if [[ "$distro_name" == "Debian" ]]; then
+      utils__stop_if_not_command_exists \
+        "apt-get" \
+        "Check the Ubuntu website."
+      echo "apt"
+    elif [[ "$distro_name" == "Manjaro"* || "$distro_name" == "Arch"* ]]; then
+      utils__stop_if_not_command_exists \
+        "yay" \
+        "Install yay [ https://github.com/Jguer/yay ]"
+      echo "yay"
+    else
+      utils__err_exit "unknown linux distro"
+    fi
   else
     utils__err_exit "platform not supported"
   fi
@@ -140,6 +144,11 @@ install__install_custom() {
   install__install_with_pkg_manager "lazygit" "pkg_lazygit"
 }
 {
+  # https://github.com/jesseduffield/lazydocker
+  declare -A pkg_lazydocker=( ["all"]="lazydocker" )
+  install__install_with_pkg_manager "lazydocker" "pkg_lazydocker"
+}
+{
   # https://github.com/universal-ctags/ctags
   declare -A pkg_ctags=( ["brew"]="--HEAD universal-ctags/universal-ctags/universal-ctags" ["yay"]="ctags" )
   install__install_with_pkg_manager "ctags" "pkg_ctags"
@@ -214,7 +223,7 @@ shell__check_default_shell() {
   {
     shell__change_default_shell
   } || {
-    utils__color_msg "red"                                                \
+    utils__color_msg "red"                                         \
     "The configuration will not work properly without \"zsh\"."    \
     "\nTroubleshooting:"                                           \
     "If you received \"chsh: PAM: Authentication failure\" error," \

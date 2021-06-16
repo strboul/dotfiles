@@ -30,8 +30,7 @@
 	added = green bold
 	changed = yellow bold
 	untracked = red bold
-# git-cola
-[cola]
-	spellcheck = true
 [commit]
 	verbose = true
+[credential]
+	helper = cache

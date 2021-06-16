@@ -1,4 +1,4 @@
-# disable the update prompt
+# disable the update prompt from oh-my-zsh
 DISABLE_UPDATE_PROMPT=true
 
 # Private zsh file
@@ -25,10 +25,13 @@ export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="strboul"
 
+# See all: https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
 plugins=(
   zsh-autosuggestions
   zsh-syntax-highlighting
+  docker
   docker-compose
+  npm
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -74,12 +77,17 @@ HISTORY_IGNORE="(history|ls|cd|cd ..|pwd|clear|exit|cd|v)"
 
 # ===== aliases =====
 
-cdls() {
+_cdls() {
   # Custom cd (always ls when cd into a folder)
-  # don't quote the param because cd should lead to home like default
   builtin cd "$@" && ls
 }
-alias cd="cdls"
+alias cd="_cdls"
+
+_cdr() {
+  # jump to the root path of a git repository
+  cd "$(git rev-parse --show-toplevel)"
+}
+alias cdr="_cdr"
 
 alias cp="cp -iv" # 'cp' prompt and verbose
 alias mv="mv -iv" # 'mv' prompt and verbose
@@ -87,11 +95,13 @@ alias ll="ls -l"
 alias la="ls -al"
 
 alias v="eval $(command -v nvim)"
-alias v2="nvim -u $HOME/.config/nvim/lua/init.lua"
+alias v2="nvim -u $HOME/dotfiles/nvim/lua/init2.lua"
 # https://github.com/randy3k/radian
 alias r="eval $(command -v radian)"
 # https://github.com/bpython/bpython
 alias py="eval $(command -v bpython)"
+# https://github.com/jesseduffield/lazygit
+alias lg="eval $(command -v lazygit)"
 
 
 # ===== configs =====
@@ -120,3 +130,8 @@ if command -v fd > /dev/null; then
 else
   echo "fd not found. Install for a better fzf experience: https://github.com/sharkdp/fd"
 fi
+
+# nvm (https://github.com/nvm-sh/nvm#installing-and-updating)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+

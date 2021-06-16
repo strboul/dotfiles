@@ -5,12 +5,6 @@
 snippet lib
 	library(${0})
 
-snippet req
-	require("${1:package}")
-
-snippet src
-	source("${1:file.R}")
-
 snippet ifelse
 	ifelse(${1:condition}, ${2:yes}, ${3:no})
 
@@ -43,17 +37,8 @@ snippet lapply
 snippet sapply
 	sapply(${1:list}, ${2:function})
 
-snippet mapply
-	mapply(${1:function}, ${2:...})
-
-snippet tapply
-	tapply(${1:vector}, ${2:index}, ${3:function})
-
 snippet vapply
 	vapply(${1:list}, ${2:function}, FUN.VALUE = ${3:type}, ${4:...})
-
-snippet rapply
-	rapply(${1:list}, ${2:function})
 
 snippet do.call
 	do.call(${1:function}, list(${2:list}))
@@ -61,28 +46,11 @@ snippet do.call
 snippet tryCatch
 	tryCatch(${0}, error = function(e) paste("Failure: ", conditionMessage(e)))
 
-snippet data.frame
-	data.frame(${0})
-
 # S3 OBJECT SYSTEM
 snippet generic
 	${1:name} <- function(${2:arg}) {
 		UseMethod("${1:name}")
 	}
-
-# S4 OBJECT SYSTEM
-snippet setGeneric
-	setGeneric("${1:generic}", function(${2:x, ...}) {
-		standardGeneric("${1:generic}")
-	})
-
-snippet setMethod
-	setMethod("${1:generic}", ${2:class}, function(${2:x, ...}) {
-		${0}
-	})
-
-snippet setClass
-	setClass("${1:Class}", slots = c(${2:name = "type"}))
 
 # R6 OBJECT SYSTEM
 snippet R6Class "R6 OOP skeleton"
@@ -97,10 +65,6 @@ R6::R6Class("${1:name}",
 		),
 	private = NULL
 ) -> ${1:name}
-
-# STATS
-snippet matrix
-	matrix(${1:data}, nrow = ${2:rows}, ncol = ${3:cols})
 
 # MISCELLANEOUS
 snippet apr

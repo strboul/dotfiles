@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Get your public IP address
+#
+# Usage:
+# public-ip
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+utils__stop_if_not_command_exists "curl"
+
+curl ifconfig.me
+echo
