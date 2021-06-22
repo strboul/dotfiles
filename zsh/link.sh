@@ -13,7 +13,7 @@ do_link() {
   if [[ -h "$2" ]]; then
     printf "symlink already exists in: \"%s\" -> \"%s\"\n" "$1" "$2"
   else
-    utils__color_msg "green" "$(printf "Linking: \"%s\" -> \"%s\"\n" "$1" "$2")"
+    utils__log__success "$(printf "Linking: \"%s\" -> \"%s\"\n" "$1" "$2")"
     ln -sfn "$1" "$2"
   fi
 }

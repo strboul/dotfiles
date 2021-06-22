@@ -1,15 +1,73 @@
 #!/usr/bin/env bash
 
-# Reusable util functions for the dotfiles
-# POSIX compatible.
+# Reusable util functions for the dotfiles - aims to be POSIX compatible.
 
-utils__get_ostype() {
+# --------------------------------------------------------------------------- #
+# log ----
+# --------------------------------------------------------------------------- #
+
+utils__log__info() {
+  utils__message__color_message "yellow" "[$(utils__timestamp)]" "$@"
+}
+
+utils__log__success() {
+  utils__message__color_message "green" "[$(utils__timestamp)]" "$@"
+}
+
+utils__log__error() {
+  utils__message__color_message "red" "[$(utils__timestamp)]" "$@"
+}
+
+# --------------------------------------------------------------------------- #
+# message ----
+# --------------------------------------------------------------------------- #
+
+utils__message__color_message() {
+  # Example:
+  # color_msg "red" "Oh no!" "Something went wrong."
+  local color_name="$1"
+
+  declare -A colors
+  local colors=(["red"]="31" ["green"]="32" ["yellow"]="33")
+
+  local selected
+  local selected="${colors["$color_name"]}"
+
+  printf "\e[\"$selected\"m%s\e[0m " "${@:2}"
+  echo
+}
+
+# --------------------------------------------------------------------------- #
+# OS ----
+# --------------------------------------------------------------------------- #
+
+utils__os__get_ostype() {
   echo "$OSTYPE"
 }
 
-utils__get_distro_name() {
+utils__os__get_distro_name() {
   grep "^NAME=" /etc/os-release | awk -F= '{print $2}' | tr -d '"'
 }
+
+# --------------------------------------------------------------------------- #
+# git ----
+# --------------------------------------------------------------------------- #
+
+utils__git__is_repository() {
+  local pat=$1
+  git -C "$pat" rev-parse >/dev/null 2>&1 || return 1
+}
+
+utils__git__check_repository() {
+  local pat=$1
+  if ! utils__is_git_repository "$pat"; then
+    utils__err_exit "not a git repository"
+  fi
+}
+
+# --------------------------------------------------------------------------- #
+# misc ----
+# --------------------------------------------------------------------------- #
 
 utils__print_dashes() {
   local num_dashes=$1
@@ -21,22 +79,9 @@ utils__timestamp() {
   date "+%F %T"
 }
 
-utils__log_message() {
-  printf "\e[33m[$(utils__timestamp)] %s\n\e[0m" "$@"
-}
-
-utils__color_msg() {
-  # Example:
-  # color_msg "red" "Oh no!" "Something went wrong."
-  declare -A colors
-  local colors=(["red"]="31" ["green"]="32" ["yellow"]="33")
-  local selected_color="${colors["$1"]}"
-  printf "\e["$selected_color"m%s\e[0m " "${@:2}"
-  echo
-}
-
 utils__err_exit() {
-  local msg=$(utils__color_msg "red" $(printf "Error: %s\n" "${1}"))
+  local msg
+  msg=$(utils__message__color_message "red" "$(printf "Error: %s\n" "${1}")")
   echo >&2 "$msg"
   exit 1
 }
@@ -70,23 +115,11 @@ utils__stop_if_not_command_exists() {
 utils__yesno_prompt() {
   local msg=$1
   while true; do
-    read -r -p "$(utils__color_msg "yellow" "${msg} [y/N]?")" answer
+    read -r -p "$(utils__log__info "yellow" "${msg} [y/N]?")" answer
     case ${answer} in
       y) echo "y"; return 0 ;;
       N) echo "N"; return 1 ;;
       *) echo "Error: invalid option ${answer}. Try again [y/N]." ;;
     esac
   done
-}
-
-utils__is_git_repository() {
-  local pat=$1
-  git -C "$pat" rev-parse >/dev/null 2>&1 || return 1
-}
-
-utils__check_git_repository() {
-  local pat=$1
-  if ! utils__is_git_repository "$pat"; then
-    utils__err_exit "not a git repository"
-  fi
 }

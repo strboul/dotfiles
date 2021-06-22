@@ -15,7 +15,7 @@
 
 source "$HOME"/dotfiles/zsh/utils.sh
 
-utils__check_git_repository "${PWD}"
+utils__git__check_repository "${PWD}"
 
 
 get_git_remote_ssh_address() {
@@ -60,7 +60,7 @@ main() {
   url="$(ssh_address_to_url "${ssh_address}")"
 
   open_browser "${url}"
-  utils__log_message "opened \"${url}\""
+  utils__log__success "opened \"${url}\""
 }
 
 main "$@"

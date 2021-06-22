@@ -30,6 +30,6 @@ mkdir -p ${TMPDIRPAT}
   --verbose                         \
   $URL
 
-utils__log_message "saved in ${TMPDIRPAT}"
+utils__log__info "saved in ${TMPDIRPAT}"
 
 # vim: ft=sh

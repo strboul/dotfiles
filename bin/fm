@@ -23,7 +23,7 @@ main() {
   fi
 
   local ostype
-  ostype="$(utils__get_ostype)"
+  ostype="$(utils__os__get_ostype)"
   if [[ ${ostype} == "darwin"* ]]; then
     open "$pat"
   elif [[ ${ostype} == "linux"* ]]; then
@@ -36,7 +36,7 @@ main() {
     utils__err_exit "Platform not supported."
   fi
 
-  printf "opened file manager at: %s\n" "${pat}"
+  utils__log__success "opened file manager at:" "${pat}"
 }
 
 

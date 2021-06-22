@@ -21,7 +21,7 @@ clipboard_copy() {
 }
 
 main() {
-  utils__check_git_repository "${PWD}"
+  utils__git__check_repository "${PWD}"
   local gitlog=(
     git log \
       --graph \

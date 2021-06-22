@@ -22,7 +22,7 @@ get_path() {
 
 PAT=$(get_path "$@")
 
-utils__check_git_repository "$PAT"
+utils__git__check_repository "$PAT"
 
 # TODO: official github image doesn't exist, replace once it's ready
 # https://github.com/github/linguist/issues/4613
