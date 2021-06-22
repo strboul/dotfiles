@@ -18,6 +18,7 @@ gcc-fortran
 jq
 lazygit # https://github.com/jesseduffield/lazygit
 libgit2
+lua
 neovim-nightly-bin
 nix
 nnn # https://github.com/jarun/nnn
@@ -26,11 +27,12 @@ pandoc
 ranger # https://github.com/ranger/ranger
 shellcheck # https://github.com/koalaman/shellcheck
 tmux
+vagrant # https://www.vagrantup.com/
 xsel
 ####################
 ##### binaries #####
 ####################
-brave
+brave # https://brave.com/
 chromium
 dbeaver # https://dbeaver.io/
 firefox
@@ -43,6 +45,7 @@ postman-bin
 rstudio-desktop-bin
 signal-desktop
 slack-desktop
+telegram-desktop
 virtualbox-ext-oracle
 visual-studio-code-bin
 zoom
