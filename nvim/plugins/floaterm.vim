@@ -6,8 +6,9 @@
   let s:repl_list={}
   let s:repl_list['r']=executable('radian') ? 'radian' : 'R'
   let s:repl_list['python']=executable('bpython') ? 'bpython' : 'python3'
-  let s:repl_list['javascript']="node"
-  let s:repl_list['typescript']="ts-node"
+  let s:repl_list['javascript']='node'
+  let s:repl_list['typescript']='ts-node'
+  let s:repl_list['lua']='lua'
 
   function s:GetREPLCommand(file_type)
     if has_key(s:repl_list,a:file_type)
