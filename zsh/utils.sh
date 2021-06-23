@@ -26,6 +26,7 @@ utils__message__color_message() {
   # Example:
   # color_msg "red" "Oh no!" "Something went wrong."
   local color_name="$1"
+  local messages="${@:2}"
 
   declare -A colors
   local colors=(["red"]="31" ["green"]="32" ["yellow"]="33")
@@ -33,7 +34,7 @@ utils__message__color_message() {
   local selected
   local selected="${colors["$color_name"]}"
 
-  printf "\e[\"$selected\"m%s\e[0m " "${@:2}"
+  printf "\e[\"$selected\"m%s\e[0m " "$messages"
   echo
 }
 
@@ -60,7 +61,7 @@ utils__git__is_repository() {
 
 utils__git__check_repository() {
   local pat=$1
-  if ! utils__is_git_repository "$pat"; then
+  if ! utils__git__is_repository "$pat"; then
     utils__err_exit "not a git repository"
   fi
 }
@@ -97,8 +98,18 @@ utils__check_file_or_dir_exists() {
   fi
 }
 
+# TODO doesn't work?
 utils__check_variable_exists() {
-  if [ -z "$1" ]; then echo true; else echo false; fi
+  local var="$1"
+  if [ -z "$var" ]; then echo true; else echo false; fi
+}
+
+utils__stop_if_variable_not_exist() {
+  local var="$1"
+  local msg="$2"
+  if ! utils__check_variable_exists "$var"; then
+    utils__err_exit "$msg"
+  fi
 }
 
 utils__check_if_command_exists() {

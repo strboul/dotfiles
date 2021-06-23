@@ -6,6 +6,7 @@
 # Usage:
 # fm
 # fm <dir>
+#
 
 source "$HOME"/dotfiles/zsh/utils.sh
 

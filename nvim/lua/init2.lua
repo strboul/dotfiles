@@ -1,3 +1,4 @@
+-- TODO try plenary.path for the paths https://github.com/nvim-lua/plenary.nvim/blob/master/lua/plenary/path.lua
 local dotfiles_path = os.getenv("HOME") .. "/dotfiles/nvim/lua"
 package.path = package.path .. dotfiles_path
 require("utils")
