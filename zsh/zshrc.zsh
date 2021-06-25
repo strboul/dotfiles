@@ -91,8 +91,10 @@ alias cdr="_cdr"
 
 alias cp="cp -iv" # 'cp' prompt and verbose
 alias mv="mv -iv" # 'mv' prompt and verbose
-alias ll="ls -l"
-alias la="ls -al"
+
+# 'h' gives human readable file sizes
+alias ll="ls -lh"
+alias la="ls -alh"
 
 alias v="eval $(command -v nvim)"
 alias v2="nvim -u $HOME/dotfiles/nvim/lua/init2.lua"
