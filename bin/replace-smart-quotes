@@ -5,10 +5,10 @@
 # Replace smart quotes with ASCII equivalents
 #
 # Examples:
-# replace_smart_quotes "‘hello’ “world”"
+# replace-smart-quotes "‘hello’ “world”"
 #
 # echo "‘hello’ “world”" > /tmp/test.txt
-# replace_smart_quotes -f /tmp/test.txt
+# replace-smart-quotes -f /tmp/test.txt
 #
 
 INPUT="$1"

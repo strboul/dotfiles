@@ -3,7 +3,7 @@
 # List "$PATH" env variable in a more readable way
 #
 # Usage:
-# list_path
+# list-path
 #
 
 tr ":" "\n" <<< "$PATH"
