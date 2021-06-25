@@ -11,7 +11,7 @@
 source "$HOME"/dotfiles/zsh/utils.sh
 
 utils__stop_if_not_command_exists "jq" "Please install it."
-utils__stop_if_not_command_exists "Rscript"
+utils__stop_if_not_command_exists "python"
 
 AMOUNT=$1
 SOURCE_CURR=$2
@@ -27,8 +27,9 @@ get_conversion_rate() {
 
 
 calc_amount() {
+  # use Python to calculate the amount as bash isn't great with floating point
   local conv_rate=$1
-  Rscript -e "cat(${AMOUNT}*${conv_rate},'\n')"
+  python -c "print(${AMOUNT}*${conv_rate})"
 }
 
 
