@@ -126,7 +126,7 @@ utils__stop_if_not_command_exists() {
 utils__yesno_prompt() {
   local msg=$1
   while true; do
-    read -r -p "$(utils__log__info "yellow" "${msg} [y/N]?")" answer
+    read -r -p "$(utils__log__info "${msg} [y/N]?")" answer
     case ${answer} in
       y) echo "y"; return 0 ;;
       N) echo "N"; return 1 ;;

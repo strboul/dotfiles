@@ -29,7 +29,7 @@ get_conversion_rate() {
 calc_amount() {
   # use Python to calculate the amount as bash isn't great with floating point
   local conv_rate=$1
-  python -c "print(${AMOUNT}*${conv_rate})"
+  python -c "print(round(${AMOUNT}*${conv_rate}, 2))"
 }
 
 
