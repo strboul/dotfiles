@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------- #
 
 utils__log__info() {
-  utils__message__color_message "yellow" "[$(utils__timestamp)]" "$@"
+  utils__message__color_message "orange" "[$(utils__timestamp)]" "$@"
 }
 
 utils__log__success() {
@@ -24,17 +24,35 @@ utils__log__error() {
 
 utils__message__color_message() {
   # Example:
-  # color_msg "red" "Oh no!" "Something went wrong."
+  # utils__message__color_message "red" "Oh no\!" "Something went wrong."
   local color_name="$1"
   local messages="${@:2}"
 
-  declare -A colors
-  local colors=(["red"]="31" ["green"]="32" ["yellow"]="33")
+  declare -A ansi_colors
+  local ansi_colors=(
+    ["black"]="0;30"
+    ["red"]="0;31"
+    ["green"]="0;32"
+    ["orange"]="0;33"
+    ["blue"]="0;34"
+    ["purple"]="0;35"
+    ["cyan"]="0;36"
+    ["lightGray"]="0;37"
+    ["lightRed"]="1;31"
+    ["lightGreen"]="1;32"
+    ["yellow"]="1;33"
+    ["lightBlue"]="1;34"
+    ["lightPurple"]="1;35"
+    ["lightCyan"]="1;36"
+    ["white"]="1;37"
+  )
+
+  local no_color="\033[0m"
 
   local selected
-  local selected="${colors["$color_name"]}"
+  local selected="\033[${ansi_colors[$color_name]}m"
 
-  printf "\e[\"$selected\"m%s\e[0m " "$messages"
+  printf "${selected}%s${no_color} " "$messages"
   echo
 }
 

@@ -34,7 +34,7 @@ calc_amount() {
 
 
 main() {
-  echo "[$(utils__timestamp)]"
+  utils__log__info "convert ${AMOUNT} ${SOURCE_CURR} to ${TARGET_CURR}"
 
   local conv_rate
   conv_rate=$(get_conversion_rate)
