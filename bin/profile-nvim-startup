@@ -6,19 +6,38 @@ set -e
 #
 # Usage:
 #  # uses default nvim config
-#  profile_startup_time
+#  profile-startup-time
 #
 #  # use a different config:
-#  profile_nvim_startup -u ~/path/to/config.file
+#  profile-nvim-startup -u ~/path/to/config.file
+#
+# References:
+# https://github.com/mhinz/vim-galore#profiling-startup-time
 #
 # Options:
 #  ... multiple arguments to be passed on to `nvim`.
 #
 
+source "$HOME"/dotfiles/zsh/utils.sh
+
+TEMPFILE="$(mktemp).nvim.log"
+
+log_startuptime() {
+  nvim --startuptime "${TEMPFILE}" +q
+  utils__log__info "written log file into the temp directory: \"${TEMPFILE}\""
+}
+
+open_log_file() {
+  nvim -u NONE \
+    -c "normal G$" \
+    -c "colorscheme evening" \
+    -c "set mouse=a" \
+    -c "set cursorline" \
+    "${TEMPFILE}"
+}
+
 profile_startup_time() {
-  # https://github.com/mhinz/vim-galore#profiling-startup-time
-  nvim "$@" --startuptime /tmp/startup.log +q && \
-    nvim "+normal G$" -u NONE /tmp/startup.log
+  log_startuptime && open_log_file
 }
 
 main() {
@@ -26,5 +45,3 @@ main() {
 }
 
 main "$@"
-
-# vim: ft=sh
