@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Profile z-shell
+#
+# Usage
+# profile-zsh
+#
+
+set -e
+
+# TODO: finish it
+
+for _ in $(seq 1 10); do
+  time "$(command -v zsh)" -i -c exit
+done

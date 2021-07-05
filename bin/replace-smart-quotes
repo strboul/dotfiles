@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-# TODO write this in lua?
-
 # Replace smart quotes with ASCII equivalents
 #
 # Examples:
 # replace-smart-quotes "‘hello’ “world”"
 #
-# echo "‘hello’ “world”" > /tmp/test.txt
-# replace-smart-quotes -f /tmp/test.txt
+# tempfile="$(mktemp).rsq.test"
+# echo "‘hello’ “world”" > "$tempfile"
+# replace-smart-quotes -f "$tempfile"
+# cat "$tempfile"
 #
 
 INPUT="$1"
@@ -17,9 +17,15 @@ FILE="$2"
 SINGLE=$(echo -ne "\u00B4\u2018\u2019")
 DOUBLE=$(echo -ne "\u201C\u201D")
 
-if [ "$INPUT" == "-f" ]; then
-  sed -i "s/[$SINGLE]/'/g; s/[$DOUBLE]/\"/g" "$FILE"
-else
-  echo "$INPUT" | sed "s/[$SINGLE]/'/g; s/[$DOUBLE]/\"/g"
-fi
+PATTERN="s/[$SINGLE]/'/g; s/[$DOUBLE]/\"/g"
+
+sed_file() {
+  sed -i "${PATTERN}" "${FILE}"
+}
+
+sed_stdin() {
+  echo "$INPUT" | sed "${PATTERN}"
+}
+
+if [ "$INPUT" == "-f" ]; then sed_file; else sed_stdin; fi
 
