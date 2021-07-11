@@ -3,12 +3,14 @@
 # Replace smart quotes with ASCII equivalents
 #
 # Examples:
-# replace-smart-quotes "‘hello’ “world”"
+# Use directly with stdin
+#   replace-smart-quotes "‘hello’ “world”"
 #
-# tempfile="$(mktemp).rsq.test"
-# echo "‘hello’ “world”" > "$tempfile"
-# replace-smart-quotes -f "$tempfile"
-# cat "$tempfile"
+# Replace quotes in a file:
+#   tempfile="$(mktemp).rsq.test"
+#   echo "‘hello’ “world”" > "$tempfile"
+#   replace-smart-quotes -f "$tempfile"
+#   cat "$tempfile"
 #
 
 INPUT="$1"
@@ -27,5 +29,8 @@ sed_stdin() {
   echo "$INPUT" | sed "${PATTERN}"
 }
 
-if [ "$INPUT" == "-f" ]; then sed_file; else sed_stdin; fi
-
+if [ "$INPUT" == "-f" ]; then
+  sed_file
+else
+  sed_stdin
+fi

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# List "$PATH" env variable in a more readable way
+# List down "$PATH" environment variables in a more readable way
 #
 # Usage:
 # list-path

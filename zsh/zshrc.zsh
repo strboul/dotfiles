@@ -92,7 +92,7 @@ alias cdr="_cdr"
 alias cp="cp -iv" # 'cp' prompt and verbose
 alias mv="mv -iv" # 'mv' prompt and verbose
 
-# 'h' gives human readable file sizes
+# - 'h' gives human readable file sizes
 alias ll="ls -lh"
 alias la="ls -alh"
 
