@@ -15,43 +15,71 @@ source "$HOME"/dotfiles/zsh/utils.sh
 
 utils__stop_if_not_command_exists "docker"
 
+# TODO replace all docker with "$DOCKER"
 DOCKER="$(command -v docker)"
 
-# ----- utils -----
+# ----- utils - array -----
 
-echo_arr() {
-  local arr="$1"
-  for a in "${arr[@]}"; do
-    echo "$a"
+# TODO move utils.sh
+arr_echo() {
+  local arr=("$@")
+  for item in "${arr[@]}"; do
+    printf "%s\n" "$item"
   done
+}
+
+message_info() {
+  utils__message__color_message "purple" ">>> $1"
+}
+
+count_lines() {
+  echo "$1" | wc -l
 }
 
 # ----- get -----
 
 get_images() {
-  docker images | awk '{ if (NR>1) { print $0 } }'
+  docker images | awk '{ if (NR > 1) { if (NF > 0) { print $0 } } }'
 }
 
-images="$(get_images)"
-readarray -t test <<< "${images[@]}"
-declare -p test
-
-echo_arr "${test[@]}"
-
 # ----- remove -----
+
+remove_images() {
+  img_ids="$(echo "${img[@]}" | awk '{ print $3 }')"
+  readarray -t img_ids_arr <<< "${img_ids}"
+  "$DOCKER" rmi -f "${img_ids_arr[@]}"
+  utils__log__success "removed $(count_lines "$img_ids") images"
+}
+
+main_images() {
+  local img
+  local img_ids
+  local img_ids_arr
+  local prompt
+
+  img="$(get_images)"
+  if [ -z "$img" ]; then
+    utils__log__error "no images found. Skipping."
+    exit 1
+  fi
+
+  message_info "the following images are going to be removed:"
+  echo "${img[@]}"
+
+  if [ "$noprompt" == true ]; then
+    remove_images
+  else
+    prompt="$(utils__yesno_prompt "Are you sure")"
+    if [ "$prompt" == "y" ]; then
+      remove_images
+    fi
+  fi
+}
 
 remove_containers() {
   local ids
   ids="$("$DOCKER" ps -qa)"
   "$DOCKER" rm -f "${ids}"
-}
-
-remove_images() {
-  local ids
-  local ids_arr
-  ids="$("$DOCKER" images -qa)"
-  readarray -t ids_arr <<< "${ids}"
-  "$DOCKER" rmi -f "${ids_arr[@]}"
 }
 
 remove_volumes() {
@@ -103,9 +131,9 @@ shift $((OPTIND -1))
 # has_remove_volumes="$(utils__yesno_prompt "Remove all volumes")"
 # has_remove_networks="$(utils__yesno_prompt "Remove all networks")"
 
-# for val in "${types[@]}"; do
+for val in "${types[@]}"; do
   # if [ "$val" == "containers" ]; then remove_containers; fi
-  # if [ "$val" == "images" ]; then remove_images; fi
+  if [ "$val" == "images" ]; then main_images; fi
   # if [ "$val" == "volumes" ]; then remove_volumes; fi
   # if [ "$val" == "networks" ]; then remove_networks; fi
-# done
+done
