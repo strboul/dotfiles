@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+# A CLI to easily clean all Docker resources per type
+#
+# Usage:
+# docker-remove-all -t [containers|images|volumes|networks] -y
+#
+# It's possible to pass multiple arguments,
+# docker-remove-all -t containers -t images -y
+#
+# If no argument provided, it'll remove all.
+#
+
+source "$HOME"/dotfiles/zsh/utils.sh
+
+utils__stop_if_not_command_exists "docker"
+
+DOCKER="$(command -v docker)"
+
+# ----- utils -----
+
+echo_arr() {
+  local arr="$1"
+  for a in "${arr[@]}"; do
+    echo "$a"
+  done
+}
+
+# ----- get -----
+
+get_images() {
+  docker images | awk '{ if (NR>1) { print $0 } }'
+}
+
+images="$(get_images)"
+readarray -t test <<< "${images[@]}"
+declare -p test
+
+echo_arr "${test[@]}"
+
+# ----- remove -----
+
+remove_containers() {
+  local ids
+  ids="$("$DOCKER" ps -qa)"
+  "$DOCKER" rm -f "${ids}"
+}
+
+remove_images() {
+  local ids
+  local ids_arr
+  ids="$("$DOCKER" images -qa)"
+  readarray -t ids_arr <<< "${ids}"
+  "$DOCKER" rmi -f "${ids_arr[@]}"
+}
+
+remove_volumes() {
+  local names
+  local names_arr
+  names="$("$DOCKER" volume ls -qf dangling=true)"
+  readarray -t names_arr <<< "${names}"
+  "$DOCKER" volume rm "${names_arr[@]}"
+}
+
+remove_networks() {
+  local ids
+  local ids_arr
+  ids="$("$DOCKER" network ls | awk '$2 != "bridge" && $3 == "bridge" { print $1 }')"
+  readarray -t ids_arr <<< "${ids}"
+  "$DOCKER" network rm "${ids_arr[@]}"
+}
+
+# ----- CLI -----
+
+usage() {
+  cat <<EOM
+Usage: $(basename "$0") [OPTIONS...]
+
+  -t  [containers|images|volumes|networks]  Optional. removal type of description
+                                            If empty, all types are removed.
+  -y                                        don't ask prompt
+  -h                                        display help
+EOM
+  exit 2
+}
+
+noprompt=false
+
+while getopts ":t:h:y" opt; do
+  case "$opt" in
+    t) types+=("$OPTARG") ;;
+    y) noprompt=true ;;
+    h|*) usage ;;
+  esac
+done
+shift $((OPTIND -1))
+
+# echo "$noprompt"
+
+
+# has_remove_containers="$(utils__yesno_prompt "Remove all containers")"
+# has_remove_images="$(utils__yesno_prompt "Remove all images")"
+# has_remove_volumes="$(utils__yesno_prompt "Remove all volumes")"
+# has_remove_networks="$(utils__yesno_prompt "Remove all networks")"
+
+# for val in "${types[@]}"; do
+  # if [ "$val" == "containers" ]; then remove_containers; fi
+  # if [ "$val" == "images" ]; then remove_images; fi
+  # if [ "$val" == "volumes" ]; then remove_volumes; fi
+  # if [ "$val" == "networks" ]; then remove_networks; fi
+# done
