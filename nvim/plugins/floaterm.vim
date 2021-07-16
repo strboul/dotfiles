@@ -4,6 +4,8 @@
 
 " REPL utility based on floaterm
   let s:repl_list={}
+  let s:repl_list['sh']='bash'
+  let s:repl_list['zsh']='zsh'
   let s:repl_list['r']=executable('radian') ? 'radian' : 'R'
   let s:repl_list['python']=executable('bpython') ? 'bpython' : 'python3'
   let s:repl_list['javascript']='node'

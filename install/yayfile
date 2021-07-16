@@ -15,7 +15,8 @@ docker
 docker-compose
 fd
 gcc-fortran
-jq
+hyperfine # https://github.com/sharkdp/hyperfine
+jq # https://stedolan.github.io/jq/
 lazygit # https://github.com/jesseduffield/lazygit
 libgit2
 lua
