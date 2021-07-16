@@ -11,12 +11,11 @@
 # If no argument provided, it'll remove all.
 #
 
+set -e
+
 source "$HOME"/dotfiles/zsh/utils.sh
 
 utils__stop_if_not_command_exists "docker"
-
-# TODO replace all docker with "$DOCKER"
-DOCKER="$(command -v docker)"
 
 # ----- utils -----
 
@@ -37,17 +36,32 @@ stop_if_type_not_found() {
   fi
 }
 
-do_prompt() {
-  local fun="$1"
-  local arr=("${@:2}")
+ask_prompt() {
+  local name="$1"
+  local fun="$2"
+  local subfun="$3"
+  local arr=("${@:4}")
+  local cmd
+  message_info "$name to be removed:" && echo "${arr[@]}"
+  cmd=("$fun" "$subfun" "$name" "${arr[@]}")
   if [ "$noprompt" == true ]; then
-    "$fun" "${arr[@]}"
+    "${cmd[@]}"
   else
     prompt="$(utils__yesno_prompt "Are you sure")"
     if [ "$prompt" == "y" ]; then
-      "$fun" "${arr[@]}"
+      "${cmd[@]}"
     fi
   fi
+}
+
+do_remove() {
+  local fun="$1"
+  local input_name="$2"
+  local input=("${@:3})")
+  local input_ids
+  input_ids="$(echo "${input[@]}" | awk '{ print $3 }' | uniq)"
+  "$fun" "${input_ids[@]}"
+  utils__log__success "removed $(count_lines "$input_ids") unique $input_name id(s)"
 }
 
 # ----- get -----
@@ -56,36 +70,36 @@ get_images() {
   docker images | awk '{ if (NR > 1) { if (NF > 0) { print $0 } } }'
 }
 
+get_containers() {
+  docker ps -qa
+}
+
 # ----- remove -----
 
 remove_images() {
-  local img=("${@})")
-  img_ids="$(echo "${img[@]}" | awk '{ print $3 }' | uniq)"
-  readarray -t img_ids_arr <<< "${img_ids}"
-  "$DOCKER" rmi -f "${img_ids_arr[@]}"
-  utils__log__success "removed $(count_lines "$img_ids") unique image id(s)"
+  local arr=("${@}")
+  docker rmi -f "${arr[@]}"
 }
 
 remove_containers() {
-  local ids
-  ids="$("$DOCKER" ps -qa)"
-  "$DOCKER" rm -f "${ids}"
+  local ids="$1"
+  docker rm -f "${ids}"
 }
 
 remove_volumes() {
   local names
   local names_arr
-  names="$("$DOCKER" volume ls -qf dangling=true)"
+  names="$(docker volume ls -qf dangling=true)"
   readarray -t names_arr <<< "${names}"
-  "$DOCKER" volume rm "${names_arr[@]}"
+  docker volume rm "${names_arr[@]}"
 }
 
 remove_networks() {
   local ids
   local ids_arr
-  ids="$("$DOCKER" network ls | awk '$2 != "bridge" && $3 == "bridge" { print $1 }')"
+  ids="$(docker network ls | awk '$2 != "bridge" && $3 == "bridge" { print $1 }')"
   readarray -t ids_arr <<< "${ids}"
-  "$DOCKER" network rm "${ids_arr[@]}"
+  docker network rm "${ids_arr[@]}"
 }
 
 # ----- main -----
@@ -94,8 +108,15 @@ main_images() {
   local img
   img="$(get_images)"
   stop_if_type_not_found "images" "${img[@]}"
-  message_info "images to be removed:" && echo "${img[@]}"
-  do_prompt remove_images "${img[@]}"
+  ask_prompt "images" do_remove remove_images "${img[@]}"
+}
+
+# TODO
+main_containers() {
+  local cont
+  cont="$(get_containers)"
+  stop_if_type_not_found "containers" "${cont[@]}"
+  ask_prompt "containers" do_remove remove_containers "${cont[@]}"
 }
 
 # ----- CLI -----
@@ -123,17 +144,9 @@ while getopts ":t:h:y" opt; do
 done
 shift $((OPTIND -1))
 
-# echo "$noprompt"
-
-
-# has_remove_containers="$(utils__yesno_prompt "Remove all containers")"
-# has_remove_images="$(utils__yesno_prompt "Remove all images")"
-# has_remove_volumes="$(utils__yesno_prompt "Remove all volumes")"
-# has_remove_networks="$(utils__yesno_prompt "Remove all networks")"
-
 for val in "${types[@]}"; do
-  # if [ "$val" == "containers" ]; then remove_containers; fi
+  if [ "$val" == "containers" ]; then main_containers; fi
   if [ "$val" == "images" ]; then main_images; fi
-  # if [ "$val" == "volumes" ]; then remove_volumes; fi
-  # if [ "$val" == "networks" ]; then remove_networks; fi
+  if [ "$val" == "volumes" ]; then main_volumes; fi
+  if [ "$val" == "networks" ]; then main_networks; fi
 done
