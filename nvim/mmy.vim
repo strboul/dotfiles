@@ -1,5 +1,4 @@
 " M.Y.'s custom vim commands
-" Move to? https://github.com/strboul/mmy.vim
 
 " ----- Utils ------------------------------------------------------------
 
@@ -90,6 +89,7 @@
 
 " Break into new lines by (,) comma e.g. `[x=1, y=2, c=3]`
 " TODO create SplitIntoMultipleLines instead with a prompt for delimiter
+" TODO this can be a lua function. Probably easier to write
   function mmy#FunSpanLinesByComma()
     :s/,/,\r/g
     " keep cursor position on the line

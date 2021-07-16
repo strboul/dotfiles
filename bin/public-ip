@@ -9,5 +9,5 @@ source "$HOME"/dotfiles/zsh/utils.sh
 
 utils__stop_if_not_command_exists "curl"
 
-curl ifconfig.me
+curl ifconfig.me/all
 echo
