@@ -27,6 +27,7 @@ utils__message__color_message() {
   # utils__message__color_message "red" "Oh no\!" "Something went wrong."
   local color_name messages ansi_colors no_color selected
   color_name="$1"
+  # TODO: get rid of SC2124
   messages="${@:2}"
   declare -A ansi_colors
   ansi_colors=(

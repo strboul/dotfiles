@@ -18,15 +18,7 @@ utils__stop_if_not_command_exists "docker"
 # TODO replace all docker with "$DOCKER"
 DOCKER="$(command -v docker)"
 
-# ----- utils - array -----
-
-# TODO move utils.sh
-arr_echo() {
-  local arr=("$@")
-  for item in "${arr[@]}"; do
-    printf "%s\n" "$item"
-  done
-}
+# ----- utils -----
 
 message_info() {
   utils__message__color_message "purple" ">>> $1"
@@ -34,6 +26,28 @@ message_info() {
 
 count_lines() {
   echo "$1" | wc -l
+}
+
+stop_if_type_not_found() {
+  local type="$1"
+  local arr=("${@:2}")
+  if [ -z "${arr[*]}" ]; then
+    utils__log__error "no $type found. Skipping."
+    exit 1
+  fi
+}
+
+do_prompt() {
+  local fun="$1"
+  local arr=("${@:2}")
+  if [ "$noprompt" == true ]; then
+    "$fun" "${arr[@]}"
+  else
+    prompt="$(utils__yesno_prompt "Are you sure")"
+    if [ "$prompt" == "y" ]; then
+      "$fun" "${arr[@]}"
+    fi
+  fi
 }
 
 # ----- get -----
@@ -45,35 +59,11 @@ get_images() {
 # ----- remove -----
 
 remove_images() {
-  img_ids="$(echo "${img[@]}" | awk '{ print $3 }')"
+  local img=("${@})")
+  img_ids="$(echo "${img[@]}" | awk '{ print $3 }' | uniq)"
   readarray -t img_ids_arr <<< "${img_ids}"
   "$DOCKER" rmi -f "${img_ids_arr[@]}"
-  utils__log__success "removed $(count_lines "$img_ids") images"
-}
-
-main_images() {
-  local img
-  local img_ids
-  local img_ids_arr
-  local prompt
-
-  img="$(get_images)"
-  if [ -z "$img" ]; then
-    utils__log__error "no images found. Skipping."
-    exit 1
-  fi
-
-  message_info "the following images are going to be removed:"
-  echo "${img[@]}"
-
-  if [ "$noprompt" == true ]; then
-    remove_images
-  else
-    prompt="$(utils__yesno_prompt "Are you sure")"
-    if [ "$prompt" == "y" ]; then
-      remove_images
-    fi
-  fi
+  utils__log__success "removed $(count_lines "$img_ids") unique image id(s)"
 }
 
 remove_containers() {
@@ -96,6 +86,16 @@ remove_networks() {
   ids="$("$DOCKER" network ls | awk '$2 != "bridge" && $3 == "bridge" { print $1 }')"
   readarray -t ids_arr <<< "${ids}"
   "$DOCKER" network rm "${ids_arr[@]}"
+}
+
+# ----- main -----
+
+main_images() {
+  local img
+  img="$(get_images)"
+  stop_if_type_not_found "images" "${img[@]}"
+  message_info "images to be removed:" && echo "${img[@]}"
+  do_prompt remove_images "${img[@]}"
 }
 
 # ----- CLI -----
