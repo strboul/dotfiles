@@ -17,7 +17,7 @@ source "$HOME"/dotfiles/zsh/utils.sh
 
 utils__stop_if_not_command_exists "docker"
 
-# ----- utils -----
+# ----- utils -----------------------------------------------------------------
 
 message_info() {
   utils__message__color_message "purple" ">>> $1"
@@ -42,6 +42,7 @@ ask_prompt() {
   local subfun="$3"
   local arr=("${@:4}")
   local cmd
+  stop_if_type_not_found "$name" "${arr[@]}"
   message_info "$name to be removed:" && echo "${arr[@]}"
   cmd=("$fun" "$subfun" "$name" "${arr[@]}")
   if [ "$noprompt" == true ]; then
@@ -61,10 +62,11 @@ do_remove() {
   local input_ids
   input_ids="$(echo "${input[@]}" | awk '{ print $3 }' | uniq)"
   "$fun" "${input_ids[@]}"
-  utils__log__success "removed $(count_lines "$input_ids") unique $input_name id(s)"
+  utils__log__success \
+    "removed $(count_lines "$input_ids") unique $input_name id(s)"
 }
 
-# ----- get -----
+# ----- get -------------------------------------------------------------------
 
 get_images() {
   docker images | awk '{ if (NR > 1) { if (NF > 0) { print $0 } } }'
@@ -74,7 +76,15 @@ get_containers() {
   docker ps -qa
 }
 
-# ----- remove -----
+get_volumes() {
+  docker volume ls -qf dangling=true
+}
+
+get_networks() {
+  docker network ls | awk '$2 != "bridge" && $3 == "bridge" { print $1 }'
+}
+
+# ----- remove ----------------------------------------------------------------
 
 remove_images() {
   local arr=("${@}")
@@ -89,25 +99,24 @@ remove_containers() {
 remove_volumes() {
   local names
   local names_arr
-  names="$(docker volume ls -qf dangling=true)"
-  readarray -t names_arr <<< "${names}"
-  docker volume rm "${names_arr[@]}"
+  vol_names="$(get_volumes)"
+  readarray -t vol_names_arr <<< "${vol_names}"
+  docker volume rm "${vol_names_arr[@]}"
 }
 
 remove_networks() {
   local ids
   local ids_arr
-  ids="$(docker network ls | awk '$2 != "bridge" && $3 == "bridge" { print $1 }')"
+  ids="$(get_networks)"
   readarray -t ids_arr <<< "${ids}"
   docker network rm "${ids_arr[@]}"
 }
 
-# ----- main -----
+# ----- main ------------------------------------------------------------------
 
 main_images() {
   local img
   img="$(get_images)"
-  stop_if_type_not_found "images" "${img[@]}"
   ask_prompt "images" do_remove remove_images "${img[@]}"
 }
 
@@ -115,11 +124,10 @@ main_images() {
 main_containers() {
   local cont
   cont="$(get_containers)"
-  stop_if_type_not_found "containers" "${cont[@]}"
   ask_prompt "containers" do_remove remove_containers "${cont[@]}"
 }
 
-# ----- CLI -----
+# ----- CLI -------------------------------------------------------------------
 
 usage() {
   cat <<EOM
