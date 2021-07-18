@@ -45,12 +45,15 @@
 " better x (don't push it to the register)
   nnoremap x "_x
 
-" Jump to the middle of the viewport when navigating with n or {
+" jump to the middle of the viewport when navigating with n or {
   nnoremap n nzz
   nnoremap N Nzz
 
   nnoremap } }zz
   nnoremap { {zz
+
+" get to the middle when going at the end of the buffer
+  nnoremap G Gzz
 
 " delete the whole line without removing the line space
   nnoremap dx 0d$
