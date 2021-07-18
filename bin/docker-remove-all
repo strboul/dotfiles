@@ -27,11 +27,15 @@ count_lines() {
   echo "$1" | wc -l
 }
 
-stop_if_type_not_found() {
-  local type="$1"
+skip_first_line() {
+  awk '{ if (NR > 1) { if (NF > 0) { print $0 } } }'
+}
+
+find_type() {
+  local name="$1"
   local arr=("${@:2}")
   if [ -z "${arr[*]}" ]; then
-    utils__log__error "no $type found. Skipping."
+    utils__log__error "no $name found. Skipping."
     exit 1
   fi
 }
@@ -42,9 +46,11 @@ ask_prompt() {
   local subfun="$3"
   local arr=("${@:4}")
   local cmd
-  stop_if_type_not_found "$name" "${arr[@]}"
+  local arr_clear
+  arr_clear="$(echo "${arr[@]}" | skip_first_line)"
+  find_type "$name" "${arr_clear[@]}"
   message_info "$name to be removed:" && echo "${arr[@]}"
-  cmd=("$fun" "$subfun" "$name" "${arr[@]}")
+  cmd=("$fun" "$subfun" "$name" "${arr_clear[@]}")
   if [ "$noprompt" == true ]; then
     "${cmd[@]}"
   else
@@ -68,16 +74,17 @@ do_remove() {
 
 # ----- get -------------------------------------------------------------------
 
+# TODO move skip_first_line somewhere else
 get_images() {
-  docker images | awk '{ if (NR > 1) { if (NF > 0) { print $0 } } }'
+  docker images
 }
 
 get_containers() {
-  docker ps -qa
+  docker ps -a
 }
 
 get_volumes() {
-  docker volume ls -qf dangling=true
+  docker volume ls -f dangling=true
 }
 
 get_networks() {
@@ -86,45 +93,52 @@ get_networks() {
 
 # ----- remove ----------------------------------------------------------------
 
+# TODO can local arr= be removed?
 remove_images() {
   local arr=("${@}")
   docker rmi -f "${arr[@]}"
 }
 
 remove_containers() {
-  local ids="$1"
-  docker rm -f "${ids}"
+  local arr=("${@}")
+  docker rm -f "${arr[@]}"
 }
 
 remove_volumes() {
-  local names
-  local names_arr
-  vol_names="$(get_volumes)"
-  readarray -t vol_names_arr <<< "${vol_names}"
-  docker volume rm "${vol_names_arr[@]}"
+  local arr=("${@}")
+  docker volume rm "${arr[@]}"
 }
 
 remove_networks() {
-  local ids
-  local ids_arr
-  ids="$(get_networks)"
-  readarray -t ids_arr <<< "${ids}"
-  docker network rm "${ids_arr[@]}"
+  local arr=("${@}")
+  docker network rm "${arr[@]}"
 }
 
 # ----- main ------------------------------------------------------------------
 
+# TODO main can be functionalized
 main_images() {
   local img
   img="$(get_images)"
   ask_prompt "images" do_remove remove_images "${img[@]}"
 }
 
-# TODO
 main_containers() {
   local cont
   cont="$(get_containers)"
   ask_prompt "containers" do_remove remove_containers "${cont[@]}"
+}
+
+main_volumes() {
+  local vol
+  vol="$(get_volumes)"
+  ask_prompt "volumes" do_remove remove_volumes "${vol[@]}"
+}
+
+main_networks() {
+  local net
+  net="$(get_networks)"
+  ask_prompt "volumes" do_remove remove_networks "${vol[@]}"
 }
 
 # ----- CLI -------------------------------------------------------------------
@@ -150,7 +164,12 @@ while getopts ":t:h:y" opt; do
     h|*) usage ;;
   esac
 done
-shift $((OPTIND -1))
+
+shift $((OPTIND - 1))
+
+if [ "${#types[@]}" -eq 0 ]; then
+  types=("containers" "images" "volumes" "networks")
+fi
 
 for val in "${types[@]}"; do
   if [ "$val" == "containers" ]; then main_containers; fi
